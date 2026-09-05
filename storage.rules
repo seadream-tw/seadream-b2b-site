@@ -1,0 +1,116 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userPath() {
+      return /databases/(default)/documents/users/$(request.auth.uid);
+    }
+
+    function hasUserDoc() {
+      return signedIn() && firestore.exists(userPath());
+    }
+
+    function userData() {
+      return firestore.get(userPath()).data;
+    }
+
+    function isActiveUser() {
+      return hasUserDoc() &&
+        userData().status == 'active';
+    }
+
+    function isAdmin() {
+      return isActiveUser() &&
+        (
+          userData().isAdmin == true ||
+          userData().role == 'admin'
+        );
+    }
+
+    function hasPerms() {
+      return isActiveUser() && userData().permissions is map;
+    }
+
+    function canManageLivestock() {
+      return isAdmin() ||
+        (
+          hasPerms() &&
+          userData().permissions.livestockAdmin == true
+        ) ||
+        (
+          isActiveUser() &&
+          (
+            userData().livestockAdmin == true ||
+            userData().canManageLivestock == true ||
+            userData().livestockManager == true
+          )
+        );
+    }
+
+    function canManageShopHome() {
+      return isAdmin() ||
+        (
+          hasPerms() &&
+          userData().permissions.shopHomeAdmin == true
+        );
+    }
+
+    function canManageEquipment() {
+      return isAdmin() ||
+        (
+          hasPerms() &&
+          userData().permissions.equipmentAdmin == true
+        );
+    }
+
+    match /public/livestock/{allPaths=**} {
+      allow read: if true;
+      allow write: if canManageLivestock();
+    }
+
+    match /livestock/{allPaths=**} {
+      allow read: if true;
+      allow write: if canManageLivestock();
+    }
+
+    match /equipment/{allPaths=**} {
+      allow read: if true;
+      allow write: if canManageEquipment();
+    }
+
+    match /products/{allPaths=**} {
+      allow read: if true;
+      allow write: if canManageEquipment();
+    }
+
+    match /public/site/{allPaths=**} {
+      allow read: if true;
+      allow write: if canManageShopHome();
+    }
+
+    match /public/brandShowcase/{allPaths=**} {
+      allow read: if true;
+      allow write: if canManageShopHome();
+    }
+
+    match /shop/{allPaths=**} {
+      allow read: if true;
+      allow write: if canManageShopHome();
+    }
+
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /{allPaths=**} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+  }
+}
