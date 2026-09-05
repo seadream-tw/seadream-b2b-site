@@ -1,0 +1,833 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userDoc() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function hasUserDoc() {
+      return signedIn() && exists(userDoc());
+    }
+
+    function myUser() {
+      return get(userDoc()).data;
+    }
+
+    function isActiveUser() {
+      return hasUserDoc() && myUser().status == 'active';
+    }
+
+    function hasPerms() {
+      return isActiveUser() && myUser().permissions is map;
+    }
+
+    function isAdmin() {
+      return isActiveUser() && (
+        myUser().isAdmin == true ||
+        myUser().role == 'admin'
+      );
+    }
+
+    function isWholesale() {
+      return isActiveUser() && (
+        myUser().role == 'wholesale' ||
+        myUser().role == 'admin' ||
+        myUser().isAdmin == true
+      );
+    }
+
+    function canManageUsers() {
+      return isAdmin() || (
+        hasPerms() &&
+        myUser().permissions.userAdmin == true
+      );
+    }
+
+    function canManageWholesaleApplications() {
+      return canManageUsers() || isAdmin();
+    }
+
+    function canManageShopHome() {
+      return isAdmin() || (
+        hasPerms() &&
+        myUser().permissions.shopHomeAdmin == true
+      );
+    }
+
+    function canManageEquipment() {
+      return isAdmin() || (
+        hasPerms() &&
+        (
+          myUser().permissions.equipmentAdmin == true ||
+          myUser().permissions.orderAdmin == true ||
+          myUser().permissions.shopHomeAdmin == true ||
+          myUser().permissions.userAdmin == true
+        )
+      );
+    }
+
+    function canManageOrders() {
+      return isAdmin() || (
+        hasPerms() &&
+        myUser().permissions.orderAdmin == true
+      );
+    }
+
+    function canManageLivestock() {
+      return isAdmin() ||
+        (
+          hasPerms() &&
+          myUser().permissions.livestockAdmin == true
+        ) ||
+        (
+          isActiveUser() &&
+          (
+            myUser().livestockAdmin == true ||
+            myUser().canManageLivestock == true ||
+            myUser().livestockManager == true
+          )
+        );
+    }
+
+    function canManageChat() {
+      return isAdmin() || (
+        hasPerms() &&
+        myUser().permissions.chatAdmin == true
+      );
+    }
+
+    function canReadB2BLivestock() {
+      return isWholesale() || canManageLivestock();
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function selfWritableUserFields() {
+      return [
+        'email',
+        'name',
+        'contactName',
+        'companyName',
+        'phone',
+        'lineId',
+        'taxId',
+        'address',
+        'invoiceAddress',
+        'deliveryNote',
+        'city',
+        'district',
+        'postalCode',
+        'addressLine',
+        'emailVerified',
+        'lastLoginAt',
+        'lastSeenAt',
+        'updatedAt'
+      ];
+    }
+
+    function selfCreatableUserFields() {
+      return [
+        'email',
+        'name',
+        'contactName',
+        'companyName',
+        'phone',
+        'lineId',
+        'taxId',
+        'address',
+        'invoiceAddress',
+        'deliveryNote',
+        'city',
+        'district',
+        'postalCode',
+        'addressLine',
+        'emailVerified',
+        'lastLoginAt',
+        'lastSeenAt',
+        'updatedAt',
+        'role',
+        'status',
+        'isAdmin',
+        'createdAt'
+      ];
+    }
+
+    function isHighestAdminData(data) {
+      return data.isAdmin == true || data.role == 'admin';
+    }
+
+    function reservationOrderPath() {
+      return /databases/$(database)/documents/orders/$(request.resource.data.reservedOrderId);
+    }
+
+    function manualReleaseOrderPath() {
+      return /databases/$(database)/documents/orders/$(resource.data.reservedOrderId);
+    }
+
+    function hasMatchingReservationOrder() {
+      return request.resource.data.keys().hasAny(['reservedOrderId']) &&
+        request.resource.data.reservedOrderId is string &&
+        existsAfter(reservationOrderPath()) &&
+        getAfter(reservationOrderPath()).data.createdByUid == request.auth.uid &&
+        (
+          getAfter(reservationOrderPath()).data.type == 'livestock' ||
+          getAfter(reservationOrderPath()).data.orderType == 'livestock'
+        );
+    }
+
+    function hasMatchingEditedOrderForRelease() {
+      return resource.data.keys().hasAny(['reservedOrderId']) &&
+        resource.data.reservedOrderId is string &&
+        existsAfter(manualReleaseOrderPath()) &&
+        getAfter(manualReleaseOrderPath()).data.createdByUid == request.auth.uid &&
+        getAfter(manualReleaseOrderPath()).data.lastEditedByUid == request.auth.uid &&
+        (
+          getAfter(manualReleaseOrderPath()).data.type == 'livestock' ||
+          getAfter(manualReleaseOrderPath()).data.orderType == 'livestock'
+        );
+    }
+
+    function customerReservationFields() {
+      return [
+        'status',
+        'availableQty',
+        'reservedQty',
+        'reservedByUid',
+        'reservedByEmail',
+        'reservedOrderId',
+        'reservedAt',
+        'reservedUntil',
+        'reserveExpiresAt',
+        'holdExpiresAt',
+        'reservationStatus',
+        'lastOrderId',
+        'lastOrderAt',
+        'updatedAt'
+      ];
+    }
+
+    function customerReleaseFields() {
+      return [
+        'status',
+        'availableQty',
+        'reservedQty',
+        'reservedByUid',
+        'reservedByEmail',
+        'reservedOrderId',
+        'reservedAt',
+        'reservedUntil',
+        'reserveExpiresAt',
+        'holdExpiresAt',
+        'reservationStatus',
+        'lastOrderId',
+        'lastOrderAt',
+        'updatedAt'
+      ];
+    }
+
+    function customerReserveQtyOk() {
+      return !request.resource.data.keys().hasAny(['availableQty']) ||
+        (
+          request.resource.data.availableQty is number &&
+          request.resource.data.availableQty >= 0 &&
+          (
+            !resource.data.keys().hasAny(['availableQty']) ||
+            request.resource.data.availableQty <= resource.data.availableQty
+          ) &&
+          (
+            !resource.data.keys().hasAny(['stockQty']) ||
+            request.resource.data.availableQty <= resource.data.stockQty
+          )
+        );
+    }
+
+    function isCustomerLivestockReservationUpdate() {
+      return isActiveUser() &&
+        canReadB2BLivestock() &&
+        (
+          resource.data.status == 'available' ||
+          !resource.data.keys().hasAny(['status'])
+        ) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(customerReservationFields()) &&
+        request.resource.data.reservedByUid == request.auth.uid &&
+        request.resource.data.lastOrderId == request.resource.data.reservedOrderId &&
+        request.resource.data.status in ['available', 'reserved', 'sold'] &&
+        customerReserveQtyOk() &&
+        hasMatchingReservationOrder();
+    }
+
+    function isCustomerLivestockReleaseUpdate() {
+      return isActiveUser() &&
+        canReadB2BLivestock() &&
+        resource.data.reservedByUid == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(customerReleaseFields()) &&
+        request.resource.data.status in ['available', 'reserved', 'sold'] &&
+        request.resource.data.availableQty is number &&
+        request.resource.data.availableQty >= 0 &&
+        hasMatchingEditedOrderForRelease();
+    }
+
+    function expiredReleaseFields() {
+      return [
+        'status',
+        'availableQty',
+        'reservedByUid',
+        'reservedByEmail',
+        'reservedOrderId',
+        'reservedAt',
+        'reservedUntil',
+        'reserveExpiresAt',
+        'holdExpiresAt',
+        'reservationStatus',
+        'expiredHoldReleasedAt',
+        'expiredHoldReleasedByUid',
+        'updatedAt'
+      ];
+    }
+
+    function expiredTimeReached() {
+      return (
+        resource.data.reserveExpiresAt is timestamp &&
+        resource.data.reserveExpiresAt <= request.time
+      ) || (
+        resource.data.reservedUntil is timestamp &&
+        resource.data.reservedUntil <= request.time
+      ) || (
+        resource.data.holdExpiresAt is timestamp &&
+        resource.data.holdExpiresAt <= request.time
+      );
+    }
+
+    function isExpiredReservationReleaseUpdate() {
+      return isActiveUser() &&
+        canReadB2BLivestock() &&
+        resource.data.status == 'reserved' &&
+        expiredTimeReached() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(expiredReleaseFields()) &&
+        request.resource.data.status == 'available' &&
+        request.resource.data.availableQty is number &&
+        request.resource.data.availableQty >= 1;
+    }
+
+    function customerEditableOrderFields() {
+      return [
+        'version',
+        'status',
+        'quoteStatus',
+        'paymentStatus',
+        'customerCanEdit',
+        'updatedAt',
+        'editedAt',
+        'lastEditedByUid',
+        'lastEditedByEmail',
+        'editCount',
+        'customerName',
+        'companyName',
+        'contactName',
+        'phone',
+        'lineId',
+        'taxId',
+        'address',
+        'invoiceAddress',
+        'deliveryNote',
+        'shippingMethod',
+        'note',
+        'message',
+        'items',
+        'total',
+        'itemCount',
+        'qtyTotal'
+      ];
+    }
+
+    function customerSubmitOrderFields() {
+      return [
+        'version',
+        'status',
+        'quoteStatus',
+        'paymentStatus',
+        'customerCanEdit',
+        'isPaid',
+        'updatedAt',
+        'submittedAt',
+        'submittedByUid',
+        'submittedByEmail',
+        'customerName',
+        'companyName',
+        'contactName',
+        'phone',
+        'lineId',
+        'taxId',
+        'address',
+        'invoiceAddress',
+        'deliveryNote',
+        'shippingMethod',
+        'note',
+        'message',
+        'notifyRoles',
+        'notifyPermissions',
+        'visibleToPermissions',
+        'managerModules',
+        'items',
+        'total',
+        'itemCount',
+        'qtyTotal'
+      ];
+    }
+
+    function customerHideOrderFields() {
+      return [
+        'customerHiddenByUid',
+        'customerHiddenByEmail',
+        'customerHiddenAt',
+        'hiddenFromCustomer',
+        'hiddenByCustomer',
+        'updatedAt'
+      ];
+    }
+
+    function orderNotPaidOrClosed() {
+      return !resource.data.keys().hasAny(['isPaid']) ||
+        resource.data.isPaid != true;
+    }
+
+    function orderEditableTimeOk() {
+      return (
+        !resource.data.keys().hasAny(['editableUntil'])
+      ) || (
+        resource.data.editableUntil is timestamp &&
+        resource.data.editableUntil > request.time
+      ) || (
+        resource.data.reserveExpiresAt is timestamp &&
+        resource.data.reserveExpiresAt > request.time
+      ) || (
+        resource.data.reservedUntil is timestamp &&
+        resource.data.reservedUntil > request.time
+      );
+    }
+
+    function isCustomerEditableLivestockOrderUpdate() {
+      return isActiveUser() &&
+        resource.data.createdByUid == request.auth.uid &&
+        (
+          resource.data.orderType == 'livestock' ||
+          resource.data.type == 'livestock'
+        ) &&
+        resource.data.customerCanEdit == true &&
+        !(resource.data.status in ['submitted', 'formal', 'confirmed']) &&
+        resource.data.quoteStatus != 'formal_order_submitted' &&
+        orderNotPaidOrClosed() &&
+        orderEditableTimeOk() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(customerEditableOrderFields()) &&
+        request.resource.data.lastEditedByUid == request.auth.uid &&
+        request.resource.data.createdByUid == resource.data.createdByUid &&
+        request.resource.data.uid == resource.data.uid &&
+        request.resource.data.orderType == resource.data.orderType;
+    }
+
+    function isCustomerSubmitOwnLivestockOrderUpdate() {
+      return isActiveUser() &&
+        (
+          resource.data.createdByUid == request.auth.uid ||
+          resource.data.uid == request.auth.uid
+        ) &&
+        (
+          resource.data.orderType == 'livestock' ||
+          resource.data.type == 'livestock'
+        ) &&
+        !(
+          resource.data.status in ['submitted', 'formal', 'confirmed', 'sold', 'completed']
+        ) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(customerSubmitOrderFields()) &&
+        request.resource.data.status == 'submitted' &&
+        request.resource.data.quoteStatus == 'formal_order_submitted' &&
+        request.resource.data.customerCanEdit == false &&
+        request.resource.data.submittedByUid == request.auth.uid &&
+        request.resource.data.itemCount is number &&
+        request.resource.data.itemCount > 0 &&
+        request.resource.data.qtyTotal is number &&
+        request.resource.data.qtyTotal > 0 &&
+        request.resource.data.total is number &&
+        request.resource.data.total >= 0;
+    }
+
+    function isCustomerHideOwnOrderUpdate() {
+      return isActiveUser() &&
+        (
+          resource.data.createdByUid == request.auth.uid ||
+          resource.data.uid == request.auth.uid
+        ) &&
+        (
+          resource.data.orderType == 'livestock' ||
+          resource.data.type == 'livestock'
+        ) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(customerHideOrderFields()) &&
+        request.resource.data.customerHiddenByUid == request.auth.uid;
+    }
+
+    function customerChatRoomFields() {
+      return [
+        'customerUid',
+        'customerEmail',
+        'customerName',
+        'customerPhone',
+        'customerLineId',
+        'lastMessage',
+        'lastMessageAt',
+        'lastCustomerMessageAt',
+        'lastCustomerReadAt',
+        'status',
+        'unreadByAdmin',
+        'unreadByCustomer',
+        'customerLastSeen',
+        'customerOnline',
+        'createdAt',
+        'updatedAt'
+      ];
+    }
+
+    function customerCanUseChatRoom(roomId) {
+      return isActiveUser() &&
+        roomId == request.auth.uid;
+    }
+
+    function customerCanWriteChatRoom(roomId) {
+      return customerCanUseChatRoom(roomId) &&
+        request.resource.data.customerUid == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(customerChatRoomFields());
+    }
+
+    match /users/{uid} {
+      allow get: if isOwner(uid) || canManageUsers();
+      allow list: if canManageUsers();
+
+      allow create: if isAdmin() || (
+        canManageUsers() &&
+        !isHighestAdminData(request.resource.data)
+      ) || (
+        isOwner(uid) &&
+        request.resource.data.keys().hasOnly(selfCreatableUserFields()) &&
+        request.resource.data.role == 'user' &&
+        request.resource.data.status == 'active' &&
+        request.resource.data.isAdmin == false
+      );
+
+      allow update: if isAdmin() || (
+        canManageUsers() &&
+        !isHighestAdminData(resource.data) &&
+        !isHighestAdminData(request.resource.data)
+      ) || (
+        isOwner(uid) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(selfWritableUserFields())
+      );
+
+      allow delete: if isAdmin() || (
+        canManageUsers() &&
+        !isHighestAdminData(resource.data)
+      );
+    }
+
+    match /activityLogs/{logId} {
+      allow create: if signedIn() &&
+        request.resource.data.actorUid == request.auth.uid;
+
+      allow get, list: if canManageUsers();
+      allow update, delete: if canManageUsers();
+    }
+
+    match /wholesaleApplications/{docId} {
+      allow create: if true;
+      allow get, list: if canManageWholesaleApplications();
+      allow update, delete: if canManageWholesaleApplications();
+    }
+
+    match /chatSettings/{docId} {
+      allow read: if true;
+      allow create, update, delete: if canManageChat();
+    }
+
+    match /chatRooms/{roomId} {
+      allow get: if canManageChat() || customerCanUseChatRoom(roomId);
+      allow list: if canManageChat();
+
+      allow create: if customerCanUseChatRoom(roomId) &&
+        request.resource.data.customerUid == request.auth.uid;
+
+      allow update: if canManageChat() ||
+        customerCanWriteChatRoom(roomId);
+
+      allow delete: if canManageChat();
+
+      match /messages/{messageId} {
+        allow read: if canManageChat() || customerCanUseChatRoom(roomId);
+
+        allow create: if canManageChat() || (
+          customerCanUseChatRoom(roomId) &&
+          request.resource.data.senderUid == request.auth.uid &&
+          request.resource.data.senderRole in ['customer', 'system']
+        );
+
+        allow update, delete: if canManageChat();
+      }
+    }
+
+    match /publicProducts/{productId} {
+      allow read: if true;
+      allow create, update, delete: if canManageEquipment() || canManageShopHome();
+    }
+
+    match /shopSettings/{docId} {
+      allow read: if true;
+      allow create, update, delete: if canManageShopHome();
+    }
+
+    match /shopHomeLogos/{docId} {
+      allow read: if true;
+      allow create, update, delete: if canManageShopHome();
+    }
+
+    match /shopBrandShowcase/{docId} {
+      allow read: if true;
+      allow create, update, delete: if canManageShopHome();
+    }
+
+    match /consumerInquiries/{inquiryId} {
+      allow create: if signedIn() &&
+        request.auth.token.email_verified == true &&
+        request.resource.data.createdByUid == request.auth.uid;
+
+      allow get, list: if canManageUsers() ||
+        canManageShopHome() ||
+        canManageOrders() ||
+        (
+          signedIn() &&
+          resource.data.createdByUid == request.auth.uid
+        );
+
+      allow update, delete: if canManageUsers() ||
+        canManageShopHome() ||
+        canManageOrders();
+    }
+
+    match /equipmentProducts/{productId} {
+      allow read: if isWholesale() ||
+        canManageEquipment() ||
+        canManageOrders() ||
+        canManageShopHome();
+
+      allow create, update, delete: if canManageEquipment();
+    }
+
+    match /equipmentBrands/{docId} {
+      allow read: if isWholesale() ||
+        canManageEquipment() ||
+        canManageOrders() ||
+        canManageShopHome();
+
+      allow create, update, delete: if canManageEquipment();
+    }
+
+    match /equipmentCategories/{docId} {
+      allow read: if isWholesale() ||
+        canManageEquipment() ||
+        canManageOrders() ||
+        canManageShopHome();
+
+      allow create, update, delete: if canManageEquipment();
+    }
+
+    match /equipmentFunctionTags/{docId} {
+      allow read: if isWholesale() ||
+        canManageEquipment() ||
+        canManageOrders() ||
+        canManageShopHome();
+
+      allow create, update, delete: if canManageEquipment();
+    }
+
+    match /livestockItems/{itemId} {
+      allow read: if canManageLivestock();
+      allow create, update, delete: if canManageLivestock();
+    }
+
+    match /publicLivestockItems/{itemId} {
+      allow read: if true;
+      allow create, update, delete: if canManageLivestock();
+    }
+
+    match /b2bLivestockItems/{itemId} {
+      allow read: if canReadB2BLivestock();
+
+      allow create: if canManageLivestock();
+
+      allow update: if canManageLivestock() ||
+        isCustomerLivestockReservationUpdate() ||
+        isCustomerLivestockReleaseUpdate() ||
+        isExpiredReservationReleaseUpdate();
+
+      allow delete: if canManageLivestock();
+    }
+
+    match /orders/{orderId} {
+      allow create: if isActiveUser() &&
+        (
+          request.resource.data.createdByUid == request.auth.uid ||
+          request.resource.data.uid == request.auth.uid ||
+          isAdmin()
+        );
+
+      allow get, list: if isAdmin() ||
+        canManageOrders() ||
+        canManageEquipment() ||
+        canManageLivestock() ||
+        (
+          signedIn() &&
+          (
+            resource.data.createdByUid == request.auth.uid ||
+            resource.data.uid == request.auth.uid
+          )
+        );
+
+      allow update: if isAdmin() ||
+        canManageOrders() ||
+        canManageEquipment() ||
+        canManageLivestock() ||
+        isCustomerEditableLivestockOrderUpdate() ||
+        isCustomerSubmitOwnLivestockOrderUpdate() ||
+        isCustomerHideOwnOrderUpdate();
+
+      allow delete: if isAdmin() ||
+        canManageOrders() ||
+        canManageEquipment() ||
+        canManageLivestock();
+    }
+
+    match /products/{docId} {
+      allow read: if isWholesale() || canManageEquipment();
+      allow create, update, delete: if canManageEquipment();
+    }
+
+    match /wholesalePrices/{docId} {
+      allow read: if isWholesale() || canManageEquipment();
+      allow create, update, delete: if canManageEquipment();
+    }
+
+    match /tankProfiles/{docId} {
+      allow read: if isActiveUser() &&
+        (
+          isAdmin() ||
+          canManageUsers() ||
+          resource.data.createdByUid == request.auth.uid ||
+          resource.data.uid == request.auth.uid
+        );
+
+      allow create: if isActiveUser() &&
+        (
+          isAdmin() ||
+          request.resource.data.createdByUid == request.auth.uid ||
+          request.resource.data.uid == request.auth.uid
+        );
+
+      allow update, delete: if isActiveUser() &&
+        (
+          isAdmin() ||
+          resource.data.createdByUid == request.auth.uid ||
+          resource.data.uid == request.auth.uid
+        );
+    }
+
+    match /elementTestBatches/{docId} {
+      allow read: if isActiveUser() &&
+        (
+          isAdmin() ||
+          canManageUsers() ||
+          resource.data.createdByUid == request.auth.uid ||
+          resource.data.uid == request.auth.uid
+        );
+
+      allow create: if isActiveUser() &&
+        (
+          isAdmin() ||
+          request.resource.data.createdByUid == request.auth.uid ||
+          request.resource.data.uid == request.auth.uid
+        );
+
+      allow update, delete: if isActiveUser() &&
+        (
+          isAdmin() ||
+          resource.data.createdByUid == request.auth.uid ||
+          resource.data.uid == request.auth.uid
+        );
+    }
+
+    match /elementTestRecords/{docId} {
+      allow read: if isActiveUser() &&
+        (
+          isAdmin() ||
+          canManageUsers() ||
+          resource.data.createdByUid == request.auth.uid ||
+          resource.data.uid == request.auth.uid
+        );
+
+      allow create: if isActiveUser() &&
+        (
+          isAdmin() ||
+          request.resource.data.createdByUid == request.auth.uid ||
+          request.resource.data.uid == request.auth.uid
+        );
+
+      allow update, delete: if isActiveUser() &&
+        (
+          isAdmin() ||
+          resource.data.createdByUid == request.auth.uid ||
+          resource.data.uid == request.auth.uid
+        );
+    }
+
+    match /elementDoseLogs/{docId} {
+      allow read: if isActiveUser() &&
+        (
+          isAdmin() ||
+          canManageUsers() ||
+          resource.data.createdByUid == request.auth.uid ||
+          resource.data.uid == request.auth.uid
+        );
+
+      allow create: if isActiveUser() &&
+        (
+          isAdmin() ||
+          request.resource.data.createdByUid == request.auth.uid ||
+          request.resource.data.uid == request.auth.uid
+        );
+
+      allow update, delete: if isActiveUser() &&
+        (
+          isAdmin() ||
+          resource.data.createdByUid == request.auth.uid ||
+          resource.data.uid == request.auth.uid
+        );
+    }
+
+    match /elementProductFormulas/{docId} {
+      allow read: if isActiveUser();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /elementFormulaLibrary/{docId} {
+      allow read: if isActiveUser();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
