@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEADREAM 活體管理 v1.2 批次上架小圖優化版</title>
+  <style>
+    :root{
+      --bg:#061723;--panel:#0b2230;--panel2:#0d2a38;--line:#1d4659;--text:#e8f6ff;--muted:#9bb7c7;
+      --aqua:#39f5e6;--blue:#25a8ff;--warn:#ffd166;--danger:#ff6b6b;--ok:#69f0ae;
+      --shadow:0 18px 50px rgba(0,0,0,.32);--radius:24px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(circle at 70% 10%,#0b3a3d 0,#061723 40%,#041019 100%);color:var(--text);font-family:"Microsoft JhengHei",Arial,sans-serif;line-height:1.55}
+    a{color:var(--aqua);text-decoration:none}button,input,select,textarea{font-family:inherit}
+    .wrap{width:min(1460px,calc(100% - 32px));margin:22px auto 60px}
+    .hero{display:flex;justify-content:space-between;gap:20px;align-items:center;border:1px solid var(--line);border-radius:32px;padding:26px 30px;background:linear-gradient(135deg,rgba(13,42,56,.95),rgba(6,23,35,.94));box-shadow:var(--shadow)}
+    .hero h1{margin:0;font-size:34px;letter-spacing:.04em}.hero p{margin:8px 0 0;color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid rgba(57,245,230,.35);border-radius:999px;background:rgba(57,245,230,.08);color:#77fff4;font-weight:700;white-space:nowrap}
+    .grid{display:grid;grid-template-columns:460px 1fr;gap:22px;margin-top:22px}.card{border:1px solid var(--line);border-radius:var(--radius);background:rgba(7,26,38,.86);box-shadow:var(--shadow);padding:22px;min-width:0}.card h2{margin:0 0 14px;font-size:24px}.card h3{margin:0 0 12px;font-size:19px}.muted{color:var(--muted)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:13px}.field label{display:block;margin-bottom:6px;color:#cde6f1;font-weight:700;font-size:13px}
+    input,select,textarea{width:100%;border:1px solid #244e63;background:#071c29;color:var(--text);border-radius:14px;padding:12px 13px;font-size:16px;outline:none}
+    textarea{min-height:84px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--aqua);box-shadow:0 0 0 3px rgba(57,245,230,.12)}
+    .modeTabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}.modeTabs label{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(13,42,56,.65);font-weight:900;cursor:pointer}.modeTabs input{width:auto;margin-right:8px}.modeTabs label:has(input:checked){border-color:var(--aqua);box-shadow:0 0 0 3px rgba(57,245,230,.12);background:rgba(57,245,230,.10)}
+    .checks{display:grid;grid-template-columns:1fr 1fr;gap:10px}.check{border:1px solid var(--line);border-radius:16px;padding:11px;background:rgba(13,42,56,.65);display:flex;align-items:center;gap:9px;font-weight:700}.check input{width:auto}
+    .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.btn{border:0;border-radius:16px;padding:12px 17px;font-weight:900;cursor:pointer;color:#06202b;background:linear-gradient(135deg,var(--aqua),var(--blue));box-shadow:0 10px 30px rgba(37,168,255,.18)}
+    .btn.secondary{background:#102b3a;color:var(--text);border:1px solid #285569;box-shadow:none}.btn.danger{background:#3b1c24;color:#ffdbe0;border:1px solid #7d3545}.btn.warn{background:#3d3520;color:#ffe9a9;border:1px solid #7a6832}.btn:disabled{opacity:.55;cursor:not-allowed}
+    .preview{border:1px dashed #2c6077;border-radius:18px;min-height:190px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#061824;color:var(--muted);position:relative}.preview img{width:100%;height:100%;object-fit:contain;display:block;max-height:320px}.preview small{position:absolute;left:10px;bottom:8px;background:rgba(0,0,0,.5);padding:3px 8px;border-radius:999px}
+    .previewGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;padding:10px}.previewGrid figure{margin:0;border:1px solid #244e63;border-radius:12px;overflow:hidden;background:#031019;position:relative}.previewGrid img{width:100%;height:84px;object-fit:cover}.previewGrid figcaption{font-size:11px;color:#cde6f1;padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.previewGrid .moreCount{display:flex;align-items:center;justify-content:center;min-height:110px;font-weight:900;color:#7bfff4}
+    .toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px}.toolbar input,.toolbar select{width:auto;min-width:160px}.stats{margin-left:auto;color:var(--muted)}
+    .items{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.item{border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,rgba(13,42,56,.9),rgba(6,23,35,.95));overflow:hidden}.thumb{aspect-ratio:1/1;background:#061824;display:flex;align-items:center;justify-content:center;position:relative}.thumb img{width:100%;height:100%;object-fit:cover}.codeTag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:rgba(57,245,230,.12);border:1px solid rgba(57,245,230,.35);color:#8ffff6;font-size:12px;font-weight:900}.thumb .codeTag{position:absolute;left:8px;top:8px;background:rgba(6,23,35,.88)}.body{padding:13px}.title{font-weight:900;min-height:48px}.price{font-weight:900;color:#76fff4;font-size:18px;margin:5px 0}.badges{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.badge{font-size:12px;padding:4px 8px;border-radius:999px;background:#102b3a;color:#cfe8f2;border:1px solid #285569}.badge.ok{border-color:#1c6b55;color:#9ff7c6}.badge.warn{border-color:#6b5d23;color:#ffe28a}.badge.danger{border-color:#7d3545;color:#ffb0bb}.item .btns{padding:0 13px 13px;margin:0}.item .btn{padding:9px 11px;border-radius:12px;font-size:13px}
+    .toast{position:fixed;right:18px;bottom:18px;max-width:430px;background:#092433;border:1px solid var(--line);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);display:none;z-index:20}.toast.show{display:block}.toast strong{color:var(--aqua)}.loginBox{margin-top:18px;border:1px solid var(--line);border-radius:20px;padding:16px;background:rgba(13,42,56,.65)}.progress{height:8px;background:#071c29;border:1px solid #244e63;border-radius:999px;overflow:hidden;margin-top:12px;display:none}.progress span{display:block;height:100%;width:0;background:linear-gradient(135deg,var(--aqua),var(--blue));transition:width .25s}.note{border:1px solid #2c6077;border-radius:16px;padding:10px 12px;background:rgba(57,245,230,.06);color:#cde6f1;font-size:13px;margin:8px 0 14px}.batchManage{margin:14px 0 16px;border:1px solid rgba(255,209,102,.35);border-radius:18px;padding:13px;background:rgba(255,209,102,.05)}.batchManage h3{margin:0 0 6px}.dangerGrid{display:grid;grid-template-columns:1fr .7fr .7fr .9fr auto auto;gap:8px;align-items:center}.dangerInfo{margin-top:8px;color:#ffe2a3;font-size:13px}.dangerHint{color:#c7ddeb;font-size:13px;margin:6px 0 10px}.btn.warn{background:#3c3218;color:#ffe2a3;border:1px solid #7a6421}
+    @media(max-width:1100px){.grid{grid-template-columns:1fr}.items{grid-template-columns:repeat(3,1fr)}.dangerGrid{grid-template-columns:1fr 1fr}}
+    @media(max-width:720px){.wrap{width:min(100% - 20px,1460px);margin-top:10px}.hero{padding:20px;border-radius:24px;align-items:flex-start;flex-direction:column}.hero h1{font-size:26px}.form-row,.checks,.modeTabs,.dangerGrid{grid-template-columns:1fr}.toolbar input,.toolbar select{width:100%}.stats{margin-left:0}.items{grid-template-columns:repeat(2,1fr);gap:10px}.card{padding:16px}.btn{width:100%;justify-content:center}.btns{display:grid;grid-template-columns:1fr}.item .btns{grid-template-columns:1fr 1fr}.title{font-size:14px;min-height:42px}.previewGrid{grid-template-columns:repeat(3,1fr)}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <h1>SEADREAM 活體珊瑚管理 v1.5</h1>
+        <p>新增單張 / 批次上架切換。支援 staff 活體管理權限、到貨目錄 / 批次分支篩選，並記錄主要操作活動。</p>
+      </div>
+      <div class="pill" id="authPill">檢查登入中</div>
+    </section>
+
+    <div id="loginNotice" class="loginBox" style="display:none">
+      <strong>需要活體管理權限。</strong><br />請先回到 B2B 會員入口登入 admin 或已授權的活體管理人員帳號，再開啟本頁。<br />
+      <a href="index.html">回 B2B 會員入口</a>
+    </div>
+
+    <section id="app" class="grid" style="display:none">
+      <aside class="card">
+        <h2 id="formTitle">新增活體</h2>
+        <div class="modeTabs" id="modeTabs">
+          <label><input type="radio" name="uploadMode" value="single" checked> 單張上架</label>
+          <label><input type="radio" name="uploadMode" value="batch"> 批次上架</label>
+        </div>
+        <div class="note" id="modeNote">單張上架：一張照片建立一顆活體。編號會依「批次 / 到貨名稱」自動產生，例如 SD-20260616-001。</div>
+        <div class="field">
+          <label id="photoLabel">手機拍照 / 上傳照片</label>
+          <input id="photoFile" type="file" accept="image/*" capture="environment" />
+        </div>
+        <div class="preview" id="previewBox">尚未選擇圖片</div>
+        <div class="progress" id="progress"><span id="progressBar"></span></div>
+        <div class="form-row" style="margin-top:13px">
+          <div class="field"><label>活體名稱 / 共用名稱</label><input id="title" placeholder="例：澳洲 SPS、澳洲金米粉、甜甜圈" /></div>
+          <div class="field"><label>售價 NT$</label><input id="price" type="number" inputmode="numeric" placeholder="例：3500" /></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>來源</label><select id="sourceType"><option value="farm">自家繁殖場</option><option value="import">定期進口</option></select></div>
+          <div class="field"><label>分類</label><select id="category"><option>SPS</option><option>LPS</option><option>Soft Coral</option><option>Fish</option><option>Other</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>批次 / 到貨名稱</label><input id="batchName" placeholder="例：20260616、2026-06 澳洲新貨" /></div>
+          <div class="field"><label>狀態</label><select id="status"><option value="available">可販售</option><option value="reserved">已保留</option><option value="sold">已售出</option><option value="hidden">隱藏</option></select></div>
+        </div>
+        <div class="field"><label>簡短說明</label><textarea id="description" placeholder="批次上架時，這段說明會套用到所有照片。之後可再逐顆編輯。"></textarea></div>
+        <div class="checks">
+          <label class="check"><input id="showOnShop" type="checkbox" checked /> 顯示在一般商城</label>
+          <label class="check"><input id="showOnB2B" type="checkbox" checked /> 顯示在 B2B</label>
+        </div>
+        <div class="btns">
+          <button class="btn" id="saveBtn">儲存上架</button>
+          <button class="btn secondary" id="resetBtn" type="button">清空表單</button>
+        </div>
+        <p class="muted" style="margin-bottom:0">編號會跟著該張照片保存；把狀態改成已售出不會改變編號。已加入批次 / 到貨目錄管理，可整批下架或永久刪除指定批次與分類。</p>
+      </aside>
+
+      <main class="card">
+        <h2>已建立活體</h2>
+        <div class="toolbar">
+          <input id="searchText" placeholder="搜尋編號、名稱、批次、分類" />
+          <select id="filterSource"><option value="all">全部來源</option><option value="farm">自家繁殖場</option><option value="import">定期進口</option></select>
+          <select id="filterBatch"><option value="all">全部到貨目錄 / 批次</option></select>
+          <select id="filterCategory"><option value="all">全部分類</option><option>SPS</option><option>LPS</option><option>Soft Coral</option><option>Fish</option><option>Other</option></select>
+          <button class="btn secondary" id="reloadBtn">重新讀取</button>
+          <button class="btn warn" id="syncBtn">重新同步前台 / B2B</button>
+          <div class="stats" id="stats">0 筆</div>
+        </div>
+        <div class="batchManage">
+          <h3>批次 / 到貨目錄管理</h3>
+          <div class="dangerHint">例如到貨目錄 20260616 底下可再依 SPS / LPS 分支處理。整批下架比較安全；永久刪除會刪除管理資料、前台資料、B2B 資料，並嘗試刪除圖片。編號不回收。</div>
+          <div class="dangerGrid">
+            <select id="batchActionBatch"><option value="">請選擇到貨目錄 / 批次</option></select>
+            <select id="batchActionSource"><option value="all">全部來源</option><option value="farm">自家繁殖場</option><option value="import">定期進口</option></select>
+            <select id="batchActionCategory"><option value="all">全部分類</option><option>SPS</option><option>LPS</option><option>Soft Coral</option><option>Fish</option><option>Other</option></select>
+            <input id="batchActionConfirm" placeholder="永久刪除請輸入 DELETE" />
+            <button class="btn warn" id="batchHideBtn" type="button">整批下架</button>
+            <button class="btn danger" id="batchDeleteBtn" type="button">永久刪除</button>
+          </div>
+          <div class="dangerInfo" id="batchActionInfo">請先選擇批次 / 到貨目錄。</div>
+        </div>
+        <div id="items" class="items"></div>
+      </main>
+    </section>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script src="/__/firebase/10.12.5/firebase-app-compat.js"></script>
+  <script src="/__/firebase/10.12.5/firebase-auth-compat.js"></script>
+  <script src="/__/firebase/10.12.5/firebase-firestore-compat.js"></script>
+  <script src="/__/firebase/10.12.5/firebase-storage-compat.js"></script>
+  <script src="/__/firebase/init.js"></script>
+  <script>
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+    const $ = (id) => document.getElementById(id);
+    let currentUser = null;
+    let currentProfile = null;
+    let allItems = [];
+    let editingId = null;
+    let selectedFiles = [];
+    let unsubscribe = null;
+    let uploadMode = 'single';
+
+    function toast(msg){
+      const el = $('toast');
+      el.innerHTML = msg;
+      el.classList.add('show');
+      setTimeout(()=>el.classList.remove('show'), 4200);
+    }
+    function money(n){ return 'NT$ ' + (Number(n||0)).toLocaleString('zh-TW'); }
+    function statusText(s){ return ({available:'可販售',reserved:'已保留',sold:'已售出',hidden:'隱藏'})[s] || s || '未設定'; }
+    function sourceText(s){ return s === 'farm' ? '自家繁殖場' : s === 'import' ? '定期進口' : '未設定'; }
+    function statusClass(s){ return s==='available'?'ok':(s==='reserved'?'warn':(s==='sold'||s==='hidden'?'danger':'')); }
+    function todayKey(){ const d=new Date(); return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`; }
+    function makeBatchKey(name){
+      const raw = (name || todayKey()).trim() || todayKey();
+      return raw.replace(/[^0-9A-Za-z\u4e00-\u9fa5_-]/g,'').slice(0,30) || todayKey();
+    }
+    function makeCode(batchKey, seq){ return `SD-${batchKey}-${String(seq).padStart(3,'0')}`; }
+    function getPermissions(profile){
+      return (profile && typeof profile.permissions === 'object' && profile.permissions) ? profile.permissions : {};
+    }
+    function isFullAdmin(profile){
+      return !!profile && (profile.isAdmin === true || profile.role === 'admin');
+    }
+    function hasLivestockPermission(profile){
+      const p = getPermissions(profile);
+      return isFullAdmin(profile) || p.livestockAdmin === true || profile.livestockAdmin === true;
+    }
+    function actorName(){
+      return currentProfile?.contactName || currentProfile?.name || currentProfile?.companyName || currentUser?.email || '';
+    }
+    async function writeActivityLog(action, summary, target){
+      try{
+        if(!currentUser) return;
+        const perms = getPermissions(currentProfile);
+        await db.collection('activityLogs').add({
+          module:'livestock',
+          action,
+          summary:summary || '',
+          target:target || {},
+          actorUid:currentUser.uid,
+          actorEmail:currentUser.email || currentProfile?.email || '',
+          actorName:actorName(),
+          actorRole:currentProfile?.role || '',
+          actorPermissions:{...perms},
+          page:'livestock_admin.html',
+          userAgent:navigator.userAgent || '',
+          createdAt:firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }catch(err){
+        console.warn('activity log failed', err);
+      }
+    }
+
+    auth.onAuthStateChanged(async (user)=>{
+      currentUser = user;
+      if(!user){
+        $('authPill').textContent = '未登入';
+        $('loginNotice').style.display = 'block';
+        $('app').style.display = 'none';
+        return;
+      }
+      try{
+        const snap = await db.collection('users').doc(user.uid).get();
+        currentProfile = snap.exists ? snap.data() : {};
+        const active = (currentProfile.status || 'active') === 'active';
+        const canManageLivestock = hasLivestockPermission(currentProfile);
+        if(!canManageLivestock || !active){
+          $('authPill').textContent = !active ? '帳號未啟用' : '無活體權限';
+          $('loginNotice').style.display = 'block';
+          $('loginNotice').innerHTML = '<strong>此頁開放 admin 或活體珊瑚管理人員。</strong><br>目前帳號沒有活體管理權限，請確認人員管理內已勾選「活體珊瑚管理」，並且帳號狀態為 active。<br><a href="index.html">回 B2B 會員入口</a>';
+          $('app').style.display = 'none';
+          return;
+        }
+        $('authPill').textContent = isFullAdmin(currentProfile) ? 'admin 已登入' : '活體管理 已登入';
+        $('loginNotice').style.display = 'none';
+        $('app').style.display = 'grid';
+        listenItems();
+      }catch(err){
+        console.error(err);
+        $('authPill').textContent = '權限檢查失敗';
+        $('loginNotice').style.display = 'block';
+        $('loginNotice').innerHTML = '<strong>權限檢查失敗。</strong><br>' + escapeHtml(err.message || String(err));
+      }
+    });
+
+    function listenItems(){
+      if(unsubscribe) unsubscribe();
+      unsubscribe = db.collection('livestockItems').orderBy('createdAt','desc').limit(400).onSnapshot((qs)=>{
+        allItems = qs.docs.map(d => ({ id:d.id, ...d.data() })).filter(x => x._docType !== 'batchCounter');
+        renderItems();
+      }, (err)=>{
+        console.error(err);
+        toast('<strong>讀取失敗：</strong>' + escapeHtml(err.message));
+      });
+    }
+
+    function batchValue(it){
+      return String(it.batchKey || makeBatchKey(it.batchName || '') || '').trim();
+    }
+    function batchLabel(it){
+      return String(it.batchName || it.batchKey || '未設定批次').trim();
+    }
+    function sameBatch(it, value){
+      if(!value || value === 'all') return true;
+      const key = batchValue(it);
+      const name = String(it.batchName || '').trim();
+      return key === value || name === value || makeBatchKey(name) === value;
+    }
+    function uniqueBatches(items){
+      const map = new Map();
+      items.forEach(it=>{
+        if(it._docType === 'batchCounter') return;
+        const key = batchValue(it);
+        if(!key) return;
+        if(!map.has(key)) map.set(key, batchLabel(it));
+      });
+      return Array.from(map.entries()).sort((a,b)=>String(b[1]).localeCompare(String(a[1]), 'zh-Hant'));
+    }
+    function updateBatchOptions(){
+      const fs = $('filterSource') ? $('filterSource').value : 'all';
+      const fc = $('filterCategory') ? $('filterCategory').value : 'all';
+      const previous = $('filterBatch') ? $('filterBatch').value : 'all';
+      const base = allItems.filter(it => (fs === 'all' || it.sourceType === fs) && (fc === 'all' || it.category === fc));
+      const batches = uniqueBatches(base);
+      if($('filterBatch')){
+        $('filterBatch').innerHTML = '<option value="all">全部到貨目錄 / 批次</option>' + batches.map(([key,label])=>`<option value="${escapeAttr(key)}">${escapeHtml(label)}</option>`).join('');
+        $('filterBatch').value = batches.some(([key])=>key===previous) ? previous : 'all';
+      }
+      if($('batchActionBatch')){
+        const actionPrevious = $('batchActionBatch').value;
+        const allBatches = uniqueBatches(allItems);
+        $('batchActionBatch').innerHTML = '<option value="">請選擇到貨目錄 / 批次</option>' + allBatches.map(([key,label])=>`<option value="${escapeAttr(key)}">${escapeHtml(label)}</option>`).join('');
+        if(allBatches.some(([key])=>key===actionPrevious)) $('batchActionBatch').value = actionPrevious;
+      }
+      updateBatchActionCount();
+    }
+
+    function renderItems(){
+      updateBatchOptions();
+      const q = $('searchText').value.trim().toLowerCase();
+      const fs = $('filterSource').value;
+      const fb = $('filterBatch').value;
+      const fc = $('filterCategory').value;
+      let list = allItems.filter(it=>{
+        const text = [it.livestockCode,it.title,it.batchName,it.batchKey,it.category,it.sourceLabel,it.description].join(' ').toLowerCase();
+        return (!q || text.includes(q)) && (fs==='all'||it.sourceType===fs) && sameBatch(it, fb) && (fc==='all'||it.category===fc);
+      });
+      $('stats').textContent = list.length + ' 筆';
+      $('items').innerHTML = list.map(it=>`
+        <article class="item">
+          <div class="thumb">
+            ${it.thumbnailUrl ? `<img loading="lazy" src="${escapeAttr(it.thumbnailUrl)}" alt="${escapeAttr(it.title||'活體')}">` : '無圖'}
+            <span class="codeTag">${escapeHtml(it.livestockCode || it.id)}</span>
+          </div>
+          <div class="body">
+            <div class="title">${escapeHtml(it.title || '未命名活體')}</div>
+            <div class="price">${money(it.price)}</div>
+            <div class="badges">
+              <span class="badge">${escapeHtml(sourceText(it.sourceType))}</span>
+              <span class="badge">${escapeHtml(it.category || '未分類')}</span>
+              <span class="badge ${statusClass(it.status)}">${escapeHtml(statusText(it.status))}</span>
+              ${it.showOnShop ? '<span class="badge ok">商城</span>' : ''}
+              ${it.showOnB2B ? '<span class="badge ok">B2B</span>' : ''}
+            </div>
+            <div class="muted">目錄 / 批次：${escapeHtml(it.batchName || '')}</div>
+          </div>
+          <div class="btns">
+            <button class="btn secondary" onclick="editItem('${it.id}')">編輯</button>
+            <button class="btn danger" onclick="deleteItem('${it.id}')">刪除</button>
+          </div>
+        </article>
+      `).join('') || '<p class="muted">目前沒有資料。</p>';
+    }
+
+    document.querySelectorAll('input[name="uploadMode"]').forEach(r=>{
+      r.addEventListener('change', ()=>setUploadMode(r.value));
+    });
+    function setUploadMode(mode){
+      if(editingId) return;
+      uploadMode = mode;
+      selectedFiles = [];
+      $('photoFile').value = '';
+      $('photoFile').multiple = mode === 'batch';
+      if(mode === 'batch'){
+        $('photoFile').removeAttribute('capture');
+        $('photoLabel').textContent = '批次選擇多張照片';
+        $('modeNote').textContent = '批次上架：多張照片會共用名稱、價格、來源、分類、批次、說明；每張照片自動建立一筆活體與不重複編號。手機如果要直接拍照，通常建議先拍完多張，再一次選照片上傳。';
+        $('saveBtn').textContent = '批次儲存上架';
+      }else{
+        $('photoFile').setAttribute('capture','environment');
+        $('photoLabel').textContent = '手機拍照 / 上傳照片';
+        $('modeNote').textContent = '單張上架：一張照片建立一顆活體。編號會依「批次 / 到貨名稱」自動產生，例如 SD-20260616-001。';
+        $('saveBtn').textContent = '儲存上架';
+      }
+      $('previewBox').textContent = '尚未選擇圖片';
+    }
+
+    $('photoFile').addEventListener('change', async (e)=>{
+      selectedFiles = Array.from(e.target.files || []);
+      if(!selectedFiles.length){ $('previewBox').textContent = '尚未選擇圖片'; return; }
+      if(selectedFiles.length === 1){
+        const url = URL.createObjectURL(selectedFiles[0]);
+        $('previewBox').innerHTML = `<img src="${url}" alt="preview"><small>原圖 ${(selectedFiles[0].size/1024/1024).toFixed(2)} MB，儲存時會自動壓縮，小圖約 50～60KB，大圖約 400KB</small>`;
+        return;
+      }
+      const previews = selectedFiles.slice(0,11).map((file,idx)=>{
+        const url = URL.createObjectURL(file);
+        return `<figure><img src="${url}" alt="preview ${idx+1}"><figcaption>${idx+1}. ${escapeHtml(file.name)}</figcaption></figure>`;
+      }).join('');
+      const more = selectedFiles.length > 11 ? `<div class="moreCount">+${selectedFiles.length - 11} 張</div>` : '';
+      $('previewBox').innerHTML = `<div class="previewGrid">${previews}${more}</div>`;
+    });
+
+    $('saveBtn').addEventListener('click', saveItem);
+    $('resetBtn').addEventListener('click', resetForm);
+    $('reloadBtn').addEventListener('click', listenItems);
+    $('searchText').addEventListener('input', renderItems);
+    $('filterSource').addEventListener('change', ()=>{ updateBatchOptions(); renderItems(); });
+    $('filterBatch').addEventListener('change', renderItems);
+    $('filterCategory').addEventListener('change', ()=>{ updateBatchOptions(); renderItems(); });
+    $('status').addEventListener('change', ()=>{
+      if($('status').value === 'hidden') { $('showOnShop').checked = false; $('showOnB2B').checked = false; }
+    });
+    $('syncBtn').addEventListener('click', syncAllPublic);
+    $('batchActionBatch').addEventListener('change', updateBatchActionCount);
+    $('batchActionSource').addEventListener('change', updateBatchActionCount);
+    $('batchActionCategory').addEventListener('change', updateBatchActionCount);
+    $('batchHideBtn').addEventListener('click', bulkHideBatch);
+    $('batchDeleteBtn').addEventListener('click', bulkDeleteBatch);
+
+    async function saveItem(){
+      const title = $('title').value.trim();
+      const price = Number($('price').value || 0);
+      if(!title) return toast('<strong>請輸入活體名稱。</strong>');
+      if(!price || price < 0) return toast('<strong>請輸入售價。</strong>');
+      if(!editingId && !selectedFiles.length) return toast('<strong>新增活體需要上傳照片。</strong>');
+      $('saveBtn').disabled = true;
+      $('progress').style.display = 'block';
+      setProgress(0);
+      try{
+        if(editingId){
+          await saveEditedItem();
+          toast('<strong>已儲存修改。</strong>編號維持不變，前台 / B2B 已同步。');
+        }else{
+          await saveNewItems();
+        }
+        resetForm();
+      }catch(err){
+        console.error(err);
+        toast('<strong>儲存失敗：</strong>' + escapeHtml(err.message || String(err)));
+      }finally{
+        $('saveBtn').disabled = false;
+        $('progress').style.display = 'none';
+        $('progressBar').style.width = '0%';
+        updateSaveButtonText();
+      }
+    }
+
+    async function saveNewItems(){
+      const files = selectedFiles.slice();
+      const batchName = $('batchName').value.trim() || todayKey();
+      const batchKey = makeBatchKey(batchName);
+      const startSeq = await reserveSequences(batchKey, batchName, files.length);
+      let saved = 0;
+      for(let i=0; i<files.length; i++){
+        const seq = startSeq + i;
+        const code = makeCode(batchKey, seq);
+        const docRef = db.collection('livestockItems').doc();
+        toast(`<strong>批次上架中...</strong> ${i+1}/${files.length}｜${escapeHtml(code)}`);
+        const imageData = await uploadImagesForDoc(files[i], docRef.id);
+        const data = buildBaseData({
+          id: docRef.id,
+          livestockCode: code,
+          sequenceNo: seq,
+          batchKey,
+          batchName,
+          imageData,
+          isNew: true
+        });
+        await docRef.set(data, { merge:true });
+        await syncOnePublicAndB2B(docRef.id, { id:docRef.id, ...data });
+        saved++;
+        setProgress(Math.round((saved / files.length) * 100));
+      }
+      await writeActivityLog('create_bulk', `批次上架 ${saved} 筆活體：${batchName}`, {batchKey, batchName, count:saved, startCode:makeCode(batchKey,startSeq), endCode:makeCode(batchKey,startSeq + saved - 1)});
+      toast(`<strong>批次上架完成。</strong> 已建立 ${saved} 筆活體，編號從 ${escapeHtml(makeCode(batchKey,startSeq))} 開始。`);
+    }
+
+    async function saveEditedItem(){
+      const docRef = db.collection('livestockItems').doc(editingId);
+      const snap = await docRef.get();
+      const existing = snap.exists ? snap.data() : {};
+      let imageData = {
+        imageProvider: existing.imageProvider || 'firebase',
+        thumbnailUrl: existing.thumbnailUrl || '',
+        mainImageUrl: existing.mainImageUrl || '',
+        externalImageUrl: existing.externalImageUrl || '',
+        storageThumbPath: existing.storageThumbPath || '',
+        storageMainPath: existing.storageMainPath || ''
+      };
+      if(selectedFiles[0]){
+        toast('<strong>圖片壓縮中...</strong> 小圖約 50～60KB，大圖約 400KB');
+        imageData = await uploadImagesForDoc(selectedFiles[0], editingId);
+      }
+      const data = buildBaseData({
+        id: editingId,
+        livestockCode: existing.livestockCode || editingId,
+        sequenceNo: existing.sequenceNo || 0,
+        batchKey: existing.batchKey || makeBatchKey($('batchName').value.trim()),
+        batchName: $('batchName').value.trim(),
+        imageData,
+        isNew: false
+      });
+      await docRef.set(data, { merge:true });
+      await syncOnePublicAndB2B(editingId, { id:editingId, ...existing, ...data });
+      await writeActivityLog('update', `修改活體：${data.livestockCode || editingId} ${data.title || ''}`, {id:editingId, livestockCode:data.livestockCode || editingId, title:data.title || '', batchKey:data.batchKey || '', batchName:data.batchName || '', category:data.category || '', status:data.status || ''});
+      setProgress(100);
+    }
+
+    function buildBaseData({id, livestockCode, sequenceNo, batchKey, batchName, imageData, isNew}){
+      const status = $('status').value;
+      const showOnShop = $('showOnShop').checked && status !== 'hidden';
+      const showOnB2B = $('showOnB2B').checked && status !== 'hidden';
+      const now = firebase.firestore.FieldValue.serverTimestamp();
+      const data = {
+        _docType:'livestockItem',
+        itemId:id,
+        livestockCode,
+        sequenceNo:Number(sequenceNo || 0),
+        batchKey,
+        title:$('title').value.trim(),
+        price:Number($('price').value || 0),
+        sourceType:$('sourceType').value,
+        sourceLabel:sourceText($('sourceType').value),
+        category:$('category').value,
+        batchName:batchName || $('batchName').value.trim() || batchKey,
+        status,
+        showOnShop,
+        showOnB2B,
+        description:$('description').value.trim(),
+        isPublished:status !== 'hidden',
+        ...imageData,
+        updatedAt:now,
+        updatedByUid:currentUser.uid,
+        updatedByEmail:currentUser.email || ''
+      };
+      if(isNew){
+        data.createdAt = now;
+        data.createdByUid = currentUser.uid;
+        data.createdByEmail = currentUser.email || '';
+      }
+      return data;
+    }
+
+    async function reserveSequences(batchKey, batchName, count){
+      const counterRef = db.collection('livestockItems').doc('__counter_' + batchKey);
+      return await db.runTransaction(async (tx)=>{
+        const snap = await tx.get(counterRef);
+        const currentNext = snap.exists && Number(snap.data().nextSeq) > 0 ? Number(snap.data().nextSeq) : 1;
+        tx.set(counterRef, {
+          _docType:'batchCounter',
+          batchKey,
+          batchName:batchName || batchKey,
+          nextSeq:currentNext + count,
+          updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+          updatedByUid:currentUser.uid,
+          updatedByEmail:currentUser.email || ''
+        }, { merge:true });
+        return currentNext;
+      });
+    }
+
+    async function uploadImagesForDoc(file, docId){
+      const thumbBlob = await compressImage(file, 560, 560, 60 * 1024);
+      const mainBlob = await compressImage(file, 1700, 1700, 400 * 1024);
+      const stamp = Date.now() + '_' + Math.random().toString(36).slice(2,7);
+      const thumbPath = `public/livestock/${docId}/thumb_${stamp}.webp`;
+      const mainPath = `public/livestock/${docId}/main_${stamp}.webp`;
+      await storage.ref(thumbPath).put(thumbBlob, { contentType: thumbBlob.type || 'image/webp', cacheControl:'public,max-age=31536000' });
+      await storage.ref(mainPath).put(mainBlob, { contentType: mainBlob.type || 'image/webp', cacheControl:'public,max-age=31536000' });
+      return {
+        imageProvider:'firebase',
+        thumbnailUrl:await storage.ref(thumbPath).getDownloadURL(),
+        mainImageUrl:await storage.ref(mainPath).getDownloadURL(),
+        externalImageUrl:'',
+        storageThumbPath:thumbPath,
+        storageMainPath:mainPath
+      };
+    }
+
+    async function syncOnePublicAndB2B(id, it){
+      await syncPublicDoc(id, it);
+      await syncB2BDoc(id, it);
+    }
+
+    async function syncPublicDoc(id, it){
+      const pubRef = db.collection('publicLivestockItems').doc(id);
+      const shouldShow = it.showOnShop === true && it.status !== 'hidden';
+      if(!shouldShow){ await pubRef.delete().catch(()=>{}); return; }
+      await pubRef.set(toPublicData(id, it, 'shop'), { merge:true });
+    }
+
+    async function syncB2BDoc(id, it){
+      const b2bRef = db.collection('b2bLivestockItems').doc(id);
+      const shouldShow = it.showOnB2B === true && it.status !== 'hidden';
+      if(!shouldShow){ await b2bRef.delete().catch(()=>{}); return; }
+      await b2bRef.set(toPublicData(id, it, 'b2b'), { merge:true });
+    }
+
+    function toPublicData(id, it, target){
+      return {
+        livestockId:id,
+        itemId:id,
+        livestockCode:it.livestockCode || id,
+        sequenceNo:Number(it.sequenceNo || 0),
+        batchKey:it.batchKey || '',
+        title:it.title || '',
+        price:Number(it.price || 0),
+        sourceType:it.sourceType || '',
+        sourceLabel:it.sourceLabel || sourceText(it.sourceType),
+        category:it.category || '',
+        batchName:it.batchName || '',
+        status:it.status || 'available',
+        showOnShop:target === 'shop' ? true : it.showOnShop === true,
+        showOnB2B:target === 'b2b' ? true : it.showOnB2B === true,
+        description:it.description || '',
+        imageProvider:it.imageProvider || 'firebase',
+        thumbnailUrl:it.thumbnailUrl || '',
+        mainImageUrl:it.mainImageUrl || '',
+        externalImageUrl:it.externalImageUrl || '',
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt:it.createdAt || firebase.firestore.FieldValue.serverTimestamp()
+      };
+    }
+
+    async function syncAllPublic(){
+      if(!confirm('要重新同步所有活體到一般商城與 B2B 嗎？\n\n系統會依照每一筆的「顯示在一般商城」與「顯示在 B2B」開關處理。')) return;
+      $('syncBtn').disabled = true;
+      try{
+        const qs = await db.collection('livestockItems').get();
+        let count = 0;
+        for(const doc of qs.docs){
+          const data = doc.data();
+          if(data._docType === 'batchCounter') continue;
+          await syncOnePublicAndB2B(doc.id, {id:doc.id, ...data});
+          count++;
+        }
+        await writeActivityLog('sync_all', `重新同步前台 / B2B，共檢查 ${count} 筆活體`, {count});
+        toast('<strong>同步完成。</strong>已檢查 ' + count + ' 筆活體。');
+      }catch(err){
+        console.error(err); toast('<strong>同步失敗：</strong>' + escapeHtml(err.message));
+      }finally{ $('syncBtn').disabled = false; }
+    }
+
+    window.editItem = function(id){
+      const it = allItems.find(x=>x.id===id); if(!it) return;
+      editingId = id; selectedFiles = []; $('photoFile').value = '';
+      uploadMode = 'single';
+      document.querySelector('input[name="uploadMode"][value="single"]').checked = true;
+      $('modeTabs').style.opacity = '.55';
+      $('photoFile').multiple = false;
+      $('photoFile').setAttribute('capture','environment');
+      $('formTitle').textContent = '編輯活體 ' + (it.livestockCode || '');
+      $('saveBtn').textContent = '儲存修改';
+      $('modeNote').textContent = '正在編輯既有活體：編號會保留不變。若重新選擇照片，只會替換這一筆的圖片。';
+      $('title').value = it.title || ''; $('price').value = it.price || '';
+      $('sourceType').value = it.sourceType || 'farm'; $('category').value = it.category || 'SPS'; $('batchName').value = it.batchName || ''; $('status').value = it.status || 'available';
+      $('description').value = it.description || ''; $('showOnShop').checked = it.showOnShop === true; $('showOnB2B').checked = it.showOnB2B === true;
+      $('previewBox').innerHTML = it.mainImageUrl || it.thumbnailUrl ? `<img src="${escapeAttr(it.mainImageUrl || it.thumbnailUrl)}" alt="preview"><small>${escapeHtml(it.livestockCode || '')}｜目前圖片，可重新選照片替換</small>` : '尚未選擇圖片';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    window.deleteItem = async function(id){
+      const it = allItems.find(x=>x.id===id); if(!it) return;
+      if(!confirm('確定刪除這筆活體嗎？\n\n' + (it.livestockCode || id) + '｜' + (it.title || '') + '\n\n會刪除管理資料、一般商城資料、B2B 資料；圖片會嘗試刪除。\n\n注意：編號不會回收。')) return;
+      try{
+        await db.collection('livestockItems').doc(id).delete();
+        await db.collection('publicLivestockItems').doc(id).delete().catch(()=>{});
+        await db.collection('b2bLivestockItems').doc(id).delete().catch(()=>{});
+        if(it.storageThumbPath) await storage.ref(it.storageThumbPath).delete().catch(()=>{});
+        if(it.storageMainPath) await storage.ref(it.storageMainPath).delete().catch(()=>{});
+        await writeActivityLog('delete', `刪除單筆活體：${it.livestockCode || id} ${it.title || ''}`, {id, livestockCode:it.livestockCode || id, title:it.title || '', batchKey:it.batchKey || '', batchName:it.batchName || '', category:it.category || '', status:it.status || ''});
+        toast('<strong>已刪除。</strong>編號不會回收。');
+      }catch(err){ console.error(err); toast('<strong>刪除失敗：</strong>' + escapeHtml(err.message)); }
+    }
+
+    function getBatchActionItems(){
+      const batch = $('batchActionBatch').value;
+      const src = $('batchActionSource').value;
+      const cat = $('batchActionCategory').value;
+      if(!batch) return [];
+      return allItems.filter(it => sameBatch(it, batch) && (src === 'all' || it.sourceType === src) && (cat === 'all' || it.category === cat));
+    }
+    function updateBatchActionCount(){
+      if(!$('batchActionInfo')) return;
+      const batch = $('batchActionBatch') ? $('batchActionBatch').value : '';
+      const items = getBatchActionItems();
+      if(!batch){ $('batchActionInfo').textContent = '請先選擇批次 / 到貨目錄。'; return; }
+      const label = $('batchActionBatch').selectedOptions[0] ? $('batchActionBatch').selectedOptions[0].textContent : batch;
+      const src = $('batchActionSource').value === 'all' ? '全部來源' : sourceText($('batchActionSource').value);
+      const cat = $('batchActionCategory').value === 'all' ? '全部分類' : $('batchActionCategory').value;
+      $('batchActionInfo').textContent = `目前選擇：${label}｜${src}｜${cat}，符合 ${items.length} 筆活體。`;
+    }
+    async function commitBatchOps(items, mode){
+      let batch = db.batch();
+      let ops = 0;
+      async function add(op){
+        op(batch); ops++;
+        if(ops >= 430){ await batch.commit(); batch = db.batch(); ops = 0; }
+      }
+      for(const it of items){
+        const id = it.id;
+        if(mode === 'hide'){
+          await add(b=>b.set(db.collection('livestockItems').doc(id), {
+            status:'hidden', showOnShop:false, showOnB2B:false, isPublished:false,
+            updatedAt:firebase.firestore.FieldValue.serverTimestamp(), updatedByUid:currentUser.uid, updatedByEmail:currentUser.email || ''
+          }, {merge:true}));
+          await add(b=>b.delete(db.collection('publicLivestockItems').doc(id)));
+          await add(b=>b.delete(db.collection('b2bLivestockItems').doc(id)));
+        }else if(mode === 'delete'){
+          await add(b=>b.delete(db.collection('livestockItems').doc(id)));
+          await add(b=>b.delete(db.collection('publicLivestockItems').doc(id)));
+          await add(b=>b.delete(db.collection('b2bLivestockItems').doc(id)));
+        }
+      }
+      if(mode === 'delete' && $('batchActionSource').value === 'all' && $('batchActionCategory').value === 'all'){
+        const batchKey = $('batchActionBatch').value;
+        if(batchKey) await add(b=>b.delete(db.collection('livestockItems').doc('__counter_' + batchKey)));
+      }
+      if(ops > 0) await batch.commit();
+    }
+    async function bulkHideBatch(){
+      const items = getBatchActionItems();
+      if(!items.length) return toast('<strong>沒有符合條件的活體。</strong>');
+      const label = $('batchActionBatch').selectedOptions[0] ? $('batchActionBatch').selectedOptions[0].textContent : $('batchActionBatch').value;
+      if(!confirm(`確定要整批下架嗎？\n\n批次 / 目錄：${label}\n分類：${$('batchActionCategory').value}\n數量：${items.length} 筆\n\n下架後前台與 B2B 不會顯示，但管理資料還保留，可日後再編輯恢復。`)) return;
+      $('batchHideBtn').disabled = true;
+      try{
+        await commitBatchOps(items, 'hide');
+        await writeActivityLog('bulk_hide', `整批下架：${label}｜${$('batchActionSource').value}｜${$('batchActionCategory').value}｜${items.length} 筆`, {batch:$('batchActionBatch').value, batchLabel:label, source:$('batchActionSource').value, category:$('batchActionCategory').value, count:items.length});
+        toast(`<strong>整批下架完成。</strong> 已處理 ${items.length} 筆。`);
+        listenItems();
+      }catch(err){ console.error(err); toast('<strong>整批下架失敗：</strong>' + escapeHtml(err.message)); }
+      finally{ $('batchHideBtn').disabled = false; }
+    }
+    async function bulkDeleteBatch(){
+      const items = getBatchActionItems();
+      if(!items.length) return toast('<strong>沒有符合條件的活體。</strong>');
+      if(($('batchActionConfirm').value || '').trim() !== 'DELETE') return toast('<strong>永久刪除前，請在確認欄輸入 DELETE。</strong>');
+      const label = $('batchActionBatch').selectedOptions[0] ? $('batchActionBatch').selectedOptions[0].textContent : $('batchActionBatch').value;
+      if(!confirm(`永久刪除確認\n\n批次 / 目錄：${label}\n來源：${$('batchActionSource').value}\n分類：${$('batchActionCategory').value}\n數量：${items.length} 筆\n\n這會刪除管理資料、商城資料、B2B 資料，並嘗試刪除圖片。此動作無法復原。`)) return;
+      $('batchDeleteBtn').disabled = true;
+      try{
+        await commitBatchOps(items, 'delete');
+        for(const it of items){
+          if(it.storageThumbPath) await storage.ref(it.storageThumbPath).delete().catch(()=>{});
+          if(it.storageMainPath) await storage.ref(it.storageMainPath).delete().catch(()=>{});
+        }
+        await writeActivityLog('bulk_delete', `永久刪除：${label}｜${$('batchActionSource').value}｜${$('batchActionCategory').value}｜${items.length} 筆`, {batch:$('batchActionBatch').value, batchLabel:label, source:$('batchActionSource').value, category:$('batchActionCategory').value, count:items.length});
+        $('batchActionConfirm').value = '';
+        toast(`<strong>永久刪除完成。</strong> 已刪除 ${items.length} 筆。`);
+        listenItems();
+      }catch(err){ console.error(err); toast('<strong>永久刪除失敗：</strong>' + escapeHtml(err.message)); }
+      finally{ $('batchDeleteBtn').disabled = false; }
+    }
+
+    function resetForm(){
+      editingId = null; selectedFiles = [];
+      ['title','price','batchName','description'].forEach(id=>$(id).value='');
+      $('sourceType').value='farm'; $('category').value='SPS'; $('status').value='available'; $('showOnShop').checked=true; $('showOnB2B').checked=true; $('photoFile').value='';
+      $('previewBox').textContent = '尚未選擇圖片'; $('formTitle').textContent = '新增活體'; $('modeTabs').style.opacity = '1';
+      setUploadMode(uploadMode);
+    }
+
+    function updateSaveButtonText(){
+      $('saveBtn').textContent = editingId ? '儲存修改' : (uploadMode === 'batch' ? '批次儲存上架' : '儲存上架');
+    }
+    function setProgress(p){ $('progressBar').style.width = Math.max(0, Math.min(100,p)) + '%'; }
+
+    async function compressImage(file, maxW, maxH, targetBytes){
+      const img = await loadImage(file);
+      let w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+      let ratio = Math.min(1, maxW / w, maxH / h);
+      let cw = Math.max(1, Math.round(w * ratio));
+      let ch = Math.max(1, Math.round(h * ratio));
+      for(let shrink=0; shrink<6; shrink++){
+        const canvas = document.createElement('canvas'); canvas.width = cw; canvas.height = ch;
+        const ctx = canvas.getContext('2d'); ctx.drawImage(img,0,0,cw,ch);
+        let quality = 0.92, blob = null;
+        for(let i=0;i<8;i++){
+          blob = await canvasToBlob(canvas, 'image/webp', quality);
+          if(!blob) blob = await canvasToBlob(canvas, 'image/jpeg', quality);
+          if(blob && blob.size <= targetBytes) return blob;
+          quality -= 0.08;
+          if(quality < 0.42) break;
+        }
+        if(blob && blob.size <= targetBytes * 1.18) return blob;
+        cw = Math.round(cw * 0.88); ch = Math.round(ch * 0.88);
+      }
+      const finalCanvas = document.createElement('canvas'); finalCanvas.width = cw; finalCanvas.height = ch;
+      finalCanvas.getContext('2d').drawImage(img,0,0,cw,ch);
+      return await canvasToBlob(finalCanvas, 'image/webp', 0.5) || await canvasToBlob(finalCanvas, 'image/jpeg', 0.55);
+    }
+    function loadImage(file){
+      return new Promise((resolve,reject)=>{ const url=URL.createObjectURL(file); const img=new Image(); img.onload=()=>{URL.revokeObjectURL(url);resolve(img)}; img.onerror=reject; img.src=url; });
+    }
+    function canvasToBlob(canvas,type,quality){ return new Promise(resolve=>canvas.toBlob(resolve,type,quality)); }
+    function escapeHtml(s){ return String(s??'').replace(/[&<>\"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c] || c)); }
+    function escapeAttr(s){ return escapeHtml(s).replace(/'/g,'&#39;'); }
+    setUploadMode('single');
+  </script>
+</body>
+</html>

@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SEADREAM B2B 會員入口 v20.3 登入後精簡版</title>
+  <meta name="description" content="SEADREAM Aquarium B2B 會員登入與功能入口 v20.3" />
+  <style>
+    :root{
+      --bg:#eef7f6;
+      --panel:#ffffff;
+      --panel2:#f7fbfb;
+      --text:#10212a;
+      --muted:#61717b;
+      --line:#d8e6e7;
+      --primary:#0d8f7f;
+      --primary2:#0bb894;
+      --dark:#061822;
+      --accent:#1cddc6;
+      --danger:#cb4b64;
+      --shadow:0 18px 48px rgba(9,37,45,.12);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit;text-decoration:none}
+    .hidden{display:none!important}
+    .hero{
+      background:linear-gradient(120deg,#062834,#0c7d70 80%);
+      color:#fff;
+      padding:28px 0 92px;
+    }
+    .wrap{width:min(1180px,calc(100vw - 32px));margin:0 auto}
+    .topline{display:flex;justify-content:space-between;gap:16px;align-items:center}
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{
+      width:54px;height:54px;border-radius:16px;
+      background:linear-gradient(135deg,#49c8ff,#1577ff 52%,#64ffe5);
+      display:grid;place-items:center;
+      color:#061822;font-weight:950;letter-spacing:-.05em;
+      box-shadow:0 12px 28px rgba(21,119,255,.25);
+    }
+    h1{margin:0;font-size:28px;line-height:1.15}
+    .subtitle{margin:6px 0 0;color:rgba(255,255,255,.78);line-height:1.65}
+    .chip{
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.2);
+      padding:9px 14px;
+      border-radius:999px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:390px minmax(0,1fr);
+      gap:24px;
+      margin-top:-58px;
+      align-items:start;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .cardInner{padding:24px}
+    h2{margin:0 0 16px;font-size:24px}
+    .field{margin-bottom:14px}
+    input, select{
+      width:100%;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      border-radius:16px;
+      padding:16px 17px;
+      font-size:16px;
+      outline:none;
+    }
+    input:focus, select:focus{
+      border-color:rgba(13,143,127,.55);
+      box-shadow:0 0 0 4px rgba(13,143,127,.09);
+    }
+    .btnRow{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
+    button,.btn{
+      border:0;
+      border-radius:14px;
+      padding:13px 17px;
+      font-weight:900;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:48px;
+    }
+    .btnPrimary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff}
+    .btnSoft{background:#eef7f6;color:#10212a}
+    .btnDark{background:var(--dark);color:#fff}
+    .btnLine{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+    }
+    .btnDisabled{
+      background:#edf2f2;
+      color:#8b9a9f;
+      cursor:not-allowed;
+      pointer-events:none;
+    }
+    .statusBox{
+      margin-top:14px;
+      padding:16px 17px;
+      background:#eef8f6;
+      border-radius:16px;
+      line-height:1.7;
+      color:#27474d;
+    }
+    .notice{
+      margin:18px 0 0;
+      color:var(--muted);
+      line-height:1.75;
+      font-size:14px;
+    }
+    .sectionHead{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      padding:24px 24px 10px;
+      align-items:flex-start;
+    }
+    .sectionDesc{margin:4px 0 0;color:var(--muted);line-height:1.65}
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      background:#e6fbf6;
+      color:#07836f;
+      padding:7px 11px;
+      font-size:13px;
+      font-weight:850;
+      white-space:nowrap;
+    }
+    .badgeWarn{background:#fff5d6;color:#a97600}
+    .navGrid{
+      padding:12px 24px 24px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+    .navCard{
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:20px;
+      background:linear-gradient(135deg,#fff,#f8fcfc);
+      min-height:184px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .navTitle{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      font-weight:950;
+      font-size:20px;
+    }
+    .navText{color:#51666f;line-height:1.7}
+    .navCard .btn{align-self:flex-start;margin-top:auto}
+    .securityBox{
+      margin-top:14px;
+      padding:13px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#f7fbfb;
+      display:grid;
+      gap:10px;
+    }
+    .securityTitle{font-weight:850;color:var(--text);font-size:14px}
+    .securityRow{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 130px;
+      gap:10px;
+      align-items:center;
+    }
+    .securityQuestion{color:var(--muted);font-size:13px;line-height:1.5}
+    .securityHint{color:var(--muted);font-size:12px;line-height:1.6}
+    .miniLinkBtn{
+      border:0;
+      background:transparent;
+      color:var(--primary);
+      padding:0;
+      min-height:auto;
+      font-weight:850;
+      cursor:pointer;
+      justify-content:flex-start;
+    }
+    .miniLinkBtn:hover{text-decoration:underline}
+    .hiddenTrap{
+      position:absolute;
+      left:-9999px;
+      width:1px;
+      height:1px;
+      overflow:hidden;
+      opacity:0;
+      pointer-events:none;
+    }
+    .footer{
+      width:min(1180px,calc(100vw - 32px));
+      margin:26px auto;
+      color:#6b7c82;
+      font-size:13px;
+      text-align:center;
+    }
+    @media(max-width:860px){
+      .grid{grid-template-columns:1fr}
+      .hero{padding-bottom:78px}
+      .navGrid{grid-template-columns:1fr}
+      .topline{align-items:flex-start;flex-direction:column}
+    }
+    @media(max-width:640px){
+      .securityRow{grid-template-columns:1fr}
+      .cardInner,.sectionHead{padding:20px}
+      .navGrid{padding:8px 20px 20px}
+      h1{font-size:23px}
+    }
+    .loginModeTitle{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      margin-bottom:16px;
+    }
+    .loginModeTitle h2{margin:0}
+    .memberPanel{
+      display:grid;
+      gap:14px;
+    }
+    .memberHero{
+      padding:18px;
+      border-radius:18px;
+      background:linear-gradient(135deg,#eef8f6,#f8fcfc);
+      border:1px solid var(--line);
+    }
+    .memberName{
+      font-weight:950;
+      font-size:22px;
+      line-height:1.35;
+      color:var(--text);
+      word-break:break-word;
+    }
+    .memberSub{
+      margin-top:6px;
+      color:var(--muted);
+      line-height:1.6;
+      word-break:break-word;
+    }
+    .infoGrid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+    .infoCell{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:16px;
+      padding:13px 14px;
+      min-height:70px;
+    }
+    .infoLabel{
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:6px;
+    }
+    .infoValue{
+      color:var(--text);
+      font-weight:850;
+      line-height:1.4;
+      word-break:break-word;
+    }
+    .currentTimeBox{
+      padding:16px;
+      border-radius:18px;
+      background:#061822;
+      color:#fff;
+      display:grid;
+      gap:4px;
+    }
+    .currentTimeBox .date{
+      color:rgba(255,255,255,.72);
+      font-size:13px;
+    }
+    .currentTimeBox .time{
+      font-size:28px;
+      font-weight:950;
+      letter-spacing:.02em;
+    }
+    .loginHelp{
+      color:var(--muted);
+      line-height:1.7;
+      font-size:14px;
+    }
+    @media(max-width:640px){
+      .infoGrid{grid-template-columns:1fr}
+      .currentTimeBox .time{font-size:24px}
+    }
+
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="topline">
+        <div class="brand">
+          <div class="logo">SD</div>
+          <div>
+            <h1>SEADREAM B2B 會員入口</h1>
+            <p class="subtitle">會員登入與功能入口。批發會員登入後可進入設備批發估價頁，管理員才會看到後台入口。</p>
+          </div>
+        </div>
+        <span class="chip">b2b.seadream.com.tw</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap grid">
+    <section class="card">
+      <div class="cardInner">
+        <div class="loginModeTitle">
+          <h2 id="loginCardTitle">會員登入</h2>
+          <span id="loginMiniBadge" class="badge badgeWarn">未登入</span>
+        </div>
+
+        <div id="loginFormArea">
+          <div class="field">
+            <input id="emailInput" type="email" autocomplete="email" placeholder="Email" />
+          </div>
+
+          <div class="field">
+            <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Password" />
+          </div>
+
+          <input id="companyWebsiteTrap" class="hiddenTrap" type="text" autocomplete="off" tabindex="-1" aria-hidden="true" />
+
+          <div class="securityBox">
+            <div class="securityTitle">登入安全檢查</div>
+            <div class="securityRow">
+              <div>
+                <div id="botQuestionText" class="securityQuestion">正在產生驗證題目...</div>
+                <div class="securityHint">這是簡易防機器人測試；正式防護之後可再升級。</div>
+              </div>
+              <div class="field" style="margin:0;">
+                <input id="botAnswerInput" type="text" inputmode="numeric" autocomplete="off" placeholder="答案" />
+              </div>
+            </div>
+            <button id="refreshBotQuestionBtn" class="miniLinkBtn" type="button">換一題驗證</button>
+          </div>
+
+          <div class="btnRow">
+            <button id="loginBtn" class="btnPrimary">登入</button>
+            <button id="resetPasswordBtn" class="btnSoft" type="button">忘記密碼</button>
+          </div>
+
+          <div id="loginStatus" class="statusBox">尚未登入。</div>
+          <p class="notice">忘記密碼時，請先輸入 Email，再按「忘記密碼」。若無法登入，請聯絡 SEADREAM 管理員。</p>
+        </div>
+
+        <div id="loggedInArea" class="memberPanel hidden">
+          <div class="memberHero">
+            <div id="memberDisplayName" class="memberName">已登入</div>
+            <div id="memberDisplayEmail" class="memberSub"></div>
+          </div>
+
+          <div class="currentTimeBox">
+            <div id="currentDateText" class="date">--</div>
+            <div id="currentTimeText" class="time">--:--:--</div>
+          </div>
+
+          <div class="infoGrid">
+            <div class="infoCell">
+              <div class="infoLabel">會員角色</div>
+              <div id="memberRoleText" class="infoValue">--</div>
+            </div>
+            <div class="infoCell">
+              <div class="infoLabel">帳號狀態</div>
+              <div id="memberStatusText" class="infoValue">--</div>
+            </div>
+          </div>
+
+          <div class="btnRow">
+            <a id="memberGoOrderBtn" class="btn btnPrimary" href="/order.html">進入設備批發頁</a>
+            <button id="logoutBtn" class="btnSoft">登出</button>
+          </div>
+
+          <div class="loginHelp">已登入狀態下，登入欄位與安全檢查會自動隱藏，只保留會員資訊與必要操作。</div>
+        </div>
+    </section>
+
+    <section class="card">
+      <div class="sectionHead">
+        <div>
+          <h2>功能入口</h2>
+          <p class="sectionDesc">依照會員權限顯示可使用的功能。</p>
+        </div>
+        <span id="roleBadge" class="badge badgeWarn">未登入</span>
+      </div>
+
+      <div class="navGrid">
+        <div class="navCard">
+          <div class="navTitle">設備批發估價 <span class="badge">已啟用</span></div>
+          <div class="navText">查看設備商品、加入報價、送出報價單，並查詢自己的報價紀錄。</div>
+          <a id="goOrderBtn" class="btn btnPrimary" href="/order.html">進入設備批發頁</a>
+        </div>
+
+        <div class="navCard">
+          <div class="navTitle">活體珊瑚販售 <span class="badge badgeWarn">規劃中</span></div>
+          <div class="navText">未來可查看每顆珊瑚照片、狀態、價格，並加入詢價單。</div>
+          <a class="btn btnDisabled" href="javascript:void(0)">尚未開放</a>
+        </div>
+
+        <div class="navCard">
+          <div class="navTitle">批發申請 <span class="badge badgeWarn">規劃中</span></div>
+          <div class="navText">未來可讓新客戶填寫資料，審核通過後開通批發權限。</div>
+          <a class="btn btnDisabled" href="javascript:void(0)">尚未開放</a>
+        </div>
+
+        <div id="adminNavCard" class="navCard hidden">
+          <div class="navTitle">後台管理 <span class="badge badgeWarn">管理員</span></div>
+          <div class="navText">查看報價單、人員權限、商品資料與批發設定。</div>
+          <a id="adminBtn" class="btn btnLine" href="/order.html">前往管理頁</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer">SEADREAM Aquarium Wholesale System</div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script src="/__/firebase/init.js"></script>
+
+  <script>
+    const manualFirebaseConfig = {};
+
+    let auth = null;
+    let db = null;
+    let currentRole = null;
+    let currentStatus = null;
+    let botAnswer = null;
+
+    const LOGIN_GUARD_KEY = 'seadreamLoginGuardV20';
+
+    const $ = (id) => document.getElementById(id);
+
+    function escapeHtml(str){
+      return String(str ?? '').replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));
+    }
+
+    function setStatus(html){
+      $('loginStatus').innerHTML = html;
+    }
+
+    function initFirebase(){
+      try{
+        if (!firebase.apps.length && manualFirebaseConfig.apiKey) firebase.initializeApp(manualFirebaseConfig);
+        auth = firebase.auth();
+        db = firebase.firestore();
+        return true;
+      }catch(err){
+        setStatus('系統初始化失敗，請稍後再試或聯絡管理員。');
+        return false;
+      }
+    }
+
+    function getLoginGuard(){
+      try{
+        const raw = localStorage.getItem(LOGIN_GUARD_KEY);
+        return raw ? JSON.parse(raw) : {failCount:0, lockUntil:0};
+      }catch(_){
+        return {failCount:0, lockUntil:0};
+      }
+    }
+
+    function setLoginGuard(data){
+      localStorage.setItem(LOGIN_GUARD_KEY, JSON.stringify(data || {failCount:0, lockUntil:0}));
+    }
+
+    function clearLoginGuard(){
+      localStorage.removeItem(LOGIN_GUARD_KEY);
+    }
+
+    function remainingLockSeconds(){
+      const guard = getLoginGuard();
+      const ms = Number(guard.lockUntil || 0) - Date.now();
+      return ms > 0 ? Math.ceil(ms / 1000) : 0;
+    }
+
+    function recordLoginFailure(){
+      const guard = getLoginGuard();
+      const nextFail = Number(guard.failCount || 0) + 1;
+      const next = {failCount: nextFail, lockUntil: 0};
+      if (nextFail >= 5) next.lockUntil = Date.now() + 5 * 60 * 1000;
+      setLoginGuard(next);
+      return next;
+    }
+
+    function makeBotQuestion(){
+      const a = Math.floor(Math.random() * 8) + 2;
+      const b = Math.floor(Math.random() * 8) + 2;
+      const c = Math.floor(Math.random() * 4) + 1;
+      botAnswer = a + b + c;
+      $('botQuestionText').textContent = `請輸入驗證答案：${a} + ${b} + ${c} = ?`;
+      $('botAnswerInput').value = '';
+    }
+
+    function botCheckPassed(){
+      const trap = $('companyWebsiteTrap')?.value || '';
+      if (trap.trim()) return false;
+      const ans = Number(String($('botAnswerInput')?.value || '').trim());
+      return Number.isFinite(ans) && ans === botAnswer;
+    }
+
+
+    function formatDateTimeParts(){
+      const now = new Date();
+      const date = now.toLocaleDateString('zh-TW', {
+        year:'numeric',
+        month:'2-digit',
+        day:'2-digit',
+        weekday:'long'
+      });
+      const time = now.toLocaleTimeString('zh-TW', {
+        hour12:false,
+        hour:'2-digit',
+        minute:'2-digit',
+        second:'2-digit'
+      });
+      return {date, time};
+    }
+
+    function updateClock(){
+      const parts = formatDateTimeParts();
+      if ($('currentDateText')) $('currentDateText').textContent = parts.date;
+      if ($('currentTimeText')) $('currentTimeText').textContent = parts.time;
+    }
+
+    function setLoggedInLayout(isLoggedIn){
+      $('loginFormArea')?.classList.toggle('hidden', isLoggedIn);
+      $('loggedInArea')?.classList.toggle('hidden', !isLoggedIn);
+      if ($('loginCardTitle')) $('loginCardTitle').textContent = isLoggedIn ? '會員資訊' : '會員登入';
+      if ($('loginMiniBadge')) {
+        $('loginMiniBadge').textContent = isLoggedIn ? '已登入' : '未登入';
+        $('loginMiniBadge').className = isLoggedIn ? 'badge' : 'badge badgeWarn';
+      }
+    }
+
+    function updateNavAccess(user){
+      const roleBadge = $('roleBadge');
+      const orderBtn = $('goOrderBtn');
+      const adminBtn = $('adminBtn');
+      const adminNavCard = $('adminNavCard');
+
+      if (!user) {
+        roleBadge.textContent = '未登入';
+        roleBadge.className = 'badge badgeWarn';
+
+        orderBtn.className = 'btn btnDisabled';
+        orderBtn.href = 'javascript:void(0)';
+        orderBtn.onclick = () => alert('請先登入，再進入設備批發頁。');
+
+        adminNavCard.classList.add('hidden');
+        if (adminBtn) {
+          adminBtn.className = 'btn btnDisabled';
+          adminBtn.href = 'javascript:void(0)';
+        }
+        return;
+      }
+
+      roleBadge.textContent = currentRole || 'user';
+      roleBadge.className = 'badge';
+
+      const canUseOrder = currentStatus === 'active' && (currentRole === 'admin' || currentRole === 'wholesale');
+      if (canUseOrder) {
+        orderBtn.className = 'btn btnPrimary';
+        orderBtn.href = '/order.html';
+        orderBtn.onclick = null;
+      } else {
+        orderBtn.className = 'btn btnDisabled';
+        orderBtn.href = 'javascript:void(0)';
+        orderBtn.onclick = () => alert('帳號尚未開通批發功能，請聯絡 SEADREAM 管理員。');
+      }
+
+      if (currentRole === 'admin') {
+        adminNavCard.classList.remove('hidden');
+        if (adminBtn) {
+          adminBtn.className = 'btn btnLine';
+          adminBtn.href = '/order.html';
+        }
+      } else {
+        adminNavCard.classList.add('hidden');
+        if (adminBtn) {
+          adminBtn.className = 'btn btnDisabled';
+          adminBtn.href = 'javascript:void(0)';
+        }
+      }
+    }
+
+    async function handleAuthUser(user){
+      if (!user) {
+        currentRole = null;
+        currentStatus = null;
+        setLoggedInLayout(false);
+        setStatus('尚未登入。');
+        updateNavAccess(null);
+        return;
+      }
+
+      localStorage.setItem('seadreamLastEmail', user.email || '');
+
+      let role = 'user';
+      let status = 'unknown';
+      let name = '';
+      let companyName = '';
+
+      try{
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          const data = userDoc.data() || {};
+          role = String(data.role || (data.isAdmin ? 'admin' : 'user')).toLowerCase();
+          status = String(data.status || 'unknown').toLowerCase();
+          name = data.contactName || data.name || '';
+          companyName = data.companyName || data.company || data.storeName || '';
+        }
+      }catch(e){
+        status = 'profile-error';
+      }
+
+      currentRole = role;
+      currentStatus = status;
+
+      const displayName = companyName || name || user.email || '已登入會員';
+      setLoggedInLayout(true);
+      updateClock();
+
+      $('memberDisplayName').textContent = displayName;
+      $('memberDisplayEmail').textContent = user.email || '';
+      $('memberRoleText').textContent = role;
+      $('memberStatusText').textContent = status;
+
+      const canUseOrder = status === 'active' && (role === 'admin' || role === 'wholesale');
+      const memberOrderBtn = $('memberGoOrderBtn');
+      if (canUseOrder) {
+        memberOrderBtn.className = 'btn btnPrimary';
+        memberOrderBtn.href = '/order.html';
+        memberOrderBtn.textContent = '進入設備批發頁';
+      } else {
+        memberOrderBtn.className = 'btn btnDisabled';
+        memberOrderBtn.href = 'javascript:void(0)';
+        memberOrderBtn.textContent = '帳號尚未開通';
+      }
+
+      updateNavAccess(user);
+    }
+
+    async function login(){
+      const email = $('emailInput').value.trim();
+      const password = $('passwordInput').value;
+      const lockSec = remainingLockSeconds();
+
+      if (lockSec > 0) {
+        alert(`登入失敗次數過多，請 ${lockSec} 秒後再試。`);
+        return;
+      }
+
+      if (!email || !password) {
+        alert('請輸入 Email 與密碼');
+        return;
+      }
+
+      if (!botCheckPassed()) {
+        alert('安全驗證答案不正確，請重新輸入。');
+        makeBotQuestion();
+        return;
+      }
+
+      try{
+        await auth.signInWithEmailAndPassword(email, password);
+        clearLoginGuard();
+        makeBotQuestion();
+      }catch(err){
+        const guard = recordLoginFailure();
+        makeBotQuestion();
+        if (guard.lockUntil && guard.lockUntil > Date.now()) {
+          alert('登入失敗次數過多，系統已暫停 5 分鐘。');
+        } else {
+          alert(`登入失敗，請確認帳號與密碼。\\n目前失敗次數：${guard.failCount}/5`);
+        }
+      }
+    }
+
+    async function logout(){
+      try{
+        await auth.signOut();
+      }catch(err){
+        alert('登出失敗，請稍後再試。');
+      }
+    }
+
+    async function sendPasswordReset(){
+      const email = $('emailInput').value.trim();
+      if (!email) {
+        alert('請先輸入 Email，再按忘記密碼。');
+        return;
+      }
+
+      try{
+        auth.languageCode = 'zh-TW';
+        await auth.sendPasswordResetEmail(email, {
+          url: window.location.origin + '/',
+          handleCodeInApp: false
+        });
+        setStatus(`已寄出密碼重設 Email 到：<strong>${escapeHtml(email)}</strong><br>請到信箱收信，點連結重新設定密碼。`);
+      }catch(err){
+        alert('寄送密碼重設 Email 失敗，請確認 Email 是否正確，或聯絡 SEADREAM 管理員。');
+      }
+    }
+
+    window.addEventListener('load', () => {
+      $('emailInput').value = localStorage.getItem('seadreamLastEmail') || '';
+      makeBotQuestion();
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      if (!initFirebase()) return;
+
+      $('loginBtn').addEventListener('click', login);
+      $('resetPasswordBtn').addEventListener('click', sendPasswordReset);
+      $('refreshBotQuestionBtn').addEventListener('click', makeBotQuestion);
+      $('logoutBtn').addEventListener('click', logout);
+
+      $('passwordInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+      $('botAnswerInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+
+      auth.onAuthStateChanged(handleAuthUser);
+    });
+  </script>
+</body>
+</html>

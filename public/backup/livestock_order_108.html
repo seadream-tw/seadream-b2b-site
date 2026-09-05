@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>SEADREAM B2B 活體訂單頁 v1.0.7</title>
+<style>
+:root{--bg:#061723;--panel:#0b2230;--panel2:#0e2a3b;--line:#1d4659;--text:#e8f6ff;--muted:#9bb7c7;--aqua:#39f5e6;--blue:#25a8ff;--warn:#ffd166;--danger:#ff6b6b;--ok:#57ffb6;--shadow:0 18px 50px rgba(0,0,0,.32);--radius:20px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 76% 6%,#0c3a3d 0,#061723 42%,#041019 100%);color:var(--text);font-family:"Microsoft JhengHei",Arial,sans-serif;line-height:1.55}a{color:var(--aqua);text-decoration:none}.hidden{display:none!important}.wrap{width:min(1500px,calc(100% - 28px));margin:18px auto 70px}.hero,.panel,.box{border:1px solid var(--line);border-radius:26px;background:linear-gradient(135deg,rgba(13,42,56,.96),rgba(6,23,35,.94));box-shadow:var(--shadow)}.hero{padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:16px}.hero h1{margin:0;font-size:34px}.hero p{margin:7px 0 0;color:var(--muted)}.topLinks{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.topLinks a,.pill{border:1px solid rgba(57,245,230,.35);background:#102b3a;color:var(--text);border-radius:13px;padding:9px 12px;font-weight:900}.pill{display:inline-flex;color:#7bfff4;background:rgba(57,245,230,.08);border-radius:999px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:16px;margin-top:16px;align-items:start}.panel{padding:16px}.panel h2{margin:0 0 12px;font-size:22px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{display:block;color:#cfeef7;font-size:13px;font-weight:900;margin-bottom:10px}input,select,textarea{width:100%;border:1px solid #244e63;background:#071c29!important;color:#f2fbff!important;border-radius:14px;padding:11px 12px;outline:none;font-size:15px;caret-color:#ffd166;-webkit-text-fill-color:#f2fbff!important;color-scheme:dark!important}input:focus,select:focus,textarea:focus{border-color:rgba(57,245,230,.62);box-shadow:0 0 0 3px rgba(57,245,230,.10);background:#082235!important;color:#fff9d6!important;-webkit-text-fill-color:#fff9d6!important}input::selection,textarea::selection{background:#5b4a18!important;color:#fffbe8!important}input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,textarea:-webkit-autofill,select:-webkit-autofill{-webkit-text-fill-color:#fff9d6!important;-webkit-box-shadow:0 0 0 1000px #082235 inset!important;box-shadow:0 0 0 1000px #082235 inset!important;border-color:rgba(57,245,230,.44)!important;transition:background-color 99999s ease-in-out 0s}input[readonly],textarea[readonly],select:disabled{opacity:.82;background:#061824!important;color:#ccecf5!important;-webkit-text-fill-color:#ccecf5!important}select option{background:#071c29;color:#e8f6ff}textarea{min-height:80px;resize:vertical}.btn{border:0;border-radius:15px;padding:11px 16px;font-weight:900;cursor:pointer;color:#06202b;background:linear-gradient(135deg,var(--aqua),var(--blue));white-space:nowrap}.btn.secondary{background:#102b3a;color:var(--text);border:1px solid #285569}.btn.danger{background:#3c1820;color:#ffd8df;border:1px solid #7d2d3b}.btn.warn{background:#3a3019;color:#ffe8a3;border:1px solid #765e1a}.btn:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions .btn{flex:1 1 auto}.notice{border:1px solid rgba(255,209,102,.35);background:rgba(255,209,102,.08);border-radius:16px;padding:10px;color:#ffe09a;font-size:13px;margin:10px 0}.small{font-size:13px;color:var(--muted)}.tableWrap{border:1px solid #244e63;border-radius:18px;overflow:auto;background:#061824}.orderTable{width:100%;border-collapse:collapse;min-width:760px}.orderTable th,.orderTable td{border-bottom:1px solid rgba(36,78,99,.75);padding:10px;text-align:left;vertical-align:middle}.orderTable th{color:#cfeef7;background:#0a2637;font-size:13px}.orderTable td{color:#e8f6ff}.prod{display:grid;grid-template-columns:56px minmax(0,1fr);gap:10px;align-items:center}.prod img{width:56px;height:56px;border-radius:12px;object-fit:cover;border:1px solid #244e63;background:#061824}.prodTitle{font-weight:1000}.prodMeta{font-size:13px;color:#9bb7c7}.qtyBox{display:flex;gap:6px;align-items:center}.qtyBox button{width:30px;height:30px;padding:0}.qtyBox span{min-width:28px;text-align:center;font-weight:1000}.summaryLines{display:grid;gap:9px;margin:12px 0}.line{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed rgba(170,220,235,.18);padding-bottom:8px}.line strong{color:#76fff4}.orderList{display:grid;gap:8px;max-height:64vh;overflow:auto;padding-right:4px}.orderCard{border:1px solid #244e63;border-radius:16px;background:rgba(6,24,36,.88);padding:12px;cursor:pointer;transition:.15s ease}.orderCard:hover{border-color:rgba(57,245,230,.72);transform:translateY(-1px);background:rgba(8,32,46,.95)}.orderCard.active{border-color:rgba(57,245,230,.75)}.orderCard.formal{border-color:rgba(87,255,182,.34);background:linear-gradient(135deg,rgba(6,24,36,.95),rgba(11,42,36,.78))}.orderTop{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.orderTitle{font-weight:1000;color:#fff;font-size:17px}.orderMeta{font-size:12px;color:#9bb7c7}.badge{display:inline-flex;padding:3px 8px;border-radius:999px;border:1px solid rgba(255,209,102,.35);background:rgba(255,209,102,.08);color:#ffe09a;font-size:12px;font-weight:900}.badge.formal{border-color:rgba(87,255,182,.35);background:rgba(87,255,182,.08);color:#8fffd2}.badge.cancel{border-color:rgba(255,107,107,.35);background:rgba(255,107,107,.08);color:#ffc3cb}.total{color:#76fff4;font-weight:1000;font-size:20px}.toolbar{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-bottom:10px}.empty{border:1px dashed #285569;border-radius:18px;padding:22px;text-align:center;color:#9bb7c7}.toast{position:fixed;right:16px;bottom:16px;z-index:100;display:grid;gap:8px;width:min(420px,calc(100vw - 32px))}.toastMsg{border:1px solid #285569;background:#061824;border-radius:16px;padding:12px;box-shadow:var(--shadow)}.toastMsg.ok{border-color:rgba(87,255,182,.35)}.toastMsg.err{border-color:rgba(255,107,107,.42)}#printArea{display:none}.statusBig{font-size:16px;color:#ffe09a;font-weight:900}.stepBar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.step{border:1px solid #244e63;border-radius:14px;padding:9px;text-align:center;color:#9bb7c7;cursor:pointer;user-select:none;transition:.15s ease}.step.on,.step:hover{border-color:rgba(57,245,230,.55);background:rgba(57,245,230,.09);color:#8ffff6;font-weight:900}.customerOnlyDelete{border-top:1px dashed rgba(170,220,235,.18);margin-top:12px;padding-top:12px}.hintLine{font-size:12px;color:#9bb7c7;margin-top:7px}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}.grid2{grid-template-columns:1fr}.orderList{max-height:none}.stepBar{grid-template-columns:1fr}.actions .btn{flex:1 1 100%}}
+@media print{body{background:#fff!important;color:#000!important;margin:0!important}.wrap,.toast{display:none!important}#printArea{display:block!important}.printBlock{font-family:"Microsoft JhengHei",Arial,sans-serif;color:#000;background:#fff;padding:0;font-size:12pt;line-height:1.45}#printArea h1{font-size:20pt;margin:0 0 8mm}#printArea h3{font-size:14pt;margin:8mm 0 3mm}#printArea table{width:100%;border-collapse:collapse;margin-top:4mm}#printArea th,#printArea td{border:1px solid #999;padding:5px;text-align:left;vertical-align:top}#printArea hr{border:0;border-top:1px solid #999;margin:5mm 0}.noBreak{break-inside:avoid;page-break-inside:avoid}@page{size:A4 portrait;margin:12mm}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div><h1>SEADREAM B2B 活體訂單頁 v1.0.8</h1><p>這裡集中處理活體訂單送出、歷史訂單查詢、PDF / 列印與刪除紀錄。</p></div>
+    <div class="topLinks"><a href="/livestock_b2b.html">回活體清單</a><a href="/order.html">設備批發</a><a href="/index.html">會員入口</a><span class="pill" id="authPill">檢查登入中</span></div>
+  </section>
+  <div id="loginNotice" class="panel" style="display:none;margin-top:16px"><strong>需要 B2B 活體權限。</strong><br>請先登入 wholesale、admin、orderAdmin 或 livestockAdmin 帳號。<br><a href="/index.html">回 B2B 會員入口</a></div>
+  <section id="app" style="display:none">
+    <div class="layout">
+      <main class="panel">
+        <div class="stepBar"><div class="step on" id="step1">1. 訂單內容</div><div class="step" id="step2">2. 收件資料</div><div class="step" id="step3">3. 送出 / PDF</div></div>
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px">
+          <div><h2 id="mainTitle">建立活體訂單</h2><div id="orderStatusText" class="small">左側活體清單帶入的選購項目會出現在這裡。</div></div>
+          <div class="statusBig" id="orderNoText">尚未送出訂單</div>
+        </div>
+        <div class="notice">流程：先在活體清單挑選 → 在這裡確認明細與收件資料 → 送出訂單後即鎖定，會員只能查看或刪除自己的清單紀錄；管理人員仍可保留完整歷史。</div>
+        <div id="itemsBox" class="tableWrap"></div>
+        <div class="summaryLines">
+          <div class="line"><span>活體項目</span><strong id="itemCount">0</strong></div>
+          <div class="line"><span>活體總數量</span><strong id="qtyTotal">0</strong></div>
+          <div class="line"><span>訂單參考合計</span><strong id="orderTotal">NT$ 0</strong></div>
+        </div>
+        <div id="infoSection" class="grid2">
+          <label>公司 / 店名<input id="companyName" placeholder="公司 / 店名"></label>
+          <label>聯絡人<input id="contactName" placeholder="聯絡人"></label>
+          <label>電話<input id="phone" placeholder="電話 / 手機"></label>
+          <label>LINE ID<input id="lineId" placeholder="LINE ID"></label>
+          <label>統一編號<input id="taxId" placeholder="統一編號"></label>
+          <label>出貨方式<select id="shippingMethod"><option value="">請選擇或備註</option><option>店取</option><option>宅配</option><option>黑貓冷藏 / 低溫配送</option><option>空運 / 貨運站自取</option><option>另行確認</option></select></label>
+          <label style="grid-column:1/-1">收件地址<input id="address" placeholder="收件地址"></label>
+          <label style="grid-column:1/-1">發票地址<input id="invoiceAddress" placeholder="發票地址，可同收件地址"></label>
+          <label style="display:flex;gap:8px;align-items:center;margin:-2px 0 10px;grid-column:1/-1;color:#ffe09a"><input type="checkbox" id="invoiceSameAsAddress" style="width:auto"> 發票地址同收件地址</label>
+          <label style="grid-column:1/-1">配送備註 / 訂單備註<textarea id="deliveryNote" placeholder="例如保留需求、到貨確認、出貨日期、配送注意事項"></textarea></label>
+        </div>
+        <label id="saveProfileWrap" style="display:flex;gap:8px;align-items:center;margin:4px 0 12px"><input type="checkbox" id="saveProfile" style="width:auto"> 同時把這次填寫的聯絡 / 地址資料更新到會員資料</label>
+        <div class="actions" id="mainActions">
+          <button class="btn" id="submitOrderBtn">送出活體訂單</button>
+          <button class="btn secondary" id="pdfBtn">產生 PDF / 列印</button>
+          <button class="btn danger" id="hideOrderBtn">從我的清單移除</button>
+          <button class="btn danger" id="adminDeleteBtn">管理刪除訂單 / 釋放活體</button>
+          <a class="btn secondary" href="/livestock_b2b.html" style="text-align:center">退出 / 回活體清單</a>
+        </div>
+        <div class="small" style="margin-top:10px">送出訂單後，會員端不可自行修改訂單內容。右側歷史訂單可點整張卡片進入查看。</div>
+      </main>
+      <aside class="panel">
+        <div class="toolbar"><h2 style="margin:0">我的活體訂單</h2><button class="btn secondary" id="reloadOrdersBtn">重讀</button></div>
+        <select id="orderFilter" style="margin-bottom:10px"><option value="all">全部訂單</option><option value="formal">已送出訂單</option><option value="cancelled">取消 / 流標</option><option value="hidden">我已刪除</option></select>
+        <button class="btn" id="newDraftBtn" style="width:100%;margin-bottom:10px">載入目前選購清單</button>
+        <div class="small" style="margin-bottom:8px;color:#ffe09a">點右側訂單卡片即可進入查看，不再另外放多餘按鈕。</div>
+        <div class="orderList" id="orderList"><div class="small">尚未讀取訂單。</div></div>
+      </aside>
+    </div>
+  </section>
+</div>
+<div id="toast" class="toast"></div>
+<div id="printArea"></div>
+<script src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+<script src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+<script src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+<script src="/__/firebase/init.js?useEmulator=false"></script>
+<script>
+const VERSION='livestock_order_v1_0_8_draft_remove_submit_fix';
+const C={users:'users',orders:'orders',b2b:'b2bLivestockItems',logs:'activityLogs'};
+let auth=null,db=null,currentUser=null,profile={},latestOrders=[],currentOrder=null,currentItems=[],draftItems=[],unsubscribeOrders=null;
+const $=id=>document.getElementById(id);
+function initFirebase(){if(!window.firebase){alert('Firebase SDK 尚未載入');return false}try{auth=firebase.auth();db=firebase.firestore();return true}catch(e){alert('Firebase 初始化失敗：'+e.message);return false}}
+function money(n){return 'NT$ '+Math.round(Number(n||0)).toLocaleString('zh-TW')}
+function nval(v){const n=Number(String(v??'').replace(/,/g,''));return Number.isFinite(n)?n:0}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function escapeAttr(s){return escapeHtml(s)}
+function toast(msg,type='ok'){const box=$('toast');const el=document.createElement('div');el.className='toastMsg '+(type==='err'?'err':'ok');el.textContent=msg;box.appendChild(el);setTimeout(()=>el.remove(),4300)}
+function isAdmin(){return profile && (profile.isAdmin===true||profile.role==='admin')}
+function hasPerm(p){return profile && profile.permissions && profile.permissions[p]===true}
+function hasLivestockAdmin(){return isAdmin()||hasPerm('livestockAdmin')||profile.livestockAdmin===true||profile.canManageLivestock===true||profile.livestockManager===true}
+function hasOrderAdmin(){return isAdmin()||hasPerm('orderAdmin')}
+function canManageAnyOrder(){return isAdmin()||hasOrderAdmin()||hasLivestockAdmin()}
+function canEnter(){return profile && profile.status==='active' && (profile.role==='wholesale'||isAdmin()||hasLivestockAdmin()||hasOrderAdmin())}
+function itemKey(it){return it.id||it.livestockId||it.itemId||it.docId||''}
+function codeOf(it){return it.livestockCode||it.code||it.sku||it.itemCode||itemKey(it)}
+function titleOf(it){return it.title||it.name||it.productName||'未命名活體'}
+function thumb(it){return it.thumbnailUrl||it.thumbUrl||it.mainImageUrl||it.imageUrl||it.photoUrl||''}
+function mainImg(it){return it.mainImageUrl||it.imageUrl||it.photoUrl||it.thumbnailUrl||''}
+function priceOf(it){return nval(it.price||it.salePrice||it.publicPrice||it.wholesalePrice||0)}
+function sourceType(it){return String(it.sourceType||it.source||it.sourceLabel||'').toLowerCase()}
+function isFarmItem(it){const s=sourceType(it);return s.includes('farm')||s.includes('自家')||s.includes('繁殖')||it.isFarm===true}
+function orderItemIsFarm(it){return it.isFarm===true||String(it.sourceType||'').includes('farm')||String(it.sourceLabel||'').includes('自家')}
+function availableQty(it){const vals=[it.availableQty,it.stockQty,it.qty,it.quantity,it.stock];for(const v of vals){const n=nval(v);if(n>0)return Math.floor(n)}return isFarmItem(it)?1:((it.status||'available')==='available'?1:0)}
+function statusLabel(s){return ({reserved:'已送出 / 待確認',submitted:'已送出訂單',formal:'已送出訂單',confirmed:'已確認',available:'可販售',sold:'已售出',cancelled:'已取消',deleted:'已刪除',customer_deleted:'已刪除',hidden:'隱藏'})[s]||s||'-'}
+function tsToDate(v){if(!v)return null;if(v.toDate)return v.toDate();if(v.seconds)return new Date(v.seconds*1000);const d=new Date(v);return isNaN(d)?null:d}
+function dateText(v){const d=tsToDate(v)||new Date();return d.toLocaleString('zh-TW')}
+function strHasCancel(v){return String(v||'').toLowerCase().includes('cancel')||String(v||'').includes('取消')||String(v||'').includes('流標')||String(v||'').toLowerCase().includes('expired')}
+function isHiddenForMe(o){return o && (o.customerHiddenByUid===currentUser?.uid || (o.hiddenFromCustomer===true && (o.createdByUid===currentUser?.uid||o.uid===currentUser?.uid)))}
+function orderStage(o){if(!o)return 'draft'; if(o.status==='deleted'||o.status==='customer_deleted')return 'deleted'; if(strHasCancel(o.status)||strHasCancel(o.quoteStatus)||strHasCancel(o.paymentStatus))return 'cancelled'; if(o.status==='submitted'||o.status==='formal'||o.status==='confirmed'||o.quoteStatus==='formal_order_submitted'||o.customerCanEdit===false)return 'formal'; return 'draft'}
+function orderHasNoItems(o){const arr=Array.isArray(o&&o.items)?o.items:[];return arr.length===0 && nval(o&&o.itemCount||0)===0 && nval(o&&o.qtyTotal||0)===0 && nval(o&&o.total||0)===0}
+function makeOrderNo(o){if(o&&o.orderNo)return o.orderNo;const d=tsToDate(o&&o.createdAt)||new Date();return 'LIV-'+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+String(d.getHours()).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0')}
+function newOrderNo(){const d=new Date();return 'LIV-'+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+String(d.getHours()).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0')+String(d.getSeconds()).padStart(2,'0')}
+function makeOrderItem(it,qty){const p=priceOf(it);const q=Math.max(1,Math.floor(nval(qty)||1));return {livestockId:itemKey(it),itemId:itemKey(it),id:itemKey(it),livestockCode:codeOf(it),sku:codeOf(it),title:titleOf(it),name:titleOf(it),category:it.category||'',sourceType:it.sourceType||it.source||'',sourceLabel:it.sourceLabel||it.sourceType||it.source||'',isFarm:isFarmItem(it),thumbnailUrl:thumb(it),mainImageUrl:mainImg(it),price:p,qty:q,quantity:q,subtotal:p*q}}
+function consolidateItems(items){const map=new Map();(items||[]).forEach(raw=>{const k=itemKey(raw);if(!k)return;const q=Math.max(1,Math.floor(nval(raw.qty||raw.quantity||1)||1));const base=map.get(k)||{...raw,qty:0};base.qty=(base.qty||0)+q;base.quantity=base.qty;base.price=priceOf(raw);base.subtotal=base.price*base.qty;map.set(k,base)});return [...map.values()]}
+function calcTotals(items){let total=0,qty=0;(items||[]).forEach(i=>{const q=Math.max(1,Math.floor(nval(i.qty||i.quantity||1)||1));qty+=q;total+=priceOf(i)*q});return {itemCount:(items||[]).length,qtyTotal:qty,total}}
+async function loadProfile(user){const ref=db.collection(C.users).doc(user.uid);const snap=await ref.get();if(snap.exists){profile=snap.data()}else{profile={email:user.email,role:'user',status:'active',isAdmin:false};await ref.set({...profile,emailVerified:user.emailVerified===true,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true})}}
+function fillProfileDefaults(){ $('companyName').value=profile.companyName||''; $('contactName').value=profile.contactName||profile.name||''; $('phone').value=profile.phone||''; $('lineId').value=profile.lineId||''; $('taxId').value=profile.taxId||''; $('address').value=profile.address||[profile.postalCode,profile.city,profile.district,profile.addressLine].filter(Boolean).join(''); $('invoiceAddress').value=profile.invoiceAddress||''; setInvoiceSameByValue(); $('deliveryNote').value=profile.deliveryNote||''; $('shippingMethod').value=''; $('saveProfile').checked=false; }
+function syncInvoiceAddressIfNeeded(){const box=$('invoiceSameAsAddress');if(box&&box.checked){$('invoiceAddress').value=$('address').value.trim();renderPrintArea()}}
+function setInvoiceSameByValue(){const box=$('invoiceSameAsAddress');if(!box)return;const a=$('address').value.trim();const i=$('invoiceAddress').value.trim();box.checked=!!a && (!i || i===a);if(box.checked && a && !i)$('invoiceAddress').value=a}
+function getInfo(){return {companyName:$('companyName').value.trim(),contactName:$('contactName').value.trim(),phone:$('phone').value.trim(),lineId:$('lineId').value.trim(),taxId:$('taxId').value.trim(),shippingMethod:$('shippingMethod').value.trim(),address:$('address').value.trim(),invoiceAddress:$('invoiceAddress').value.trim(),deliveryNote:$('deliveryNote').value.trim()}}
+function checkInfo(info){if(!info.companyName&&!info.contactName){alert('請至少填寫公司 / 店名或聯絡人。');return false}if(!info.phone&&!info.lineId){alert('請至少填寫電話或 LINE ID。');return false}if(!info.address&&!info.shippingMethod){alert('請填寫收件地址，或選擇 / 備註出貨方式。');return false}return true}
+async function updateProfile(info){
+  if(!$('saveProfile').checked)return;
+  // 會員資料只保存長期會用到的聯絡/地址欄位；出貨方式屬於單筆訂單，不寫入 users，避免 Firestore Rules 擋下導致送單失敗。
+  const profileInfo={
+    companyName:info.companyName||'',
+    contactName:info.contactName||'',
+    name:info.contactName||'',
+    phone:info.phone||'',
+    lineId:info.lineId||'',
+    taxId:info.taxId||'',
+    address:info.address||'',
+    invoiceAddress:info.invoiceAddress||'',
+    deliveryNote:info.deliveryNote||''
+  };
+  try{
+    await db.collection(C.users).doc(currentUser.uid).set({...profileInfo,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    profile={...profile,...profileInfo};
+  }catch(e){
+    console.warn('會員資料更新失敗，但訂單流程不因此中斷：',e);
+    toast('訂單已處理，但會員資料更新失敗：請稍後再到會員資料修改。','err');
+  }
+}
+function loadDraftFromStorage(){try{const raw=localStorage.getItem('seadreamLivestockB2BCart');const data=raw?JSON.parse(raw):null;draftItems=consolidateItems((data&&Array.isArray(data.items)?data.items:[]).map(x=>makeOrderItem(x,x.qty||1)));if(data&&data.message&&!$('deliveryNote').value)$('deliveryNote').value=data.message}catch(e){draftItems=[]}if(!currentOrder && draftItems.length){currentItems=[...draftItems];renderCurrent()}}
+function clearDraftStorage(){try{localStorage.removeItem('seadreamLivestockB2BCart')}catch(e){}}
+function setFormLocked(locked){['companyName','contactName','phone','lineId','taxId','address','invoiceAddress','deliveryNote'].forEach(id=>{$(id).readOnly=!!locked});$('shippingMethod').disabled=!!locked;$('invoiceSameAsAddress').disabled=!!locked;$('saveProfile').disabled=!!locked}
+function renderItemsTable(locked){if(!currentItems.length){$('itemsBox').innerHTML='<div class="empty">目前沒有活體。可回活體清單繼續挑選。</div>';return}const rows=currentItems.map((it,idx)=>{const k=itemKey(it);const farm=orderItemIsFarm(it);const q=Math.max(1,Math.floor(nval(it.qty||it.quantity||1)||1));const img=thumb(it)||mainImg(it);const canQty=!locked && farm;const canRemove=!locked;return `<tr><td><div class="prod">${img?`<img src="${escapeAttr(img)}" alt="">`:''}<div><div class="prodTitle">${escapeHtml(codeOf(it))}｜${escapeHtml(titleOf(it))}</div><div class="prodMeta">${escapeHtml(it.category||'')}｜${farm?'可複數':'單顆唯一'}｜${money(priceOf(it))}</div></div></div></td><td>${money(priceOf(it))}</td><td>${canQty?`<div class="qtyBox"><button class="btn secondary" onclick="changeQty('${escapeAttr(k)}',-1)">-</button><span>${q}</span><button class="btn secondary" onclick="changeQty('${escapeAttr(k)}',1)">+</button></div>`:q}</td><td>${money(priceOf(it)*q)}</td><td>${canRemove?`<button class="btn danger" onclick="removeItem('${escapeAttr(k)}')">移除</button>`:'-'}</td></tr>`}).join('');$('itemsBox').innerHTML=`<table class="orderTable"><thead><tr><th>商品</th><th>單價</th><th>數量</th><th>小計</th><th>操作</th></tr></thead><tbody>${rows}</tbody></table>`}
+function currentOrderEditable(){return !currentOrder || orderStage(currentOrder)==='draft'}
+function renderCurrent(){currentItems=consolidateItems(currentItems);const totals=calcTotals(currentItems);const stage=orderStage(currentOrder);const locked=!!currentOrder && stage!=='draft';$('itemCount').textContent=totals.itemCount;$('qtyTotal').textContent=totals.qtyTotal;$('orderTotal').textContent=money(totals.total);$('step1').classList.toggle('on',!currentOrder||stage==='draft');$('step2').classList.toggle('on',!currentOrder||stage==='draft');$('step3').classList.toggle('on',!!currentOrder&&stage==='formal');$('mainTitle').textContent=currentOrder?(stage==='formal'?'已送出活體訂單':stage==='cancelled'?'取消 / 流標訂單':'尚未送出訂單'):'建立活體訂單';$('orderNoText').textContent=currentOrder?makeOrderNo(currentOrder):'尚未送出訂單';let status='目前選購清單尚未送出訂單。';if(currentOrder){status=stage==='formal'?'此訂單已送出，會員端只能查看或刪除自己的清單紀錄。':stage==='cancelled'?'此訂單已取消 / 流標，可刪除自己的清單紀錄。':'此訂單尚未送出，可移除商品、修改收件資料後再送出。'}$('orderStatusText').textContent=status;renderItemsTable(locked);setFormLocked(locked);$('submitOrderBtn').disabled=locked||!currentItems.length;$('pdfBtn').disabled=!currentOrder||!currentItems.length;$('hideOrderBtn').style.display=currentOrder?'':'none';$('adminDeleteBtn').style.display=(currentOrder&&canManageAnyOrder())?'':'none';$('saveProfileWrap').style.display=locked?'none':'flex';renderPrintArea()}
+window.changeQty=async function(id,delta){if(currentOrder&&!currentOrderEditable())return alert('已送出的訂單不能修改數量。');const it=currentItems.find(x=>itemKey(x)===id);if(!it)return;const q=Math.max(1,Math.floor(nval(it.qty||1)+delta));it.qty=q;it.quantity=q;it.subtotal=priceOf(it)*q;renderCurrent();if(currentOrder)await saveDraftOrderChanges('已更新數量。');else saveDraftBackToStorage()}
+window.removeItem=async function(id){if(currentOrder&&!currentOrderEditable())return alert('已送出的訂單不能移除商品。');const target=currentItems.find(x=>itemKey(x)===id);if(!target)return;const label=(codeOf(target)||'此活體')+'｜'+titleOf(target);if(!confirm('確認移除 '+label+'？'))return;currentItems=currentItems.filter(x=>itemKey(x)!==id);renderCurrent();if(currentOrder)await saveDraftOrderChanges('已移除並儲存。');else saveDraftBackToStorage();}
+
+async function saveDraftOrderChanges(successMsg){
+  if(!currentOrder)return;
+  const orderId=currentOrder.id;
+  const info=getInfo();
+  const items=consolidateItems(currentItems);
+  const totals=calcTotals(items);
+  try{
+    if(!items.length){
+      if(canManageAnyOrder()){
+        await db.runTransaction(async tx=>{
+          const ref=db.collection(C.orders).doc(orderId);
+          const snap=await tx.get(ref);
+          if(!snap.exists)return;
+          const o={id:snap.id,...snap.data()};
+          for(const it of (Array.isArray(o.items)?o.items:[])){
+            const itemId=itemKey(it);if(!itemId)continue;
+            const iref=db.collection(C.b2b).doc(itemId);
+            const isnap=await tx.get(iref);
+            if(!isnap.exists)continue;
+            const d={id:isnap.id,...isnap.data()};
+            const farm=isFarmItem(d)||orderItemIsFarm(it);
+            const qty=Math.max(1,Math.floor(nval(it.qty||it.quantity||1)||1));
+            releaseItemInTx(tx,iref,d,qty,farm);
+          }
+          tx.delete(ref);
+        });
+        currentOrder=null;
+        currentItems=[];
+        fillProfileDefaults();
+        renderCurrent();
+        toast('已刪除空的尚未送出訂單。');
+        return;
+      }
+      await db.collection(C.orders).doc(orderId).set({
+        status:'customer_deleted',
+        quoteStatus:'customer_deleted',
+        customerHiddenByUid:currentUser.uid,
+        customerHiddenByEmail:currentUser.email||'',
+        customerHiddenAt:firebase.firestore.FieldValue.serverTimestamp(),
+        hiddenFromCustomer:true,
+        hiddenByCustomer:true,
+        items:[],total:0,itemCount:0,qtyTotal:0,
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+        editedAt:firebase.firestore.FieldValue.serverTimestamp(),
+        lastEditedByUid:currentUser.uid,
+        lastEditedByEmail:currentUser.email||''
+      },{merge:true});
+      currentOrder=null;
+      currentItems=[];
+      fillProfileDefaults();
+      renderCurrent();
+      toast('已從我的清單移除空訂單。');
+      return;
+    }
+    await db.collection(C.orders).doc(orderId).set({
+      status:'draft',
+      quoteStatus:'draft',
+      customerCanEdit:true,
+      companyName:info.companyName,
+      contactName:info.contactName,
+      phone:info.phone,
+      lineId:info.lineId,
+      taxId:info.taxId,
+      address:info.address,
+      invoiceAddress:info.invoiceAddress,
+      deliveryNote:info.deliveryNote,
+      shippingMethod:info.shippingMethod,
+      note:info.deliveryNote,
+      message:info.deliveryNote,
+      items,
+      total:totals.total,
+      itemCount:totals.itemCount,
+      qtyTotal:totals.qtyTotal,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+      editedAt:firebase.firestore.FieldValue.serverTimestamp(),
+      lastEditedByUid:currentUser.uid,
+      lastEditedByEmail:currentUser.email||''
+    },{merge:true});
+    currentOrder={...currentOrder,status:'draft',quoteStatus:'draft',customerCanEdit:true,...info,items,total:totals.total,itemCount:totals.itemCount,qtyTotal:totals.qtyTotal};
+    renderCurrent();
+    renderOrders();
+    toast(successMsg||'已儲存修改。');
+  }catch(e){
+    console.error(e);
+    alert('儲存尚未送出訂單失敗：'+e.message+'\n\n如果出現 Missing or insufficient permissions，請同步更新 Firestore Rules。');
+  }
+}
+function saveDraftBackToStorage(){try{localStorage.setItem('seadreamLivestockB2BCart',JSON.stringify({items:currentItems,message:$('deliveryNote').value.trim(),savedAt:Date.now(),from:'livestock_order.html'}))}catch(e){}}
+function reserveItemInTx(tx,ref,d,qty,farm,orderId){const now=firebase.firestore.FieldValue.serverTimestamp();if(farm){const cur=availableQty(d);const next=Math.max(0,cur-qty);const data={availableQty:next,reservedQty:firebase.firestore.FieldValue.increment(qty),lastOrderId:orderId,lastOrderAt:now,updatedAt:now};if(next<=0){data.status='reserved';data.reservationStatus='order_submitted'}tx.update(ref,data)}else{tx.update(ref,{status:'reserved',reservationStatus:'order_submitted',availableQty:0,reservedQty:1,reservedByUid:currentUser.uid,reservedByEmail:currentUser.email||'',reservedOrderId:orderId,reservedAt:now,lastOrderId:orderId,lastOrderAt:now,updatedAt:now})}}
+function releaseItemInTx(tx,ref,d,qty,farm){const now=firebase.firestore.FieldValue.serverTimestamp();if(farm){const cur=availableQty(d);tx.update(ref,{availableQty:cur+qty,reservedQty:Math.max(0,nval(d.reservedQty)-qty),status:'available',reservationStatus:firebase.firestore.FieldValue.delete(),updatedAt:now})}else{tx.update(ref,{status:'available',availableQty:1,reservedQty:0,reservedByUid:firebase.firestore.FieldValue.delete(),reservedByEmail:firebase.firestore.FieldValue.delete(),reservedOrderId:firebase.firestore.FieldValue.delete(),reservedAt:firebase.firestore.FieldValue.delete(),reservationStatus:firebase.firestore.FieldValue.delete(),updatedAt:now})}}
+async function submitOrder(){
+  currentItems=consolidateItems(currentItems);
+  if(!currentItems.length)return alert('目前沒有活體可送出。');
+  if(currentOrder && orderStage(currentOrder)!=='draft')return alert('這筆訂單已送出，不能重複送出。');
+  const info=getInfo();
+  if(!checkInfo(info))return;
+  if(!confirm('確認送出活體訂單？送出後會員端不能自行修改，只能查看或刪除自己的清單紀錄。'))return;
+  $('submitOrderBtn').disabled=true;
+  const orderRef=currentOrder?db.collection(C.orders).doc(currentOrder.id):db.collection(C.orders).doc();
+  const orderNo=currentOrder?makeOrderNo(currentOrder):newOrderNo();
+  try{
+    await db.runTransaction(async tx=>{
+      if(currentOrder){
+        const osnap=await tx.get(orderRef);
+        if(!osnap.exists)throw new Error('找不到這筆尚未送出的訂單。');
+        const old={id:osnap.id,...osnap.data()};
+        if(orderStage(old)!=='draft')throw new Error('這筆訂單已送出或已取消，不能再次送出。');
+      }
+      const fresh=[];
+      for(const it of currentItems){
+        const ref=db.collection(C.b2b).doc(itemKey(it));
+        const snap=await tx.get(ref);
+        if(!snap.exists)throw new Error((codeOf(it)||itemKey(it))+' 已不存在。');
+        const d={id:snap.id,...snap.data()};
+        const farm=isFarmItem(d);
+        const aq=availableQty(d);
+        const qty=farm?Math.max(1,Math.floor(nval(it.qty||1)||1)):1;
+        const reservedByMe=d.reservedOrderId && currentOrder && d.reservedOrderId===currentOrder.id;
+        if(!reservedByMe && ((d.status||'available')!=='available'||aq<=0))throw new Error((codeOf(d)||d.id)+' 已不是可販售狀態。');
+        if(!reservedByMe && qty>aq)throw new Error((codeOf(d)||d.id)+' 剩餘數量不足，目前剩餘 '+aq+'。');
+        fresh.push({ref,d,farm,qty,reservedByMe});
+      }
+      const items=fresh.map(x=>makeOrderItem(x.d,x.qty));
+      const totals=calcTotals(items);
+      tx.set(orderRef,{type:'livestock',orderType:'livestock',source:'livestock_order.html',version:VERSION,orderNo,status:'submitted',quoteStatus:'formal_order_submitted',paymentStatus:'unpaid',customerCanEdit:false,isPaid:false,createdAt:currentOrder?(currentOrder.createdAt||firebase.firestore.FieldValue.serverTimestamp()):firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),submittedAt:firebase.firestore.FieldValue.serverTimestamp(),createdByUid:currentOrder?(currentOrder.createdByUid||currentUser.uid):currentUser.uid,uid:currentOrder?(currentOrder.uid||currentUser.uid):currentUser.uid,email:currentUser.email||'',customerEmail:currentUser.email||'',customerName:info.companyName||info.contactName||currentUser.email||'',companyName:info.companyName,contactName:info.contactName,phone:info.phone,lineId:info.lineId,taxId:info.taxId,address:info.address,invoiceAddress:info.invoiceAddress,deliveryNote:info.deliveryNote,shippingMethod:info.shippingMethod,note:info.deliveryNote,message:info.deliveryNote,notifyRoles:['admin'],notifyPermissions:['orderAdmin','livestockAdmin'],visibleToPermissions:['orderAdmin','livestockAdmin'],managerModules:['orders','livestock'],items,total:totals.total,itemCount:totals.itemCount,qtyTotal:totals.qtyTotal},{merge:true});
+      fresh.forEach(x=>{if(!x.reservedByMe)reserveItemInTx(tx,x.ref,x.d,x.qty,x.farm,orderRef.id)});
+    });
+    await updateProfile(info);
+    await db.collection(C.logs).add({module:'orders',action:'livestock_order_submitted',summary:'活體訂單已送出 '+orderNo,actorUid:currentUser.uid,actorEmail:currentUser.email||'',createdAt:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
+    clearDraftStorage();
+    toast('已送出活體訂單。');
+    await openOrder(orderRef.id);
+    setTimeout(()=>generatePdf(),450);
+  }catch(e){
+    console.error(e);
+    alert('送出訂單失敗：'+e.message+'\n\n如果訊息是 Missing or insufficient permissions，請同步更新 Firestore Rules。');
+    $('submitOrderBtn').disabled=false;
+  }
+}
+async function hideCurrentOrder(){if(!currentOrder)return alert('請先選擇訂單。');const owner=currentOrder.createdByUid===currentUser.uid||currentOrder.uid===currentUser.uid;if(!owner&&!canManageAnyOrder())return alert('只能刪除自己的訂單紀錄。');if(!confirm('確認從「我的活體訂單」清單刪除這筆紀錄？管理人員仍可在管理端看到歷史紀錄。'))return;try{await db.collection(C.orders).doc(currentOrder.id).set({customerHiddenByUid:currentUser.uid,customerHiddenByEmail:currentUser.email||'',customerHiddenAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});toast('已從我的訂單清單隱藏。');currentOrder=null;currentItems=[];fillProfileDefaults();renderCurrent();renderOrders()}catch(e){console.error(e);alert('刪除我的紀錄失敗：'+e.message+'\n\n如果出現 Missing or insufficient permissions，請同步更新我這次提供的 Firestore Rules。')}}
+async function adminDeleteOrder(){if(!currentOrder)return alert('請先選擇訂單。');if(!canManageAnyOrder())return alert('只有 admin / orderAdmin / livestockAdmin 可以管理刪除。');if(!confirm('確認管理刪除這筆訂單？系統會嘗試釋放訂單內活體，此操作是管理端刪除。'))return;const id=currentOrder.id;try{await db.runTransaction(async tx=>{const ref=db.collection(C.orders).doc(id);const snap=await tx.get(ref);if(!snap.exists)return;const o={id:snap.id,...snap.data()};for(const it of (Array.isArray(o.items)?o.items:[])){const itemId=itemKey(it);if(!itemId)continue;const iref=db.collection(C.b2b).doc(itemId);const isnap=await tx.get(iref);if(!isnap.exists)continue;const d={id:isnap.id,...isnap.data()};const farm=isFarmItem(d)||orderItemIsFarm(it);const qty=Math.max(1,Math.floor(nval(it.qty||it.quantity||1)||1));releaseItemInTx(tx,iref,d,qty,farm)}tx.delete(ref)});toast('已管理刪除訂單並釋放活體。');currentOrder=null;currentItems=[];fillProfileDefaults();renderCurrent();renderOrders()}catch(e){console.error(e);alert('管理刪除失敗：'+e.message+'\n\n如果出現 Missing or insufficient permissions，請同步更新我這次提供的 Firestore Rules。')}}
+function renderPrintArea(){const totals=calcTotals(currentItems);const info=getInfo();const rows=currentItems.map((it,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(codeOf(it))}</td><td>${escapeHtml(titleOf(it))}</td><td>${escapeHtml(it.category||'')}</td><td>${money(priceOf(it))}</td><td>${escapeHtml(it.qty||1)}</td><td>${money(priceOf(it)*(it.qty||1))}</td></tr>`).join('');$('printArea').innerHTML=`<div class="printBlock noBreak"><h1>SEADREAM Aquarium 活體訂單</h1><div>訂單號：${escapeHtml(currentOrder?makeOrderNo(currentOrder):'尚未送出')}</div><div>狀態：${escapeHtml(currentOrder?statusLabel(currentOrder.status):'草稿')}</div><div>日期：${new Date().toLocaleString('zh-TW')}</div><hr><h3>客戶資料</h3><div>公司 / 店名：${escapeHtml(info.companyName)}</div><div>聯絡人：${escapeHtml(info.contactName)}</div><div>電話：${escapeHtml(info.phone)}　LINE：${escapeHtml(info.lineId)}</div><div>統一編號：${escapeHtml(info.taxId)}</div><div>收件地址：${escapeHtml(info.address)}</div><div>發票地址：${escapeHtml(info.invoiceAddress)}</div><div>出貨方式：${escapeHtml(info.shippingMethod)}</div><div>備註：${escapeHtml(info.deliveryNote)}</div><h3>訂單明細</h3><table><thead><tr><th>#</th><th>編號</th><th>名稱</th><th>分類</th><th>單價</th><th>數量</th><th>小計</th></tr></thead><tbody>${rows}</tbody></table><h2 style="text-align:right">合計：${money(totals.total)}</h2><p>付款與出貨狀態請以 SEADREAM 管理人員最後確認為準。</p></div>`}
+function generatePdf(){if(!currentItems.length)return alert('沒有訂單明細可產生 PDF。');renderPrintArea();window.print()}
+function listenOrders(){if(unsubscribeOrders)unsubscribeOrders();let q;if(canManageAnyOrder())q=db.collection(C.orders).where('orderType','==','livestock').limit(120);else q=db.collection(C.orders).where('createdByUid','==',currentUser.uid).where('orderType','==','livestock').limit(120);unsubscribeOrders=q.onSnapshot(snap=>{latestOrders=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));renderOrders()},err=>{$('orderList').innerHTML='<div class="small">讀取訂單失敗：'+escapeHtml(err.message)+'</div>'})}
+function renderOrders(){const filter=$('orderFilter').value;let rows=[...latestOrders];if(filter!=='hidden')rows=rows.filter(o=>!isHiddenForMe(o));if(filter==='formal')rows=rows.filter(o=>orderStage(o)==='formal');if(filter==='cancelled')rows=rows.filter(o=>orderStage(o)==='cancelled');if(filter==='hidden')rows=rows.filter(o=>isHiddenForMe(o));if(filter==='all')rows=rows.filter(o=>orderStage(o)!=='deleted');if(!rows.length){$('orderList').innerHTML='<div class="empty">目前沒有符合條件的訂單。</div>';return}$('orderList').innerHTML=rows.map(o=>{const stage=orderStage(o);const badge=stage==='formal'?'<span class="badge formal">已送出</span>':stage==='cancelled'?'<span class="badge cancel">取消 / 流標</span>':'<span class="badge">尚未送出</span>';const active=currentOrder&&currentOrder.id===o.id;const date=dateText(o.createdAt);const customer=o.customerName||o.companyName||o.contactName||o.customerEmail||'';return `<div class="orderCard ${active?'active':''} ${stage==='formal'?'formal':''}" onclick="openOrder('${escapeAttr(o.id)}')"><div class="orderTop"><div>${badge}<div class="orderMeta" style="margin-top:5px">日期：${escapeHtml(date)}</div><div class="orderMeta">數量：${escapeHtml(o.qtyTotal||0)}　項目：${escapeHtml(o.itemCount||0)}</div><div class="orderTitle">${escapeHtml(makeOrderNo(o))}</div><div class="orderMeta">${escapeHtml(customer)}</div></div><div class="total">${money(o.total)}</div></div></div>`}).join('')}
+async function openOrder(id){const snap=await db.collection(C.orders).doc(id).get();if(!snap.exists)return alert('找不到訂單。');currentOrder={id:snap.id,...snap.data()};currentItems=consolidateItems(Array.isArray(currentOrder.items)?currentOrder.items:[]);$('companyName').value=currentOrder.companyName||'';$('contactName').value=currentOrder.contactName||currentOrder.customerName||'';$('phone').value=currentOrder.phone||'';$('lineId').value=currentOrder.lineId||'';$('taxId').value=currentOrder.taxId||'';$('shippingMethod').value=currentOrder.shippingMethod||'';$('address').value=currentOrder.address||'';$('invoiceAddress').value=currentOrder.invoiceAddress||'';$('deliveryNote').value=currentOrder.deliveryNote||currentOrder.note||currentOrder.message||'';$('saveProfile').checked=false;setInvoiceSameByValue();renderCurrent();renderOrders();window.scrollTo({top:0,behavior:'smooth'})}
+function loadDraftAsCurrent(){currentOrder=null;fillProfileDefaults();loadDraftFromStorage();if(!currentItems.length){renderCurrent();toast('目前沒有從活體清單帶入的選購項目。','err')}else{renderCurrent();toast('已載入目前選購清單。')}}
+function goStep(step){if(step===1){$('itemsBox').scrollIntoView({behavior:'smooth',block:'start'});return}if(step===2){$('infoSection').scrollIntoView({behavior:'smooth',block:'start'});return}if(step===3){$('mainActions').scrollIntoView({behavior:'smooth',block:'center'});return}}
+window.openOrder=openOrder;window.goStep=goStep;window.generatePdf=generatePdf;
+window.addEventListener('load',()=>{if(!initFirebase())return;$('step1').addEventListener('click',()=>goStep(1));$('step2').addEventListener('click',()=>goStep(2));$('step3').addEventListener('click',()=>goStep(3));$('submitOrderBtn').addEventListener('click',submitOrder);$('hideOrderBtn').addEventListener('click',hideCurrentOrder);$('adminDeleteBtn').addEventListener('click',adminDeleteOrder);$('pdfBtn').addEventListener('click',generatePdf);$('reloadOrdersBtn').addEventListener('click',listenOrders);$('orderFilter').addEventListener('input',renderOrders);$('newDraftBtn').addEventListener('click',loadDraftAsCurrent);$('invoiceSameAsAddress').addEventListener('change',syncInvoiceAddressIfNeeded);$('address').addEventListener('input',syncInvoiceAddressIfNeeded);['companyName','contactName','phone','lineId','taxId','shippingMethod','address','invoiceAddress','deliveryNote'].forEach(id=>$(id).addEventListener('input',()=>{syncInvoiceAddressIfNeeded();renderPrintArea();saveDraftBackToStorage()}));auth.onAuthStateChanged(async user=>{currentUser=user;if(!user){$('authPill').textContent='未登入';$('loginNotice').style.display='block';$('app').style.display='none';return}try{await loadProfile(user)}catch(e){$('authPill').textContent='權限檢查失敗';$('loginNotice').style.display='block';$('loginNotice').innerHTML='權限檢查失敗：'+escapeHtml(e.message);return}if(!canEnter()){$('authPill').textContent='無權限';$('loginNotice').style.display='block';$('app').style.display='none';return}$('authPill').textContent=(isAdmin()?'admin':(hasLivestockAdmin()?'活體管理':hasOrderAdmin()?'訂單管理':'wholesale'))+' 已登入';$('loginNotice').style.display='none';$('app').style.display='block';fillProfileDefaults();loadDraftFromStorage();renderCurrent();listenOrders();const params=new URLSearchParams(location.search);if(params.get('id'))openOrder(params.get('id'));});});
+</script>
+</body>
+</html>

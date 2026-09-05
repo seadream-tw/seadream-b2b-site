@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SEADREAM B2B 會員入口 v21.4 申請審核讀取修正版</title>
+  <meta name="description" content="SEADREAM Aquarium B2B 會員登入、批發帳號申請、審核提醒與功能入口 v21.4" />
+  <style>
+    :root{
+      --bg:#06111a;--panel:rgba(8,23,35,.86);--panel2:rgba(10,31,47,.9);
+      --text:#ecf7ff;--muted:#9bb9ca;--line:rgba(126,206,224,.2);--line2:rgba(126,206,224,.35);
+      --primary:#17d6c3;--primary2:#2f8cff;--primary3:#77ffe9;--warn:#f0c869;--danger:#ff7d94;--ok:#67f7b5;
+      --shadow:0 22px 80px rgba(0,0,0,.35);--radius:24px;
+    }
+    *{box-sizing:border-box}
+    html,body{min-height:100%}
+    body{
+      margin:0;color:var(--text);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left,rgba(47,140,255,.22),transparent 28%),
+        radial-gradient(circle at 90% 10%,rgba(23,214,195,.16),transparent 24%),
+        linear-gradient(180deg,#06111a 0%,#081824 36%,#07131b 100%);
+      overflow-x:hidden;
+    }
+    body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;opacity:.2}
+    a{color:inherit;text-decoration:none}.hidden{display:none!important}
+    .shell{width:min(1240px,calc(100vw - 32px));margin:0 auto;position:relative;z-index:1}
+    .hero{padding:26px 0 28px}.heroCard{border:1px solid var(--line);border-radius:32px;background:linear-gradient(135deg,rgba(14,39,56,.94),rgba(7,20,31,.88));box-shadow:var(--shadow);padding:24px 26px;display:flex;align-items:center;justify-content:space-between;gap:18px;overflow:hidden}
+    .heroMain{display:flex;align-items:center;gap:18px;min-width:0}.brandMark{width:84px;height:84px;border-radius:24px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(135deg,rgba(23,214,195,.14),rgba(47,140,255,.16));display:grid;place-items:center;color:var(--primary3);font-size:30px;font-weight:1000;letter-spacing:.08em;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),0 18px 36px rgba(0,0,0,.22)}
+    h1{margin:0;font-size:34px;line-height:1.05;font-weight:950;letter-spacing:.02em}.heroSub{margin:10px 0 0;color:rgba(236,247,255,.76);line-height:1.75;font-size:15px}.heroDomain{border:1px solid var(--line);border-radius:999px;padding:10px 16px;background:rgba(255,255,255,.05);color:var(--primary3);font-weight:900;white-space:nowrap;align-self:flex-start}
+    .mainGrid{display:grid;grid-template-columns:400px minmax(0,1fr);gap:22px;align-items:start;margin-bottom:28px}.panel{border:1px solid var(--line);border-radius:28px;background:linear-gradient(180deg,rgba(9,25,37,.92),rgba(8,22,33,.84));box-shadow:var(--shadow);overflow:hidden}.panelInner{padding:24px}
+    .loginTitle,.sectionTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.loginTitle h2,.sectionTop h2{margin:0;font-size:24px;font-weight:950}.sectionTop h2{font-size:22px}.functionDesc{color:var(--muted);line-height:1.7;font-size:14px;margin:6px 0 0}.badge{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(23,214,195,.10);color:var(--primary3);font-size:13px;font-weight:900;line-height:1;white-space:nowrap}.badgeWarn{background:rgba(240,200,105,.10);color:var(--warn)}.badgeDanger{background:rgba(255,125,148,.10);color:var(--danger)}
+    .field{margin-bottom:14px}.field input,.field select,.field textarea,input,select,textarea{width:100%;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--text);font-size:16px;padding:15px 16px;outline:none;transition:.18s ease;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);font-family:inherit}textarea{resize:vertical;min-height:96px;line-height:1.7}input::placeholder,textarea::placeholder{color:rgba(236,247,255,.34)}input:focus,select:focus,textarea:focus{border-color:rgba(23,214,195,.58);box-shadow:0 0 0 4px rgba(23,214,195,.09),inset 0 1px 0 rgba(255,255,255,.05);background:rgba(255,255,255,.065)}input:-webkit-autofill{-webkit-text-fill-color:var(--text)!important;transition:background-color 9999s ease-out 0s;box-shadow:0 0 0 1000px #0b2233 inset!important;border:1px solid rgba(126,206,224,.38)!important}option{background:#0b2233;color:var(--text)}
+    .securityBox{margin-top:14px;padding:16px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.02));display:grid;gap:12px}.securityTitle{font-weight:900;font-size:15px;color:var(--primary3);letter-spacing:.02em}.securityRow{display:grid;grid-template-columns:minmax(0,1fr) 136px;gap:12px;align-items:center}.securityQuestion{color:rgba(236,247,255,.84);font-size:14px;line-height:1.7}.securityHint{color:var(--muted);font-size:12px;line-height:1.6;margin-top:4px}.miniLinkBtn{border:0;background:transparent;color:var(--primary);padding:0;min-height:auto;font-weight:900;cursor:pointer;text-align:left}
+    .btnRow{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}button,.btn{min-height:48px;padding:13px 18px;border-radius:16px;border:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:900;letter-spacing:.02em;transition:.14s ease}button:hover,.btn:hover{transform:translateY(-1px)}button:disabled,.btnDisabled{opacity:.55;cursor:not-allowed;transform:none}.btnPrimary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#06111a;box-shadow:0 14px 34px rgba(23,214,195,.16)}.btnSoft{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--text)}.btnLine{background:transparent;border:1px solid rgba(23,214,195,.36);color:var(--primary3)}.btnDanger{background:rgba(255,125,148,.12);border:1px solid rgba(255,125,148,.34);color:#ffc7d1}.applyEntry{margin:0 0 16px;padding:14px;border:1px solid rgba(23,214,195,.24);border-radius:22px;background:rgba(23,214,195,.055);display:grid;gap:10px}.applyEntryText{color:rgba(236,247,255,.78);font-size:13px;line-height:1.7}.statusBox{margin-top:16px;padding:16px 18px;border-radius:20px;background:linear-gradient(180deg,rgba(23,214,195,.08),rgba(255,255,255,.03));border:1px solid rgba(23,214,195,.16);color:rgba(236,247,255,.9);line-height:1.8;font-size:14px}.statusBox.warn{border-color:rgba(240,200,105,.32);background:rgba(240,200,105,.08);color:#ffe8a9}.statusBox.danger{border-color:rgba(255,125,148,.36);background:rgba(255,125,148,.08);color:#ffcbd4}.statusBox.ok{border-color:rgba(103,247,181,.32);background:rgba(103,247,181,.08);color:#caffdf}.globalToast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));z-index:9999;width:min(460px,calc(100vw - 28px));transform:translate(-50%,18px);opacity:0;pointer-events:none;border:1px solid rgba(23,214,195,.30);background:rgba(7,20,31,.96);backdrop-filter:blur(14px);box-shadow:0 18px 60px rgba(0,0,0,.38);border-radius:18px;padding:14px 16px;color:var(--text);line-height:1.65;font-weight:850;transition:.18s ease}.globalToast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}.globalToast.ok{border-color:rgba(103,247,181,.42);color:#d7ffe7}.globalToast.warn{border-color:rgba(240,200,105,.45);color:#ffe8a9}.globalToast.danger{border-color:rgba(255,125,148,.48);color:#ffcbd4}.notice{margin:16px 0 0;color:var(--muted);line-height:1.8;font-size:13px}
+    .memberPanel{display:grid;gap:14px}.memberHero{padding:18px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(23,214,195,.10),rgba(47,140,255,.08));display:flex;align-items:center;gap:14px}.memberLogo{width:64px;height:64px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);display:grid;place-items:center;color:var(--primary3);font-weight:1000;font-size:22px}.memberName{font-weight:950;font-size:22px;line-height:1.3}.memberSub{margin-top:5px;color:var(--muted);line-height:1.6;word-break:break-word;font-size:14px}.infoGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.infoCell{padding:14px 15px;border-radius:20px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));min-height:84px}.infoLabel{color:var(--muted);font-size:12px;margin-bottom:7px;letter-spacing:.04em}.infoValue{font-weight:900;line-height:1.42;word-break:break-word}.timeValue{font-size:22px;line-height:1.2;color:var(--primary3)}
+    .navGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.navCard{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:24px;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.02));display:flex;flex-direction:column;gap:12px;min-height:198px;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}.navTitle{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:950;font-size:18px}.navText{color:rgba(236,247,255,.78);line-height:1.8;font-size:15px;flex:1}.navCard .btn{align-self:flex-start;margin-top:auto}.empty{border:1px dashed rgba(126,206,224,.25);border-radius:22px;padding:24px;color:var(--muted);line-height:1.8}.applyPanel{margin-top:18px;border:1px solid rgba(23,214,195,.22);border-radius:24px;background:linear-gradient(180deg,rgba(23,214,195,.07),rgba(255,255,255,.025));padding:18px}.applyHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}.applyHead h3{margin:0;font-size:19px}.applyHint{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.7}.applyGrid{display:grid;grid-template-columns:1fr;gap:0}.footer{width:min(1240px,calc(100vw - 32px));margin:0 auto 24px;color:rgba(236,247,255,.48);text-align:center;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+    @media(max-width:980px){.mainGrid{grid-template-columns:1fr}.navGrid{grid-template-columns:1fr}}@media(max-width:760px){.heroCard{padding:20px;flex-direction:column;align-items:flex-start}.heroMain{align-items:flex-start}.heroText h1{font-size:28px}.brandMark{width:72px;height:72px;border-radius:20px}}@media(max-width:640px){.shell{width:min(100vw - 18px,100vw - 18px)}.panelInner{padding:18px}.hero{padding:14px 0 18px}.securityRow{grid-template-columns:1fr}.infoGrid{grid-template-columns:1fr}.btnRow .btn,.btnRow button{flex:1 1 auto}}
+  
+
+    /* v21.3 wholesale application review / pending notification */
+    .reviewCard{
+      border-color:rgba(240,200,105,.38)!important;
+      background:linear-gradient(180deg,rgba(240,200,105,.10),rgba(255,255,255,.025))!important;
+    }
+    .reviewCountPill{
+      display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:28px;padding:0 9px;border-radius:999px;
+      border:1px solid rgba(240,200,105,.48);background:rgba(240,200,105,.13);color:#ffe8a9;font-weight:1000;font-size:13px;
+    }
+    .applicationReviewPanel{
+      margin-top:18px;border:1px solid rgba(240,200,105,.30);border-radius:24px;background:linear-gradient(180deg,rgba(240,200,105,.075),rgba(255,255,255,.025));padding:18px;
+    }
+    .reviewPanelHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;}
+    .reviewPanelHead h3{margin:0;font-size:20px}.reviewPanelHint{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.7}
+    .applicationList{display:grid;gap:12px}.applicationItem{border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.04);padding:14px;display:grid;gap:10px;}
+    .applicationTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}.applicationTitle{font-weight:1000;font-size:17px;line-height:1.4}.applicationMeta{color:rgba(236,247,255,.74);font-size:13px;line-height:1.8;word-break:break-word}.applicationNote{border:1px dashed rgba(126,206,224,.22);border-radius:16px;padding:10px 12px;color:rgba(236,247,255,.72);font-size:13px;line-height:1.7;background:rgba(0,0,0,.10);white-space:pre-wrap}.applicationActions{display:flex;flex-wrap:wrap;gap:8px}.applicationEmpty{border:1px dashed rgba(126,206,224,.24);border-radius:20px;padding:20px;color:var(--muted);text-align:center;line-height:1.8;background:rgba(255,255,255,.025)}
+    .applicationBadge{display:inline-flex;align-items:center;justify-content:center;padding:6px 9px;border-radius:999px;border:1px solid rgba(240,200,105,.42);background:rgba(240,200,105,.10);color:#ffe8a9;font-weight:900;font-size:12px;white-space:nowrap}.applicationBadge.ok{border-color:rgba(103,247,181,.34);background:rgba(103,247,181,.08);color:#caffdf}.applicationBadge.danger{border-color:rgba(255,125,148,.34);background:rgba(255,125,148,.08);color:#ffcbd4}
+    @media(max-width:760px){.applicationTop{display:grid}.applicationActions .btn,.applicationActions button{width:100%}.reviewPanelHead{display:grid}.applicationReviewPanel{padding:14px}}
+
+  </style>
+</head>
+<body>
+  <div id="globalToast" class="globalToast" role="status" aria-live="polite"></div>
+  <header class="hero">
+    <div class="shell">
+      <div class="heroCard">
+        <div class="heroMain">
+          <div class="brandMark">SD</div>
+          <div class="heroText">
+            <h1>SEADREAM B2B 會員入口</h1>
+            <div class="heroSub">會員登入、批發帳號申請與功能入口．批發會員登入後可進入設備批發與活體販售頁，管理人員依權限看到後台入口。</div>
+          </div>
+        </div>
+        <div class="heroDomain">b2b.seadream.com.tw</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell mainGrid">
+    <section class="panel">
+      <div class="panelInner">
+        <div class="loginTitle">
+          <h2 id="loginCardTitle">會員登入</h2>
+          <span id="loginMiniBadge" class="badge badgeWarn">未登入</span>
+        </div>
+
+        <div id="loginFormArea">
+          <div id="loginOnlyArea">
+            <div class="applyEntry">
+              <div class="applyEntryText">還沒有 B2B 批發帳號時，請直接進入申請頁面填資料；不需要先輸入登入驗證題。</div>
+              </div>
+
+          <div class="field"><input id="emailInput" type="email" autocomplete="email" placeholder="Email" /></div>
+          <div class="field"><input id="passwordInput" type="password" autocomplete="current-password" placeholder="Password" /></div>
+
+          <div class="securityBox">
+            <div class="securityTitle">登入安全檢查</div>
+            <div class="securityRow">
+              <div>
+                <div id="botQuestionText" class="securityQuestion">正在產生驗證題目...</div>
+                <div class="securityHint">v21.3 修正：登入驗證只用於會員登入；申請批發帳號不需要先完成驗證。</div>
+              </div>
+              <div class="field" style="margin:0;"><input id="botAnswerInput" type="text" inputmode="numeric" autocomplete="off" placeholder="答案" /></div>
+            </div>
+            <button id="refreshBotQuestionBtn" class="miniLinkBtn" type="button">換一題驗證</button>
+          </div>
+
+          <div class="btnRow">
+            <button id="loginBtn" class="btnPrimary" type="button">登入</button>
+            <button id="resetPasswordBtn" class="btnSoft" type="button">忘記密碼</button>
+            <button id="showApplyBtn" class="btnLine" type="button">申請批發帳號</button>
+          </div>
+          <div id="loginStatus" class="statusBox warn">尚未登入。</div>
+          <p class="notice">忘記密碼時，請先輸入 Email，再按「忘記密碼」。申請批發帳號不需要登入安全檢查，請直接按上方「申請批發帳號」。</p>
+
+          </div>
+
+          <div id="applyPanel" class="applyPanel hidden">
+            <div class="applyHead">
+              <div>
+                <h3>批發帳號申請</h3>
+                <div class="applyHint">這裡是批發帳號申請頁面。申請不需要登入安全檢查；送出後會建立待審核申請，管理員審核後再建立帳號或與您聯絡。</div>
+              </div>
+              <button id="hideApplyBtn" class="btnSoft" type="button" style="min-height:38px;padding:9px 12px;">返回登入</button>
+            </div>
+            <div class="applyGrid">
+              <div class="field"><input id="applyCompanyName" type="text" autocomplete="organization" placeholder="公司 / 店名 *" /></div>
+              <div class="field"><input id="applyContactName" type="text" autocomplete="name" placeholder="聯絡人 *" /></div>
+              <div class="field"><input id="applyEmail" type="email" autocomplete="email" placeholder="Email *" /></div>
+              <div class="field"><input id="applyPhone" type="tel" autocomplete="tel" placeholder="電話 / 手機 *" /></div>
+              <div class="field"><input id="applyLineId" type="text" placeholder="LINE ID" /></div>
+              <div class="field"><input id="applyTaxId" type="text" inputmode="numeric" placeholder="統一編號" /></div>
+              <div class="field"><input id="applyAddress" type="text" autocomplete="street-address" placeholder="公司 / 收件地址" /></div>
+              <div class="field">
+                <select id="applyType">
+                  <option value="wholesale">申請類型：設備 / 添加劑批發</option>
+                  <option value="livestock">申請類型：活體珊瑚批發</option>
+                  <option value="both">申請類型：設備與活體都需要</option>
+                </select>
+              </div>
+              <div class="field"><textarea id="applyNote" placeholder="補充說明，例如目前經營項目、想批發的品牌、是否已有店面或維護客戶"></textarea></div>
+            </div>
+            <div class="btnRow">
+              <button id="submitApplyBtn" class="btnPrimary" type="button">送出申請</button>
+              <button id="clearApplyBtn" class="btnSoft" type="button">清空</button>
+            </div>
+            <div id="applyStatus" class="statusBox warn">請填寫至少公司 / 店名、聯絡人、Email、電話。</div>
+          </div>
+        </div>
+
+        <div id="loggedInArea" class="memberPanel hidden">
+          <div class="memberHero">
+            <div class="memberLogo">SD</div>
+            <div>
+              <div id="memberDisplayName" class="memberName">已登入</div>
+              <div id="memberDisplayEmail" class="memberSub"></div>
+            </div>
+          </div>
+          <div class="infoGrid">
+            <div class="infoCell"><div class="infoLabel">會員角色</div><div id="memberRoleText" class="infoValue">--</div></div>
+            <div class="infoCell"><div class="infoLabel">帳號狀態</div><div id="memberStatusText" class="infoValue">--</div></div>
+            <div class="infoCell"><div class="infoLabel">今天日期</div><div id="currentDateText" class="infoValue">--</div></div>
+            <div class="infoCell"><div class="infoLabel">目前時間</div><div id="currentTimeText" class="infoValue timeValue">--:--:--</div></div>
+          </div>
+          <div class="btnRow">
+            <button id="logoutBtn" class="btnSoft" type="button">登出</button>
+          </div>
+          <div id="memberNotice" class="statusBox">已登入。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel functionPanel">
+      <div class="panelInner">
+        <div class="sectionTop">
+          <div><h2>功能入口</h2><div class="functionDesc">登入完成後，系統會依照 role 與 permissions 顯示可使用的功能入口。</div></div>
+          <span id="roleBadge" class="badge badgeWarn">未登入</span>
+        </div>
+        <div id="loginHintBlock" class="statusBox warn">請先在左側登入。登入完成後，系統會依照權限自動顯示可使用的功能入口。</div>
+        <div id="noAccessBlock" class="statusBox danger hidden">此帳號目前沒有任何 B2B 功能入口權限，請聯絡管理員確認 users 權限設定。</div>
+        <div id="navGrid" class="navGrid hidden">
+          <div id="equipmentSalesNavCard" class="navCard hidden"><div class="navTitle">設備批發估價 <span class="badge">批發</span></div><div class="navText">查看設備商品、加入報價、送出報價單與查詢報價紀錄。</div><a class="btn btnPrimary" href="/order.html">進入設備批發頁</a></div>
+          <div id="livestockSalesNavCard" class="navCard hidden"><div class="navTitle">活體珊瑚販售 <span class="badge">活體</span></div><div class="navText">查看 B2B 活體販售頁，將活體加入訂單。</div><a class="btn btnPrimary" href="/livestock_b2b.html">進入活體販售頁</a></div>
+          <div id="livestockAdminNavCard" class="navCard hidden"><div class="navTitle">活體管理 <span class="badge badgeWarn">管理</span></div><div class="navText">活體上架、改價、下架、刪除與同步一般商城 / B2B 活體資料。</div><a class="btn btnLine" href="/livestock_admin.html">進入活體管理</a></div>
+          <div id="elementCalculatorNavCard" class="navCard hidden"><div class="navTitle">水質元素調整 <span class="badge badgeWarn">元素</span></div><div class="navText">多魚缸元素比較、添加量計算、批次儲存與管理者自訂配方。</div><a class="btn btnLine" href="/element_calculator.html">進入元素調整頁</a></div>
+          <div id="chatAdminNavCard" class="navCard hidden"><div class="navTitle">即時客服 <span class="badge badgeWarn">客服</span></div><div class="navText">管理一般商城會員的即時客服訊息，設定線上 / 忙碌 / 離線狀態。</div><a class="btn btnLine" href="/chat_admin.html">進入客服聊天室</a></div>
+          <div id="wholesaleApplicationsNavCard" class="navCard reviewCard hidden"><div class="navTitle">批發帳號審核 <span id="pendingApplicationCountBadge" class="reviewCountPill">0</span></div><div class="navText">查看新送出的批發帳號申請。送出申請後會出現在這裡，管理員可標記已聯絡、已通過或拒絕。</div><button id="scrollApplicationsBtn" class="btn btnLine" type="button">查看待審核申請</button></div>
+        </div>
+        <div id="applicationReviewPanel" class="applicationReviewPanel hidden">
+          <div class="reviewPanelHead">
+            <div><h3>批發帳號申請審核</h3><div class="reviewPanelHint">此區只會給 admin 或 userAdmin 看到。v21.4 改為讀取最近 100 筆批發申請，不再只抓 status=pending，避免舊資料或欄位不一致時看不到。</div></div>
+            <button id="reloadApplicationsBtn" class="btnSoft" type="button" style="min-height:38px;padding:9px 12px;">重新讀取</button>
+          </div>
+          <div id="applicationReviewStatus" class="statusBox warn">登入後會自動讀取批發申請。</div>
+          <div id="applicationList" class="applicationList" style="margin-top:12px;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="footer">SEADREAM Aquarium Wholesale System</div>
+
+  <script src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="/__/firebase/init.js?useEmulator=false"></script>
+  <script>
+    const VERSION='index_b2b_v21_4_application_review_query_fix';
+    let auth=null, db=null, currentUser=null, currentProfile=null, currentRole='guest', currentStatus='inactive', currentPermissions={}, clockTimer=null, botAnswer=null, applicationUnsubscribe=null, lastPendingApplicationIds=new Set(), pendingApplications=[];
+    const $=id=>document.getElementById(id);
+    function safe(v){return String(v??'');}
+    function normalizeDigits(v){
+      return safe(v).replace(/[０-９]/g,ch=>String(ch.charCodeAt(0)-0xFF10)).replace(/[＋﹢]/g,'+').trim();
+    }
+    let toastTimer=null;
+    function statusClass(type){return type==='danger'?'danger':type==='warn'?'warn':'ok';}
+    function showToast(msg,type='ok',duration=5200){
+      const el=$('globalToast');
+      if(!el || !msg) return;
+      clearTimeout(toastTimer);
+      el.textContent=msg;
+      el.className='globalToast show '+statusClass(type);
+      toastTimer=setTimeout(()=>{el.className='globalToast '+statusClass(type);}, type==='danger'?7600:duration);
+    }
+    function revealElement(el){
+      if(!el) return;
+      try{setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),80);}catch(_){try{el.scrollIntoView(true);}catch(__){}}
+    }
+    function setStatus(msg,type='ok',opts={}){
+      const el=$('loginStatus');
+      if(el){
+        el.textContent=msg;
+        el.className='statusBox '+statusClass(type);
+        if(opts.reveal) revealElement(el);
+      }
+      if(!opts.silent && msg !== '尚未登入。') showToast(msg,type);
+    }
+    function setApplyStatus(msg,type='warn',opts={}){
+      const el=$('applyStatus');
+      if(el){
+        el.textContent=msg;
+        el.className='statusBox '+statusClass(type);
+        if(opts.reveal) revealElement(el);
+      }
+      if(!opts.silent) showToast(msg,type);
+    }
+    function buttonBusy(id,busy,text){
+      const btn=$(id); if(!btn) return;
+      if(!btn.dataset.originalText) btn.dataset.originalText=btn.textContent;
+      btn.disabled=busy;
+      btn.textContent=busy?(text||'處理中...'):btn.dataset.originalText;
+    }
+    function toggleApplyPanel(show){
+      const panel=$('applyPanel');
+      const loginOnly=$('loginOnlyArea');
+      if(panel) panel.classList.toggle('hidden',!show);
+      if(loginOnly) loginOnly.classList.toggle('hidden',!!show);
+      if($('loginCardTitle')) $('loginCardTitle').textContent=show?'申請批發帳號':'會員登入';
+      if($('loginMiniBadge')){
+        $('loginMiniBadge').textContent=show?'申請頁':'未登入';
+        $('loginMiniBadge').className='badge '+(show?'':'badgeWarn');
+      }
+      if(show){
+        if(!$('applyEmail').value && $('emailInput')?.value) $('applyEmail').value=safe($('emailInput').value).trim();
+        setStatus('已進入批發帳號申請頁。這裡不需要登入安全檢查。','warn',{silent:true});
+        setApplyStatus('請填寫公司 / 店名、聯絡人、Email、電話後送出申請。','warn',{reveal:true});
+        revealElement(panel);
+        setTimeout(()=>($('applyCompanyName')||$('applyEmail'))?.focus(),180);
+      }else{
+        setApplyStatus('已返回登入頁。','warn',{silent:true});
+        setStatus('尚未登入。','warn',{silent:true});
+        revealElement($('loginFormArea'));
+      }
+    }
+    function clearApplyForm(){
+      ['applyCompanyName','applyContactName','applyEmail','applyPhone','applyLineId','applyTaxId','applyAddress','applyNote'].forEach(id=>{if($(id)) $(id).value='';});
+      if($('applyType')) $('applyType').value='wholesale';
+      setApplyStatus('已清空申請表。','warn');
+    }
+    async function submitWholesaleApplication(){
+      if(!db){setApplyStatus('Firebase 尚未初始化，請稍後再試。','danger');return;}
+      const data={
+        companyName:safe($('applyCompanyName')?.value).trim(),
+        contactName:safe($('applyContactName')?.value).trim(),
+        email:safe($('applyEmail')?.value).trim(),
+        phone:safe($('applyPhone')?.value).trim(),
+        lineId:safe($('applyLineId')?.value).trim(),
+        taxId:safe($('applyTaxId')?.value).trim(),
+        address:safe($('applyAddress')?.value).trim(),
+        applicationType:safe($('applyType')?.value || 'wholesale'),
+        note:safe($('applyNote')?.value).trim(),
+        source:'b2b-index-application',
+        version:VERSION,
+        status:'pending',
+        createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+        reviewStatusText:'待審核',
+        notificationStatus:'pending_admin_review',
+        applicationStatus:'pending',
+        reviewStatus:'pending',
+        createdDate:new Date().toISOString().slice(0,10)
+      };
+      if(!data.companyName || !data.contactName || !data.email || !data.phone){
+        setApplyStatus('請至少填寫公司 / 店名、聯絡人、Email、電話。','danger');
+        return;
+      }
+      if(!/^\S+@\S+\.\S+$/.test(data.email)){
+        setApplyStatus('Email 格式看起來不正確，請再確認。','danger');
+        return;
+      }
+      buttonBusy('submitApplyBtn',true,'送出中...');
+      setApplyStatus('申請送出中，請稍候。','warn',{reveal:true});
+      try{
+        const docRef = await db.collection('wholesaleApplications').add(data);
+        setApplyStatus('申請已送出。申請編號：'+docRef.id+'。管理員登入 B2B 首頁後，會在「批發帳號審核」看到這筆待審核資料。','ok',{reveal:true});
+      }catch(err){
+        console.error(err);
+        let msg=err.message||String(err);
+        if(err.code==='permission-denied') msg='申請送出失敗：Firestore Rules 尚未允許 wholesaleApplications 建立資料，請更新 Firestore Rules。';
+        else if(err.code==='unavailable') msg='申請送出失敗：目前網路或 Firebase 暫時無法連線，請稍後再試。';
+        else msg='申請送出失敗：'+msg;
+        setApplyStatus(msg,'danger',{reveal:true});
+      }finally{
+        buttonBusy('submitApplyBtn',false);
+      }
+    }
+    function setLoggedInLayout(isLoggedIn){
+      $('loginFormArea').classList.toggle('hidden',isLoggedIn);
+      $('loggedInArea').classList.toggle('hidden',!isLoggedIn);
+      if(!isLoggedIn && !$('applyPanel')?.classList.contains('hidden')){
+        // 保留申請頁模式，不強制跳回登入。
+      }else{
+        $('loginMiniBadge').textContent=isLoggedIn?'已登入':'未登入';
+        $('loginMiniBadge').className='badge '+(isLoggedIn?'':'badgeWarn');
+        if($('loginCardTitle')) $('loginCardTitle').textContent='會員登入';
+      }
+      if(isLoggedIn) toggleApplyPanel(false);
+    }
+    function resetUserState(){currentUser=null;currentProfile=null;currentRole='guest';currentStatus='inactive';currentPermissions={};}
+    function generateBotQuestion(){
+      const a=Math.floor(Math.random()*7)+2;
+      const b=Math.floor(Math.random()*8)+3;
+      botAnswer=a+b;
+      if($('botQuestionText')) $('botQuestionText').textContent=`請輸入 ${a} + ${b} 的答案`;
+      if($('botAnswerInput')) $('botAnswerInput').value='';
+    }
+    function validateBotQuestion(){
+      const raw=normalizeDigits($('botAnswerInput')?.value);
+      const answer=Number(raw);
+      return Number.isFinite(answer) && answer===botAnswer;
+    }
+    async function loadProfile(user){
+      const snap=await db.collection('users').doc(user.uid).get();
+      if(!snap.exists){return {email:user.email||'',role:'user',status:'inactive',isAdmin:false,permissions:{}};}
+      return snap.data()||{};
+    }
+    function getPermissions(data,role){
+      const p=(data&&data.permissions&&typeof data.permissions==='object')?data.permissions:{};
+      return {
+        userAdmin:p.userAdmin===true,
+        shopHomeAdmin:p.shopHomeAdmin===true,
+        equipmentAdmin:p.equipmentAdmin===true,
+        orderAdmin:p.orderAdmin===true,
+        livestockAdmin:p.livestockAdmin===true || data.livestockAdmin===true || data.canManageLivestock===true || data.livestockManager===true,
+        chatAdmin:p.chatAdmin===true
+      };
+    }
+    function isAdmin(){return currentRole==='admin'||currentProfile?.isAdmin===true;}
+    function isActive(){return currentStatus==='active';}
+    function canEquipment(){return isActive()&&(isAdmin()||currentRole==='wholesale'||currentPermissions.equipmentAdmin||currentPermissions.orderAdmin||currentPermissions.shopHomeAdmin||currentPermissions.userAdmin);}
+    function canLivestockSales(){return isActive()&&(isAdmin()||currentRole==='wholesale'||currentPermissions.livestockAdmin);}
+    function canLivestockOrder(){return isActive()&&(isAdmin()||currentRole==='wholesale'||currentPermissions.orderAdmin||currentPermissions.livestockAdmin);}
+    function canLivestockAdmin(){return isActive()&&(isAdmin()||currentPermissions.livestockAdmin);}
+    function canChatAdmin(){return isActive()&&(isAdmin()||currentPermissions.chatAdmin);}
+    function canElementCalculator(){return isActive()&&(isAdmin()||currentPermissions.livestockAdmin||currentPermissions.equipmentAdmin||currentPermissions.orderAdmin||currentPermissions.userAdmin);}
+    function canAdminPanel(){return isActive()&&(isAdmin()||currentPermissions.userAdmin||currentPermissions.shopHomeAdmin||currentPermissions.equipmentAdmin||currentPermissions.orderAdmin);}
+    function canReviewApplications(){return isActive()&&(isAdmin()||currentPermissions.userAdmin);}
+    function showCard(id,show){$(id)?.classList.toggle('hidden',!show);return show;}
+    function updateNavAccess(){
+      $('loginHintBlock').classList.add('hidden');
+      $('navGrid').classList.remove('hidden');
+      const shown=[
+        showCard('equipmentSalesNavCard',canEquipment()),
+        showCard('livestockSalesNavCard',canLivestockSales()),
+        showCard('livestockAdminNavCard',canLivestockAdmin()),
+        showCard('elementCalculatorNavCard',canElementCalculator()),
+        showCard('chatAdminNavCard',canChatAdmin()),
+        showCard('wholesaleApplicationsNavCard',canReviewApplications())
+      ].some(Boolean);
+      $('applicationReviewPanel')?.classList.toggle('hidden',!canReviewApplications());
+      $('noAccessBlock').classList.toggle('hidden',shown);
+      $('roleBadge').textContent=currentRole||'user';
+      $('roleBadge').className='badge '+(isActive()?'':'badgeDanger');
+    }
+    function resetNav(){
+      $('loginHintBlock').classList.remove('hidden');
+      $('noAccessBlock').classList.add('hidden');
+      $('navGrid').classList.add('hidden');
+      ['equipmentSalesNavCard','livestockSalesNavCard','livestockAdminNavCard','elementCalculatorNavCard','chatAdminNavCard','wholesaleApplicationsNavCard'].forEach(id=>showCard(id,false));
+      $('applicationReviewPanel')?.classList.add('hidden');
+      updateApplicationCount(0,0);
+      renderApplicationReviewList([]);
+      $('roleBadge').textContent='未登入'; $('roleBadge').className='badge badgeWarn';
+    }
+    function startClock(){
+      if(clockTimer) clearInterval(clockTimer);
+      const render=()=>{
+        const d=new Date();
+        $('currentDateText').textContent=d.toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'});
+        $('currentTimeText').textContent=d.toLocaleTimeString('zh-TW',{hour12:false});
+      };
+      render(); clockTimer=setInterval(render,1000);
+    }
+    async function writeActivityLog(type,title,extra={}){
+      try{
+        if(!auth.currentUser) return false;
+        await db.collection('activityLogs').add({actorUid:auth.currentUser.uid,actorEmail:auth.currentUser.email||'',type,title,source:'index.html',version:VERSION,createdAt:firebase.firestore.FieldValue.serverTimestamp(),...extra});
+        return true;
+      }catch(err){console.warn('activityLogs 寫入失敗，可忽略或檢查 Rules',err);return false;}
+    }
+
+    function isPendingApplicationStatus(status){
+      const v=safe(status||'pending').toLowerCase();
+      return !v || v==='pending' || v==='new' || v==='待審核';
+    }
+    function updateApplicationCount(pendingCount,totalCount){
+      const n=Number(pendingCount)||0;
+      const total=Number(totalCount)||0;
+      const badge=$('pendingApplicationCountBadge');
+      if(badge) badge.textContent=String(n);
+      const card=$('wholesaleApplicationsNavCard');
+      if(card) card.classList.toggle('reviewCard',n>0);
+      const status=$('applicationReviewStatus');
+      if(status){
+        status.textContent=total>0?`已讀到 ${total} 筆批發申請，其中 ${n} 筆待審核。`:'目前沒有讀到任何批發帳號申請。';
+        status.className='statusBox '+(n>0?'warn':'ok');
+      }
+    }
+    function applicationTimeText(app){
+      try{
+        const ts=app.createdAt||app.updatedAt;
+        const d=ts&&typeof ts.toDate==='function'?ts.toDate():null;
+        return d?d.toLocaleString('zh-TW',{hour12:false}):'剛送出';
+      }catch(_){return '剛送出';}
+    }
+    function escapeHtml(text){
+      return safe(text).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+    }
+    function renderApplicationReviewList(apps){
+      pendingApplications=Array.isArray(apps)?apps:[];
+      const box=$('applicationList');
+      if(!box) return;
+      if(!pendingApplications.length){
+        box.innerHTML='<div class="applicationEmpty">目前沒有讀到批發帳號申請。若剛剛手機已送出，請先確認 Firestore Rules 已發布，再按重新讀取。</div>';
+        return;
+      }
+      box.innerHTML=pendingApplications.map(app=>{
+        const typeMap={wholesale:'設備 / 添加劑批發',livestock:'活體珊瑚批發',both:'設備與活體都需要'};
+        const typeText=typeMap[app.applicationType]||app.applicationType||'未指定';
+        const statusMap={pending:'待審核',new:'待審核',contacted:'已聯絡',approved:'已通過',rejected:'已拒絕'};
+        const appStatus=safe(app.status||app.applicationStatus||app.reviewStatus||'pending').toLowerCase();
+        const statusText=statusMap[appStatus]||app.reviewStatusText||appStatus||'待審核';
+        const badgeClass=appStatus==='approved'?'ok':appStatus==='rejected'?'danger':'';
+        return `<div class="applicationItem" data-app-id="${escapeHtml(app.id)}">
+          <div class="applicationTop">
+            <div>
+              <div class="applicationTitle">${escapeHtml(app.companyName||'未填公司 / 店名')} <span class="applicationBadge ${badgeClass}">${escapeHtml(statusText)}</span></div>
+              <div class="applicationMeta">${escapeHtml(app.contactName||'未填聯絡人')}｜${escapeHtml(app.email||'未填 Email')}｜${escapeHtml(app.phone||'未填電話')}</div>
+              <div class="applicationMeta">申請類型：${escapeHtml(typeText)}｜統編：${escapeHtml(app.taxId||'-')}｜LINE：${escapeHtml(app.lineId||'-')}</div>
+              <div class="applicationMeta">地址：${escapeHtml(app.address||'-')}</div>
+              <div class="applicationMeta">送出時間：${escapeHtml(applicationTimeText(app))}</div>
+            </div>
+            <div class="applicationBadge">${escapeHtml(app.source||'b2b-index')}</div>
+          </div>
+          ${app.note?`<div class="applicationNote">${escapeHtml(app.note)}</div>`:''}
+          <div class="applicationActions">
+            <button class="btn btnLine" type="button" data-copy-app="${escapeHtml(app.id)}">複製資料</button>
+            <button class="btn btnSoft" type="button" data-app-status="contacted" data-app-id="${escapeHtml(app.id)}">標示已聯絡</button>
+            <button class="btn btnPrimary" type="button" data-app-status="approved" data-app-id="${escapeHtml(app.id)}">標示通過</button>
+            <button class="btn btnDanger" type="button" data-app-status="rejected" data-app-id="${escapeHtml(app.id)}">拒絕 / 不通過</button>
+          </div>
+        </div>`;
+      }).join('');
+      box.querySelectorAll('[data-app-status]').forEach(btn=>btn.addEventListener('click',()=>setApplicationStatus(btn.dataset.appId,btn.dataset.appStatus)));
+      box.querySelectorAll('[data-copy-app]').forEach(btn=>btn.addEventListener('click',()=>copyApplicationData(btn.dataset.copyApp)));
+    }
+    function copyApplicationData(id){
+      const app=pendingApplications.find(x=>x.id===id);
+      if(!app){showToast('找不到這筆申請資料。','danger');return;}
+      const typeMap={wholesale:'設備 / 添加劑批發',livestock:'活體珊瑚批發',both:'設備與活體都需要'};
+      const text=[
+        `公司 / 店名：${app.companyName||''}`,
+        `聯絡人：${app.contactName||''}`,
+        `Email：${app.email||''}`,
+        `電話：${app.phone||''}`,
+        `LINE ID：${app.lineId||''}`,
+        `統一編號：${app.taxId||''}`,
+        `地址：${app.address||''}`,
+        `申請類型：${typeMap[app.applicationType]||app.applicationType||''}`,
+        `補充說明：${app.note||''}`
+      ].join('\n');
+      navigator.clipboard?.writeText(text).then(()=>showToast('已複製申請資料。','ok')).catch(()=>{
+        showToast('瀏覽器無法自動複製，請手動選取資料。','warn');
+      });
+    }
+    async function setApplicationStatus(id,status){
+      if(!db||!id){showToast('無法更新申請狀態。','danger');return;}
+      if(!canReviewApplications()){showToast('目前帳號沒有審核批發申請的權限。','danger');return;}
+      const label={contacted:'已聯絡',approved:'已通過',rejected:'已拒絕'}[status]||status;
+      const ok=confirm(`確定要把這筆批發申請標示為「${label}」？`);
+      if(!ok) return;
+      try{
+        await db.collection('wholesaleApplications').doc(id).update({
+          status,
+          reviewStatusText:label,
+          reviewedByUid:auth.currentUser.uid,
+          reviewedByEmail:auth.currentUser.email||'',
+          reviewedAt:firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast(`已更新為「${label}」。`,'ok');
+        await writeActivityLog('wholesale_application_review',`批發帳號申請：${label}`,{applicationId:id,applicationStatus:status});
+      }catch(err){
+        console.error(err);
+        let msg=err.message||String(err);
+        if(err.code==='permission-denied') msg='更新失敗：目前帳號沒有 wholesaleApplications 更新權限，請確認 Firestore Rules 或 userAdmin 權限。';
+        showToast(msg,'danger');
+      }
+    }
+    function startApplicationReviewListener(){
+      if(applicationUnsubscribe){try{applicationUnsubscribe();}catch(_){} applicationUnsubscribe=null;}
+      if(!db||!canReviewApplications()){updateApplicationCount(0,0);renderApplicationReviewList([]);return;}
+      const status=$('applicationReviewStatus');
+      if(status){status.textContent='正在讀取批發申請資料...';status.className='statusBox warn';}
+      try{
+        // v21.4 修正：不要只用 where status == pending，避免舊資料 status 欄位不同或缺少時完全看不到。
+        // 直接讀取最近 100 筆，再在前端依 status 統計待審核數量。這樣也不需要額外 Firestore composite index。
+        applicationUnsubscribe=db.collection('wholesaleApplications').limit(100).onSnapshot(snap=>{
+          const apps=[];
+          snap.forEach(doc=>apps.push({id:doc.id,...(doc.data()||{})}));
+          apps.sort((a,b)=>{
+            const at=a.createdAt&&typeof a.createdAt.toMillis==='function'?a.createdAt.toMillis():(a.updatedAt&&typeof a.updatedAt.toMillis==='function'?a.updatedAt.toMillis():0);
+            const bt=b.createdAt&&typeof b.createdAt.toMillis==='function'?b.createdAt.toMillis():(b.updatedAt&&typeof b.updatedAt.toMillis==='function'?b.updatedAt.toMillis():0);
+            return bt-at;
+          });
+          const pending=apps.filter(a=>isPendingApplicationStatus(a.status||a.applicationStatus||a.reviewStatus));
+          const ids=new Set(pending.map(a=>a.id));
+          const newIds=pending.filter(a=>!lastPendingApplicationIds.has(a.id));
+          updateApplicationCount(pending.length,apps.length);
+          renderApplicationReviewList(apps);
+          if(lastPendingApplicationIds.size && newIds.length){showToast(`收到 ${newIds.length} 筆新的批發帳號申請。`,'warn',9000);}
+          lastPendingApplicationIds=ids;
+        },err=>{
+          console.error(err);
+          updateApplicationCount(0,0);
+          renderApplicationReviewList([]);
+          const msg=err.code==='permission-denied'?'讀取批發申請失敗：目前帳號沒有 read/list wholesaleApplications 權限。請確認 Firestore Rules 已發布，且此帳號是 admin 或 permissions.userAdmin=true。':'讀取批發申請失敗：'+(err.message||err);
+          if(status){status.textContent=msg;status.className='statusBox danger';}
+          showToast(msg,'danger');
+        });
+      }catch(err){
+        console.error(err);
+        if(status){status.textContent='啟動批發申請監聽失敗：'+(err.message||err);status.className='statusBox danger';}
+      }
+    }
+    function stopApplicationReviewListener(){
+      if(applicationUnsubscribe){try{applicationUnsubscribe();}catch(_){} applicationUnsubscribe=null;}
+      lastPendingApplicationIds=new Set();
+      updateApplicationCount(0,0);
+      renderApplicationReviewList([]);
+    }
+
+    async function handleSignedIn(user){
+      currentUser=user; currentProfile=await loadProfile(user);
+      currentRole=safe(currentProfile.role || (currentProfile.isAdmin?'admin':'user')).toLowerCase();
+      currentStatus=safe(currentProfile.status || 'active').toLowerCase();
+      currentPermissions=getPermissions(currentProfile,currentRole);
+      const displayName=currentProfile.contactName||currentProfile.name||currentProfile.companyName||user.email||'已登入';
+      const companyLine=currentProfile.companyName?`${currentProfile.companyName}｜${user.email||''}`:(user.email||'');
+      $('memberDisplayName').textContent=displayName; $('memberDisplayEmail').textContent=companyLine;
+      $('memberRoleText').textContent=currentRole||'--'; $('memberStatusText').textContent=currentStatus||'--'; $('memberStatusText').style.color=isActive()?'var(--ok)':'var(--warn)';
+      setLoggedInLayout(true); updateNavAccess(); startClock(); if(canReviewApplications()) startApplicationReviewListener(); else stopApplicationReviewListener();
+      const memberNotice=$('memberNotice');
+      if(memberNotice){
+        memberNotice.textContent=isActive()?'登入成功。請在下方選擇可使用的功能入口。':'登入成功，但此帳號狀態不是 active，請聯絡管理員確認權限。';
+        memberNotice.className='statusBox '+(isActive()?'ok':'warn');
+      }
+    }
+    async function login(){
+      const email=safe($('emailInput').value).trim();
+      const password=safe($('passwordInput').value);
+      if(!auth || !db){setStatus('系統尚未初始化完成，請重新整理頁面後再試。','danger',{reveal:true});return;}
+      if(!email||!password){setStatus('請輸入 Email 與密碼。','warn',{reveal:true});return;}
+      if(!validateBotQuestion()){
+        setStatus('安全檢查答案不正確，請重新輸入。','danger',{reveal:true});
+        $('botAnswerInput')?.focus();
+        return;
+      }
+      buttonBusy('loginBtn',true,'登入中...');
+      setStatus('登入中，請稍候。','warn',{reveal:true});
+      try{
+        const cred=await auth.signInWithEmailAndPassword(email,password);
+        await handleSignedIn(cred.user);
+        setStatus('登入成功，已顯示可使用的功能入口。','ok');
+        showToast('登入成功，已顯示可使用的功能入口。','ok');
+        setTimeout(()=>revealElement($('navGrid') && !$('navGrid').classList.contains('hidden') ? $('navGrid') : $('loggedInArea')),180);
+        writeActivityLog('login','B2B 會員入口登入',{loginType:'email_password',email:cred.user.email||''});
+      }catch(err){
+        console.error(err);
+        let msg=err.message||String(err);
+        if(err.code==='auth/wrong-password'||err.code==='auth/invalid-credential') msg='登入失敗：帳號或密碼不正確。';
+        else if(err.code==='auth/user-not-found') msg='登入失敗：找不到此 Email 帳號。';
+        else if(err.code==='auth/too-many-requests') msg='登入失敗次數過多，請稍後再試或使用忘記密碼。';
+        else if(err.code==='auth/network-request-failed') msg='登入失敗：網路連線不穩，請確認手機網路後再試。';
+        else msg='登入失敗：'+msg;
+        setStatus(msg,'danger',{reveal:true});
+      }finally{
+        buttonBusy('loginBtn',false);
+        generateBotQuestion();
+      }
+    }
+    async function resetPassword(){
+      const email=safe($('emailInput').value).trim();
+      if(!auth){setStatus('系統尚未初始化完成，請重新整理頁面後再試。','danger',{reveal:true});return;}
+      if(!email){setStatus('請先輸入 Email，再按忘記密碼。','warn',{reveal:true});return;}
+      buttonBusy('resetPasswordBtn',true,'寄送中...');
+      setStatus('密碼重設信寄送中，請稍候。','warn',{reveal:true});
+      try{
+        await auth.sendPasswordResetEmail(email);
+        setStatus('已寄出密碼重設信到 '+email+'，請到信箱查看。','ok',{reveal:true});
+      }
+      catch(err){
+        console.error(err);
+        let msg=err.message||String(err);
+        if(err.code==='auth/user-not-found') msg='寄送失敗：找不到此 Email 帳號。';
+        else if(err.code==='auth/invalid-email') msg='寄送失敗：Email 格式不正確。';
+        else if(err.code==='auth/network-request-failed') msg='寄送失敗：網路連線不穩，請稍後再試。';
+        else msg='寄送失敗：'+msg;
+        setStatus(msg,'danger',{reveal:true});
+      }finally{
+        buttonBusy('resetPasswordBtn',false);
+      }
+    }
+    async function logout(){
+      try{await writeActivityLog('logout','B2B 會員入口登出'); await auth.signOut();}
+      catch(err){console.error(err);setStatus('登出失敗：'+(err.message||err),'danger');}
+    }
+    function bind(){
+      $('loginBtn').addEventListener('click',login);
+      $('resetPasswordBtn').addEventListener('click',resetPassword);
+      $('refreshBotQuestionBtn').addEventListener('click',generateBotQuestion);
+      $('showApplyBtn').addEventListener('click',()=>toggleApplyPanel(true));
+      $('hideApplyBtn').addEventListener('click',()=>toggleApplyPanel(false));
+      $('submitApplyBtn').addEventListener('click',submitWholesaleApplication);
+      $('clearApplyBtn').addEventListener('click',clearApplyForm);
+      $('logoutBtn').addEventListener('click',logout);
+      $('scrollApplicationsBtn')?.addEventListener('click',()=>{revealElement($('applicationReviewPanel')); startApplicationReviewListener();});
+      $('reloadApplicationsBtn')?.addEventListener('click',startApplicationReviewListener);
+      ['emailInput','passwordInput','botAnswerInput'].forEach(id=>$(id).addEventListener('keydown',e=>{if(e.key==='Enter' && $('applyPanel')?.classList.contains('hidden')) login();}));
+    }
+    function boot(){
+      bind(); generateBotQuestion();
+      try{
+        auth=firebase.auth(); db=firebase.firestore(); auth.languageCode='zh-TW';
+      }catch(err){console.error(err);setStatus('Firebase 尚未初始化，請確認已部署到 Firebase Hosting。','danger');return;}
+      auth.onAuthStateChanged(async user=>{
+        if(!user){stopApplicationReviewListener();resetUserState();setLoggedInLayout(false);resetNav();setStatus('尚未登入。','warn',{silent:true});return;}
+        try{await handleSignedIn(user);}catch(err){console.error(err);setStatus('登入狀態讀取失敗：'+(err.message||err),'danger',{reveal:true});}
+      });
+    }
+    window.addEventListener('load',boot);
+  </script>
+</body>
+</html>

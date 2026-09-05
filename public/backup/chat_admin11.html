@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEADREAM 客服聊天室管理 v1.1</title>
+<style>
+:root{--bg:#06131d;--panel:#0b2230;--card:#0d2b3b;--line:rgba(126,206,224,.22);--line2:rgba(126,206,224,.38);--text:#eef8ff;--muted:#9bb7c8;--primary:#18dac8;--blue:#2c9dff;--ok:#70f2b4;--warn:#ffd166;--danger:#ff7d94;--shadow:0 22px 70px rgba(0,0,0,.35);--radius:20px}*{box-sizing:border-box}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,rgba(44,157,255,.22),transparent 30%),radial-gradient(circle at 92% 8%,rgba(24,218,200,.17),transparent 28%),linear-gradient(180deg,#06131d 0%,#081a25 48%,#06111a 100%);min-height:100dvh}a{color:inherit;text-decoration:none}.wrap{width:min(1500px,calc(100vw - 26px));margin:0 auto}.hero{padding:16px 0}.heroCard{border:1px solid var(--line);border-radius:24px;background:linear-gradient(135deg,rgba(13,40,58,.96),rgba(6,21,32,.9));box-shadow:var(--shadow);padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}.titleLink{display:inline-flex;align-items:center;gap:10px}.logo{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;color:#9ffff4;font-size:20px;font-weight:1000;letter-spacing:.08em;background:linear-gradient(135deg,rgba(24,218,200,.16),rgba(44,157,255,.12));border:1px solid rgba(255,255,255,.14)}h1{margin:0;font-size:30px;line-height:1.1}.hero p{margin:7px 0 0;color:rgba(238,248,255,.72)}.nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.btn,button{border:0;cursor:pointer;border-radius:13px;min-height:40px;padding:9px 13px;font-weight:950;display:inline-flex;align-items:center;justify-content:center;gap:7px;color:var(--text);background:rgba(255,255,255,.06);border:1px solid var(--line)}.btn.primary,button.primary{background:linear-gradient(135deg,var(--primary),var(--blue));color:#04131d;border:0}.btn.danger,button.danger{background:rgba(255,125,148,.11);border-color:rgba(255,125,148,.35);color:#ffc6cf}.pill{display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.05);color:#bffff6;font-weight:900;font-size:12px;white-space:nowrap}.main{display:grid;grid-template-columns:360px minmax(0,1fr);gap:14px;padding-bottom:28px}.panel{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,rgba(9,27,40,.94),rgba(7,20,31,.86));box-shadow:var(--shadow);min-width:0;overflow:hidden}.panelHead{padding:13px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}.panelHead h2{margin:0;font-size:20px}.panelBody{padding:14px}.toolbar{display:grid;grid-template-columns:1fr;gap:8px}.field{display:grid;gap:6px;margin-bottom:10px}.field label{color:#ccecf5;font-size:13px;font-weight:900}input,select,textarea{width:100%;min-height:42px;border:1px solid var(--line);border-radius:13px;padding:10px 12px;background:rgba(255,255,255,.045);color:var(--text);outline:none;font:inherit}option{background:#082131;color:#eef8ff}textarea{min-height:78px;resize:vertical}.roomList{display:grid;gap:8px;max-height:calc(100dvh - 325px);overflow:auto;padding-right:4px}.roomCard{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.035);padding:11px;cursor:pointer}.roomCard.active{border-color:rgba(24,218,200,.65);background:rgba(24,218,200,.08)}.roomTop{display:flex;justify-content:space-between;gap:8px}.roomName{font-weight:1000;line-height:1.35}.roomMeta{color:var(--muted);font-size:12px;line-height:1.45;margin-top:5px}.badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;border-radius:999px;background:#ff6680;color:#fff;font-size:12px;padding:0 6px}.chatLayout{display:grid;grid-template-rows:auto minmax(360px,1fr) auto;min-height:calc(100dvh - 212px)}.chatInfo{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}.infoGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}.infoBox{border:1px solid var(--line);border-radius:13px;padding:9px;background:rgba(255,255,255,.035)}.infoLabel{font-size:11px;color:var(--muted);margin-bottom:4px}.infoValue{font-size:13px;font-weight:900;word-break:break-word}.messages{overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:360px;max-height:calc(100dvh - 390px);background:rgba(0,0,0,.08)}.msg{max-width:78%;border:1px solid var(--line);border-radius:16px;padding:9px 10px;white-space:pre-wrap;word-break:break-word;line-height:1.55}.msg.customer{align-self:flex-start;background:rgba(255,255,255,.055)}.msg.admin{align-self:flex-end;background:linear-gradient(135deg,rgba(24,218,200,.20),rgba(44,157,255,.16));border-color:rgba(24,218,200,.28)}.msgMeta{font-size:11px;color:var(--muted);margin-top:5px}.replyBox{border-top:1px solid var(--line);padding:12px;display:grid;grid-template-columns:180px 1fr auto;gap:8px}.empty{border:1px dashed rgba(126,206,224,.25);border-radius:16px;color:var(--muted);padding:18px;text-align:center;line-height:1.6}.statusLine{font-size:13px;color:var(--muted);line-height:1.55}.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.hidden{display:none!important}@media(max-width:980px){.main{grid-template-columns:1fr}.roomList{max-height:280px}.messages{max-height:480px}.heroCard{flex-direction:column;align-items:flex-start}.nav{justify-content:flex-start}.infoGrid{grid-template-columns:1fr}.chatInfo{grid-template-columns:1fr}.actions{justify-content:flex-start}}@media(max-width:560px){.wrap{width:min(100vw - 16px,1500px)}h1{font-size:24px}.heroCard{padding:15px;border-radius:20px}.logo{width:46px;height:46px}.replyBox{grid-template-columns:1fr}.msg{max-width:92%}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap"><div class="heroCard"><a class="titleLink" href="/index.html"><div class="logo">SD</div><div><h1>SEADREAM 客服聊天室管理 v1.1</h1><p>管理一般商城會員即時訊息、提醒未讀訊息、設定客服在線狀態、回覆與結案。</p></div></a><div class="nav"><a class="btn" href="/index.html">B2B 首頁</a><a class="btn" href="/activity_logs_admin.html">活動紀錄</a><button id="enableNotifyBtn" type="button">啟用提醒</button><button id="testSoundBtn" type="button">測試音效</button><span id="unreadPill" class="pill">未讀 0</span><span id="authPill" class="pill">檢查登入中</span></div></div></div></header>
+<main class="wrap main">
+  <section class="panel"><div class="panelHead"><h2>聊天室列表</h2><button id="reloadBtn" type="button">重讀</button></div><div class="panelBody">
+    <div id="permissionBox" class="empty hidden">沒有客服管理權限。請使用 admin，或 staff 設定 permissions.chatAdmin=true。</div>
+    <div id="managerArea">
+      <div class="toolbar">
+        <div class="field"><label>客服狀態</label><select id="onlineStatus"><option value="online">線上</option><option value="busy">忙碌</option><option value="offline">離線</option></select></div>
+        <div class="field"><label>狀態文字</label><input id="statusText" placeholder="例如：客服線上，歡迎詢問。"></div>
+        <button id="saveStatusBtn" class="primary" type="button">儲存客服狀態</button>
+        <div class="field"><label>篩選聊天室</label><select id="roomFilter"><option value="all">全部</option><option value="unread">只看未讀</option><option value="open">未處理 / 開啟</option><option value="replied">已回覆</option><option value="closed">已結案</option></select></div>
+      </div>
+      <div id="roomList" class="roomList"><div class="empty">正在讀取聊天室...</div></div>
+    </div>
+  </div></section>
+  <section class="panel"><div class="panelHead"><h2 id="chatTitle">對話內容</h2><div class="actions"><button id="markRepliedBtn" type="button">標記已回覆</button><button id="closeRoomBtn" type="button">結案</button><button id="openRoomBtn" type="button">重新開啟</button></div></div>
+    <div class="chatLayout">
+      <div class="panelBody"><div id="roomInfo" class="empty">請先從左側選擇聊天室。</div></div>
+      <div id="messages" class="messages"><div class="empty">尚未選擇聊天室。</div></div>
+      <div class="replyBox"><select id="quickReplySelect"><option value="">常用回覆</option><option value="您好，請問有什麼需要協助的地方？">您好，請問有什麼需要協助的地方？</option><option value="收到，我們確認後會盡快回覆您。">收到，我們確認後會盡快回覆您。</option><option value="目前客服忙碌中，稍後會回覆您。">目前客服忙碌中，稍後會回覆您。</option><option value="這筆資料我幫您轉給管理人員確認。">這筆資料我幫您轉給管理人員確認。</option><option value="謝謝您的訊息，這邊先為您結案；如還有問題可以再留言。">謝謝您的訊息，這邊先為您結案；如還有問題可以再留言。</option></select><textarea id="replyText" placeholder="輸入回覆內容..."></textarea><button id="sendReplyBtn" class="primary" type="button">送出回覆</button></div>
+    </div>
+  </section>
+</main>
+<script src="/__/firebase/10.12.2/firebase-app-compat.js"></script><script src="/__/firebase/10.12.2/firebase-auth-compat.js"></script><script src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script><script src="/__/firebase/init.js?useEmulator=false"></script>
+<script>
+const VERSION='chat_admin_v1_1_notify_quick_reply';
+const ROOM_COLLECTION='chatRooms';
+const SETTINGS_DOC='chatSettings/main';
+const $=id=>document.getElementById(id);
+let auth=null,db=null,currentUser=null,currentProfile=null,isManager=false,rooms=[],selectedRoomId=null,msgUnsub=null,roomUnsub=null,settingsUnsub=null;
+let notifyEnabled=localStorage.getItem('sdChatAdminNotify')==='1';
+let lastUnreadTotal=0;
+let roomsLoadedOnce=false;
+const ORIGINAL_TITLE=document.title;
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function timeText(ts){try{const d=ts&&ts.toDate?ts.toDate():(ts?new Date(ts):null);return d?d.toLocaleString('zh-TW'):'';}catch(e){return ''}}
+function money(n){return 'NT$ '+Math.round(Number(n||0)).toLocaleString('zh-TW')}
+function isAdminProfile(p){return !!p&&(p.isAdmin===true||p.role==='admin')}
+function hasChatPerm(p){return isAdminProfile(p)||!!(p&&p.permissions&&p.permissions.chatAdmin===true)}
+function setAuthText(t){$('authPill').textContent=t;}
+
+function unreadTotal(){return rooms.reduce((sum,r)=>sum+Number(r.unreadByAdmin||0),0);}
+function updateUnreadUI(total){
+  const n=Number(total||0);
+  const pill=$('unreadPill'); if(pill) pill.textContent='未讀 '+n;
+  document.title=n>0?'('+n+') '+ORIGINAL_TITLE:ORIGINAL_TITLE;
+}
+function playNotifySound(){
+  if(!notifyEnabled) return;
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC) return;
+    const ctx=new AC();
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.type='sine'; osc.frequency.value=880;
+    gain.gain.value=0.0001;
+    osc.connect(gain); gain.connect(ctx.destination);
+    const now=ctx.currentTime;
+    gain.gain.setValueAtTime(0.0001,now);
+    gain.gain.exponentialRampToValueAtTime(0.18,now+0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001,now+0.28);
+    osc.start(now); osc.stop(now+0.32);
+    setTimeout(()=>ctx.close().catch(()=>{}),450);
+  }catch(e){}
+}
+function desktopNotify(room){
+  if(!notifyEnabled || !room) return;
+  if(!('Notification' in window) || Notification.permission!=='granted') return;
+  try{
+    new Notification('SEADREAM 新客服訊息',{
+      body:(room.customerName||room.customerEmail||'會員')+'：'+(room.lastMessage||'有新訊息'),
+      tag:'seadream-chat-'+room.id
+    });
+  }catch(e){}
+}
+function handleUnreadChange(){
+  const total=unreadTotal();
+  updateUnreadUI(total);
+  if(roomsLoadedOnce && total>lastUnreadTotal){
+    const unreadRoom=rooms.find(r=>Number(r.unreadByAdmin||0)>0);
+    playNotifySound();
+    desktopNotify(unreadRoom);
+  }
+  lastUnreadTotal=total;
+  roomsLoadedOnce=true;
+}
+async function enableNotifications(){
+  notifyEnabled=true; localStorage.setItem('sdChatAdminNotify','1');
+  if('Notification' in window && Notification.permission==='default'){
+    try{await Notification.requestPermission();}catch(e){}
+  }
+  playNotifySound();
+  alert('已啟用新訊息提醒。瀏覽器若詢問通知權限，請選擇允許。');
+}
+
+async function init(){
+  if(!firebase.apps.length){setAuthText('Firebase 未初始化');return;}
+  auth=firebase.auth();db=firebase.firestore();
+  auth.onAuthStateChanged(async u=>{
+    currentUser=u; selectedRoomId=null;
+    if(!u){setAuthText('未登入');$('permissionBox').classList.remove('hidden');$('permissionBox').textContent='請先登入管理帳號。';$('managerArea').classList.add('hidden');return;}
+    setAuthText('檢查權限中');
+    const snap=await db.collection('users').doc(u.uid).get().catch(()=>null);
+    currentProfile=snap&&snap.exists?snap.data():{};
+    isManager=hasChatPerm(currentProfile);
+    setAuthText((currentProfile.role||'user')+' 已登入');
+    if(!isManager){$('permissionBox').classList.remove('hidden');$('managerArea').classList.add('hidden');return;}
+    $('permissionBox').classList.add('hidden');$('managerArea').classList.remove('hidden');
+    listenSettings();listenRooms();
+  });
+}
+function listenSettings(){
+  if(settingsUnsub) settingsUnsub();
+  settingsUnsub=db.doc(SETTINGS_DOC).onSnapshot(snap=>{
+    const s=snap.exists?snap.data():{};
+    $('onlineStatus').value=s.onlineStatus||'offline';
+    $('statusText').value=s.statusText||'';
+  });
+}
+function listenRooms(){
+  if(roomUnsub) roomUnsub();
+  roomUnsub=db.collection(ROOM_COLLECTION).orderBy('updatedAt','desc').limit(100).onSnapshot(snap=>{
+    rooms=[];snap.forEach(doc=>rooms.push({id:doc.id,...doc.data()}));renderRooms();handleUnreadChange();
+  },err=>{$('roomList').innerHTML='<div class="empty">讀取聊天室失敗：'+esc(err.message)+'</div>';});
+}
+function renderRooms(){
+  const f=$('roomFilter').value;
+  let list=rooms;
+  if(f==='unread') list=list.filter(r=>Number(r.unreadByAdmin||0)>0);
+  else if(f!=='all') list=list.filter(r=>(r.status||'open')===f || (f==='open'&&!['replied','closed'].includes(r.status||'open')));
+  if(!list.length){$('roomList').innerHTML='<div class="empty">目前沒有符合條件的聊天室。</div>';return;}
+  $('roomList').innerHTML=list.map(r=>{
+    const unread=Number(r.unreadByAdmin||0);
+    return `<div class="roomCard ${selectedRoomId===r.id?'active':''}" data-room="${esc(r.id)}"><div class="roomTop"><div class="roomName">${esc(r.customerName||r.customerEmail||'會員')}</div>${unread>0?`<span class="badge">${unread>99?'99+':unread}</span>`:''}</div><div class="roomMeta">${esc(r.customerEmail||'')}<br>${esc(r.lastMessage||'尚無訊息')}<br>${esc(timeText(r.lastMessageAt||r.updatedAt))}｜狀態：${esc(r.status||'open')}</div></div>`;
+  }).join('');
+  document.querySelectorAll('.roomCard').forEach(el=>el.addEventListener('click',()=>selectRoom(el.dataset.room)));
+}
+function roomById(id){return rooms.find(r=>r.id===id)||null;}
+async function selectRoom(id){
+  selectedRoomId=id; renderRooms();
+  const r=roomById(id);
+  $('chatTitle').textContent=r?(r.customerName||r.customerEmail||'會員'):'對話內容';
+  renderRoomInfo(r);
+  if(msgUnsub) msgUnsub();
+  msgUnsub=db.collection(ROOM_COLLECTION).doc(id).collection('messages').orderBy('createdAt','asc').limit(200).onSnapshot(snap=>{
+    if(snap.empty){$('messages').innerHTML='<div class="empty">此聊天室尚無訊息。</div>';return;}
+    let html='';snap.forEach(doc=>{const m=doc.data()||{};const admin=m.senderRole==='admin'||m.senderRole==='staff';html+=`<div class="msg ${admin?'admin':'customer'}"><div>${esc(m.message||'')}</div><div class="msgMeta">${admin?'SEADREAM':'會員'}｜${esc(m.senderEmail||'')}｜${esc(timeText(m.createdAt))}</div></div>`;});
+    $('messages').innerHTML=html;$('messages').scrollTop=$('messages').scrollHeight;
+  });
+  try{await db.collection(ROOM_COLLECTION).doc(id).set({unreadByAdmin:0,lastAdminReadAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});}catch(e){}
+  lastUnreadTotal=Math.max(0,unreadTotal()-Number((r&&r.unreadByAdmin)||0));
+  updateUnreadUI(lastUnreadTotal);
+}
+function renderRoomInfo(r){
+  if(!r){$('roomInfo').innerHTML='<div class="empty">請先從左側選擇聊天室。</div>';return;}
+  $('roomInfo').innerHTML=`<div class="chatInfo"><div><div class="statusLine">聊天室 ID：${esc(r.id)}｜狀態：${esc(r.status||'open')}｜最後更新：${esc(timeText(r.updatedAt))}</div><div class="infoGrid"><div class="infoBox"><div class="infoLabel">會員</div><div class="infoValue">${esc(r.customerName||'-')}</div></div><div class="infoBox"><div class="infoLabel">Email</div><div class="infoValue">${esc(r.customerEmail||'-')}</div></div><div class="infoBox"><div class="infoLabel">電話 / LINE</div><div class="infoValue">${esc(r.customerPhone||'-')} / ${esc(r.customerLineId||'-')}</div></div></div></div></div>`;
+}
+async function saveStatus(){
+  const data={onlineStatus:$('onlineStatus').value,statusText:$('statusText').value.trim(),updatedByUid:currentUser.uid,updatedByEmail:currentUser.email||'',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  await db.doc(SETTINGS_DOC).set(data,{merge:true});alert('已儲存客服狀態');
+}
+async function sendReply(){
+  if(!selectedRoomId){alert('請先選擇聊天室');return;}
+  const text=$('replyText').value.trim(); if(!text) return;
+  $('replyText').value='';
+  const roomRef=db.collection(ROOM_COLLECTION).doc(selectedRoomId);const msgRef=roomRef.collection('messages').doc();const now=firebase.firestore.FieldValue.serverTimestamp();
+  const role=isAdminProfile(currentProfile)?'admin':'staff';
+  const batch=db.batch();
+  batch.set(msgRef,{senderUid:currentUser.uid,senderEmail:currentUser.email||'',senderRole:role,message:text,createdAt:now,readByAdmin:true,readByCustomer:false});
+  batch.set(roomRef,{lastMessage:text,lastMessageAt:now,lastAdminReplyAt:now,updatedAt:now,status:'replied',unreadByCustomer:firebase.firestore.FieldValue.increment(1),unreadByAdmin:0,assignedToUid:currentUser.uid,assignedToEmail:currentUser.email||''},{merge:true});
+  await batch.commit();
+}
+async function updateSelectedRoom(data){if(!selectedRoomId){alert('請先選擇聊天室');return;} await db.collection(ROOM_COLLECTION).doc(selectedRoomId).set(Object.assign({updatedAt:firebase.firestore.FieldValue.serverTimestamp()},data),{merge:true});}
+$('enableNotifyBtn').addEventListener('click',()=>enableNotifications());
+$('testSoundBtn').addEventListener('click',()=>{notifyEnabled=true;localStorage.setItem('sdChatAdminNotify','1');playNotifySound();});
+$('quickReplySelect').addEventListener('change',e=>{const v=e.target.value;if(!v)return;const ta=$('replyText');ta.value=(ta.value?ta.value+'\n':'')+v;ta.focus();e.target.value='';});
+$('saveStatusBtn').addEventListener('click',()=>saveStatus().catch(e=>alert('儲存失敗：'+e.message)));
+$('sendReplyBtn').addEventListener('click',()=>sendReply().catch(e=>alert('回覆失敗：'+e.message)));
+$('replyText').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendReply().catch(err=>alert('回覆失敗：'+err.message));}});
+$('markRepliedBtn').addEventListener('click',()=>updateSelectedRoom({status:'replied',lastAdminReplyAt:firebase.firestore.FieldValue.serverTimestamp()}).catch(e=>alert(e.message)));
+$('closeRoomBtn').addEventListener('click',()=>updateSelectedRoom({status:'closed',closedAt:firebase.firestore.FieldValue.serverTimestamp(),closedByUid:currentUser.uid,closedByEmail:currentUser.email||''}).catch(e=>alert(e.message)));
+$('openRoomBtn').addEventListener('click',()=>updateSelectedRoom({status:'open'}).catch(e=>alert(e.message)));
+$('reloadBtn').addEventListener('click',()=>listenRooms());$('roomFilter').addEventListener('change',renderRooms);
+window.addEventListener('load',init);
+</script>
+</body></html>

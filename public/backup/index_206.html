@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SEADREAM B2B 會員入口 v20.6 登入登出紀錄版</title>
+  <meta name="description" content="SEADREAM Aquarium B2B 會員登入與功能入口 v20.6 登入登出紀錄版" />
+  <style>
+    :root {
+      --bg:#06111a;
+      --bg2:#081a24;
+      --panel:rgba(8,23,35,.82);
+      --panel-strong:rgba(9,28,42,.92);
+      --panel-soft:rgba(12,37,55,.72);
+      --text:#ecf7ff;
+      --muted:#99b5c6;
+      --line:rgba(126,206,224,.18);
+      --line-strong:rgba(126,206,224,.28);
+      --primary:#17d6c3;
+      --primary2:#2f8cff;
+      --primary3:#77ffe9;
+      --warn:#f0c869;
+      --danger:#ff7d94;
+      --ok:#67f7b5;
+      --shadow:0 22px 80px rgba(0,0,0,.35);
+      --radius:24px;
+    }
+    * { box-sizing:border-box; }
+    html, body { min-height:100%; }
+    body {
+      margin:0;
+      color:var(--text);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(47,140,255,.22), transparent 28%),
+        radial-gradient(circle at 90% 10%, rgba(23,214,195,.16), transparent 24%),
+        linear-gradient(180deg, #06111a 0%, #081824 36%, #07131b 100%);
+      position:relative;
+      overflow-x:hidden;
+    }
+    body::before {
+      content:"";
+      position:fixed;
+      inset:0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size:36px 36px;
+      mask-image:linear-gradient(180deg, rgba(255,255,255,.4), rgba(255,255,255,.06));
+      pointer-events:none;
+      opacity:.22;
+    }
+    a { color:inherit; text-decoration:none; }
+    .hidden { display:none!important; }
+
+    .shell {
+      width:min(1240px, calc(100vw - 32px));
+      margin:0 auto;
+      position:relative;
+      z-index:1;
+    }
+
+    .hero { padding:26px 0 28px; }
+    .heroCard {
+      position:relative;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:32px;
+      background:
+        linear-gradient(135deg, rgba(14,39,56,.94), rgba(7,20,31,.88)),
+        linear-gradient(135deg, rgba(23,214,195,.10), rgba(47,140,255,.08));
+      box-shadow:var(--shadow);
+      padding:24px 26px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      isolation:isolate;
+    }
+    .heroCard::before {
+      content:"";
+      position:absolute;
+      width:420px;
+      height:420px;
+      right:-120px;
+      top:-180px;
+      background:radial-gradient(circle, rgba(23,214,195,.18), transparent 65%);
+      z-index:-1;
+    }
+    .heroMain {
+      display:flex;
+      align-items:center;
+      gap:18px;
+      min-width:0;
+    }
+    .brandMark {
+      width:84px;
+      height:84px;
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(135deg, rgba(23,214,195,.13), rgba(47,140,255,.13));
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.04), 0 18px 36px rgba(0,0,0,.22);
+      padding:8px;
+      flex:0 0 auto;
+      display:grid;
+      place-items:center;
+      backdrop-filter:blur(10px);
+      color:var(--primary3);
+      font-weight:1000;
+      letter-spacing:.08em;
+      font-size:26px;
+    }
+    .heroText { min-width:0; }
+    .heroText h1 {
+      margin:0;
+      font-size:34px;
+      line-height:1.05;
+      letter-spacing:.02em;
+      font-weight:950;
+    }
+    .heroSub {
+      margin:10px 0 0;
+      color:rgba(236,247,255,.76);
+      line-height:1.75;
+      font-size:15px;
+    }
+    .heroDomain {
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 16px;
+      background:rgba(255,255,255,.05);
+      color:var(--primary3);
+      font-weight:900;
+      letter-spacing:.02em;
+      white-space:nowrap;
+      align-self:flex-start;
+    }
+
+    .mainGrid {
+      display:grid;
+      grid-template-columns: 400px minmax(0, 1fr);
+      gap:22px;
+      align-items:start;
+      margin-bottom:28px;
+    }
+    .panel {
+      border:1px solid var(--line);
+      border-radius:28px;
+      background:linear-gradient(180deg, rgba(9,25,37,.92), rgba(8,22,33,.84));
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px);
+      overflow:hidden;
+    }
+    .panelInner { padding:24px; }
+
+    .badge {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(23,214,195,.10);
+      color:var(--primary3);
+      font-size:13px;
+      font-weight:900;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .badgeWarn { background:rgba(240,200,105,.10); color:var(--warn); }
+    .badgeDanger { background:rgba(255,125,148,.11); color:#ffc1cc; }
+    .badgeOk { background:rgba(103,247,181,.10); color:var(--ok); }
+
+    .field { margin-bottom:14px; }
+    input, select {
+      width:100%;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      font-size:16px;
+      padding:15px 16px;
+      outline:none;
+      transition:.18s ease;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    input::placeholder { color:rgba(236,247,255,.34); }
+    input:focus, select:focus {
+      border-color:rgba(23,214,195,.55);
+      box-shadow:0 0 0 4px rgba(23,214,195,.08), inset 0 1px 0 rgba(255,255,255,.05);
+      background:rgba(255,255,255,.06);
+    }
+
+    .hiddenTrap {
+      position:absolute;
+      left:-9999px;
+      width:1px;
+      height:1px;
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .securityBox {
+      margin-top:14px;
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      display:grid;
+      gap:12px;
+    }
+    .securityTitle {
+      font-weight:900;
+      font-size:15px;
+      color:var(--primary3);
+      letter-spacing:.02em;
+    }
+    .securityRow {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 136px;
+      gap:12px;
+      align-items:center;
+    }
+    .securityQuestion {
+      color:rgba(236,247,255,.82);
+      font-size:14px;
+      line-height:1.7;
+    }
+    .securityHint {
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.6;
+      margin-top:4px;
+    }
+    .miniLinkBtn {
+      border:0;
+      background:transparent;
+      color:var(--primary);
+      padding:0;
+      min-height:auto;
+      font-weight:900;
+      cursor:pointer;
+      justify-content:flex-start;
+      text-align:left;
+    }
+
+    .loginModeTitle {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .loginModeTitle h2 {
+      margin:0;
+      font-size:24px;
+      font-weight:950;
+    }
+
+    .btnRow {
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:16px;
+    }
+    button, .btn {
+      min-height:48px;
+      padding:13px 18px;
+      border-radius:16px;
+      border:0;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-weight:900;
+      letter-spacing:.02em;
+      transition:transform .14s ease, box-shadow .14s ease, opacity .14s ease;
+    }
+    button:hover, .btn:hover { transform:translateY(-1px); }
+    button:disabled {
+      opacity:.58;
+      cursor:not-allowed;
+      transform:none!important;
+    }
+    .btnPrimary {
+      background:linear-gradient(135deg, var(--primary), var(--primary2));
+      color:#06111a;
+      box-shadow:0 14px 34px rgba(23,214,195,.16);
+    }
+    .btnSoft {
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      color:var(--text);
+    }
+    .btnLine {
+      background:transparent;
+      border:1px solid rgba(23,214,195,.36);
+      color:var(--primary3);
+    }
+    .btnDisabled {
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.07);
+      color:rgba(236,247,255,.34);
+      pointer-events:none;
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+
+    .statusBox {
+      margin-top:16px;
+      padding:16px 18px;
+      border-radius:20px;
+      background:linear-gradient(180deg, rgba(23,214,195,.08), rgba(255,255,255,.03));
+      border:1px solid rgba(23,214,195,.16);
+      color:rgba(236,247,255,.88);
+      line-height:1.8;
+      font-size:14px;
+    }
+    .statusBox.warn {
+      background:rgba(240,200,105,.08);
+      border-color:rgba(240,200,105,.24);
+      color:#ffe7ad;
+    }
+    .statusBox.danger {
+      background:rgba(255,125,148,.08);
+      border-color:rgba(255,125,148,.24);
+      color:#ffc1cc;
+    }
+    .notice {
+      margin:16px 0 0;
+      color:var(--muted);
+      line-height:1.8;
+      font-size:13px;
+    }
+
+    .memberPanel { display:grid; gap:14px; }
+    .memberHero {
+      position:relative;
+      overflow:hidden;
+      padding:18px;
+      border-radius:22px;
+      border:1px solid var(--line);
+      background:linear-gradient(135deg, rgba(23,214,195,.10), rgba(47,140,255,.08));
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:0;
+    }
+    .memberLogo {
+      width:64px;
+      height:64px;
+      border-radius:18px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      flex:0 0 auto;
+      display:grid;
+      place-items:center;
+      color:var(--primary3);
+      font-weight:1000;
+      letter-spacing:.08em;
+      font-size:20px;
+    }
+    .memberInfo { min-width:0; }
+    .memberName {
+      font-weight:950;
+      font-size:22px;
+      line-height:1.3;
+      color:var(--text);
+      word-break:break-word;
+    }
+    .memberSub {
+      margin-top:5px;
+      color:var(--muted);
+      line-height:1.6;
+      word-break:break-word;
+      font-size:14px;
+    }
+
+    .infoGrid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+    .infoCell {
+      padding:14px 15px;
+      border-radius:20px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      min-height:84px;
+    }
+    .infoLabel {
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:7px;
+      letter-spacing:.04em;
+    }
+    .infoValue {
+      color:var(--text);
+      font-weight:900;
+      line-height:1.42;
+      word-break:break-word;
+    }
+    .timeValue {
+      font-size:22px;
+      line-height:1.2;
+      letter-spacing:.03em;
+      color:var(--primary3);
+    }
+    .dateValue { color:rgba(236,247,255,.88); }
+    .loginHelp {
+      color:var(--muted);
+      line-height:1.75;
+      font-size:13px;
+    }
+
+    .sectionTop {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .sectionTop h2 {
+      margin:0;
+      font-size:20px;
+      font-weight:950;
+      letter-spacing:.02em;
+    }
+    .functionDesc {
+      color:var(--muted);
+      margin-top:6px;
+      line-height:1.7;
+      font-size:14px;
+    }
+    .navGrid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+    .navCard {
+      position:relative;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      min-height:198px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .navCard::before {
+      content:"";
+      position:absolute;
+      inset:auto -25px -30px auto;
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(23,214,195,.13), transparent 68%);
+      pointer-events:none;
+    }
+    .navTitle {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      font-weight:950;
+      font-size:18px;
+      letter-spacing:.01em;
+    }
+    .navText {
+      color:rgba(236,247,255,.78);
+      line-height:1.8;
+      font-size:15px;
+      flex:1;
+    }
+    .navCard .btn { align-self:flex-start; margin-top:auto; }
+
+    .footer {
+      width:min(1240px, calc(100vw - 32px));
+      margin:0 auto 24px;
+      color:rgba(236,247,255,.48);
+      text-align:center;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    @media (max-width: 980px) {
+      .mainGrid { grid-template-columns:1fr; }
+      .navGrid { grid-template-columns:1fr; }
+    }
+    @media (max-width: 760px) {
+      .heroCard {
+        padding:20px;
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      .heroMain { align-items:flex-start; }
+      .heroText h1 { font-size:28px; }
+      .brandMark { width:72px;height:72px;border-radius:20px; }
+    }
+    @media (max-width: 640px) {
+      .shell { width:min(100vw - 18px, 100vw - 18px); }
+      .panelInner { padding:18px; }
+      .hero { padding:14px 0 18px; }
+      .securityRow { grid-template-columns:1fr; }
+      .infoGrid { grid-template-columns:1fr; }
+      .memberHero { align-items:flex-start; }
+      .memberName { font-size:20px; }
+      .timeValue { font-size:19px; }
+      .btnRow { gap:10px; }
+      .btnRow .btn, .btnRow button { flex:1 1 auto; }
+      .heroDomain { white-space:normal; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="shell">
+      <div class="heroCard">
+        <div class="heroMain">
+          <div class="brandMark">SD</div>
+          <div class="heroText">
+            <h1>SEADREAM B2B 會員入口</h1>
+            <div class="heroSub">會員登入與功能入口．批發會員登入後可進入設備批發與活體販售頁，管理人員依權限看到後台入口。</div>
+          </div>
+        </div>
+        <div class="heroDomain">b2b.seadream.com.tw</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell mainGrid">
+    <section class="panel">
+      <div class="panelInner">
+        <div class="loginModeTitle">
+          <h2 id="loginCardTitle">會員登入</h2>
+          <span id="loginMiniBadge" class="badge badgeWarn">未登入</span>
+        </div>
+
+        <div id="loginFormArea">
+          <div class="field">
+            <input id="emailInput" type="email" autocomplete="email" placeholder="Email" />
+          </div>
+
+          <div class="field">
+            <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Password" />
+          </div>
+
+          <input id="companyWebsiteTrap" class="hiddenTrap" type="text" autocomplete="off" tabindex="-1" aria-hidden="true" />
+
+          <div class="securityBox">
+            <div class="securityTitle">登入安全檢查</div>
+            <div class="securityRow">
+              <div>
+                <div id="botQuestionText" class="securityQuestion">正在產生驗證題目...</div>
+                <div class="securityHint">這是簡易防機器人測試；正式防護可再依需要升級。</div>
+              </div>
+              <div class="field" style="margin:0;">
+                <input id="botAnswerInput" type="text" inputmode="numeric" autocomplete="off" placeholder="答案" />
+              </div>
+            </div>
+            <button id="refreshBotQuestionBtn" class="miniLinkBtn" type="button">換一題驗證</button>
+          </div>
+
+          <div class="btnRow">
+            <button id="loginBtn" class="btnPrimary">登入</button>
+            <button id="resetPasswordBtn" class="btnSoft" type="button">忘記密碼</button>
+          </div>
+
+          <div id="loginStatus" class="statusBox warn">尚未登入。</div>
+          <p class="notice">v20.6：登入成功會寫入 activityLogs；按登出會先寫入登出紀錄，再執行 Firebase 登出。</p>
+        </div>
+
+        <div id="loggedInArea" class="memberPanel hidden">
+          <div class="memberHero">
+            <div class="memberLogo">SD</div>
+            <div class="memberInfo">
+              <div id="memberDisplayName" class="memberName">已登入</div>
+              <div id="memberDisplayEmail" class="memberSub"></div>
+            </div>
+          </div>
+
+          <div class="infoGrid">
+            <div class="infoCell">
+              <div class="infoLabel">會員角色</div>
+              <div id="memberRoleText" class="infoValue">--</div>
+            </div>
+            <div class="infoCell">
+              <div class="infoLabel">帳號狀態</div>
+              <div id="memberStatusText" class="infoValue">--</div>
+            </div>
+            <div class="infoCell">
+              <div class="infoLabel">今天日期</div>
+              <div id="currentDateText" class="infoValue dateValue">--</div>
+            </div>
+            <div class="infoCell">
+              <div class="infoLabel">目前時間</div>
+              <div id="currentTimeText" class="infoValue timeValue">--:--:--</div>
+            </div>
+          </div>
+
+          <div class="btnRow">
+            <a id="memberGoOrderBtn" class="btn btnPrimary" href="/order.html">進入設備批發頁</a>
+            <a id="memberGoLivestockBtn" class="btn btnLine" href="/livestock_b2b.html">進入活體販售頁</a>
+            <button id="logoutBtn" class="btnSoft" type="button">登出</button>
+          </div>
+
+          <div id="memberNotice" class="loginHelp">已登入狀態下，登入欄位與安全檢查會自動隱藏，只保留會員資訊與必要操作。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel functionPanel">
+      <div class="panelInner">
+        <div class="sectionTop">
+          <div>
+            <h2>功能入口</h2>
+            <div class="functionDesc">依照會員角色與 permissions 顯示可使用功能。admin 會看到全部入口；staff 會依權限顯示管理入口。</div>
+          </div>
+          <span id="roleBadge" class="badge badgeWarn">未登入</span>
+        </div>
+
+        <div class="navGrid">
+          <div class="navCard">
+            <div class="navTitle">設備批發估價 <span id="equipmentBadge" class="badge">已啟用</span></div>
+            <div class="navText">查看設備商品、加入報價、送出報價單。admin / equipmentAdmin 可新增、修改商品與同步商城商品。</div>
+            <a id="goOrderBtn" class="btn btnPrimary" href="/order.html">進入設備批發頁</a>
+          </div>
+
+          <div class="navCard">
+            <div class="navTitle">活體珊瑚販售 <span id="livestockSalesBadge" class="badge">已啟用</span></div>
+            <div class="navText">批發會員、admin、staff + livestockAdmin 可查看 B2B 活體販售頁，將活體加入報價 / 詢價。</div>
+            <a id="goLivestockBtn" class="btn btnPrimary" href="/livestock_b2b.html">進入活體販售頁</a>
+          </div>
+
+          <div id="livestockAdminNavCard" class="navCard hidden">
+            <div class="navTitle">活體管理 <span class="badge badgeWarn">管理</span></div>
+            <div class="navText">上傳圖片、單張上架、批次上架、改價、下架、刪除、同步一般商城與 B2B 活體資料。</div>
+            <a id="livestockAdminBtn" class="btn btnLine" href="/livestock_admin.html">進入活體管理</a>
+          </div>
+
+          <div id="adminNavCard" class="navCard hidden">
+            <div class="navTitle">後台管理 <span class="badge badgeWarn">管理</span></div>
+            <div class="navText">設備商品、人員權限、報價 / 訂單、商城首頁管理、活動紀錄等管理功能入口。</div>
+            <a id="adminBtn" class="btn btnLine" href="/order.html">前往管理頁</a>
+          </div>
+
+          <div id="activityLogsNavCard" class="navCard hidden">
+            <div class="navTitle">活動紀錄 <span class="badge badgeOk">v1.1</span></div>
+            <div class="navText">查看活體上架、刪除、同步、人員管理，以及從 v20.6 開始的 B2B 入口登入 / 登出紀錄。</div>
+            <a id="activityLogsBtn" class="btn btnLine" href="/activity_logs_admin.html">查看活動紀錄</a>
+          </div>
+
+          <div class="navCard">
+            <div class="navTitle">一般商城 <span class="badge">外部入口</span></div>
+            <div class="navText">前往海洋夢商城一般消費者網站，查看一般商品與活體珊瑚展示頁。</div>
+            <a class="btn btnLine" href="https://www.seadream.com.tw" target="_blank" rel="noopener">開啟一般商城</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer">SEADREAM Aquarium Wholesale System｜index_b2b_v20_6_auth_logs</div>
+
+  <script src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="/__/firebase/init.js?useEmulator=false"></script>
+
+  <script>
+    const VERSION = 'index_b2b_v20_6_auth_logs';
+    let auth = null;
+    let db = null;
+    let currentUser = null;
+    let currentProfile = null;
+    let currentRole = 'guest';
+    let currentStatus = 'inactive';
+    let currentPermissions = {};
+    let botAnswer = null;
+    let pendingLoginLog = false;
+    let clockTimer = null;
+
+    const $ = (id) => document.getElementById(id);
+
+    function safe(v){ return v == null ? '' : String(v); }
+    function escapeHtml(s){
+      return safe(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    }
+    function asTrue(v){ return v === true || v === 'true' || v === 1 || v === '1' || v === 'yes' || v === 'on'; }
+    function setStatus(msg, type='warn'){
+      const el = $('loginStatus');
+      if(!el) return;
+      el.className = 'statusBox ' + (type || '');
+      el.innerHTML = msg;
+    }
+
+    function formatDateTimeParts(){
+      const now = new Date();
+      const date = now.toLocaleDateString('zh-TW', {
+        year:'numeric',
+        month:'2-digit',
+        day:'2-digit',
+        weekday:'long'
+      });
+      const time = now.toLocaleTimeString('zh-TW', {
+        hour12:false,
+        hour:'2-digit',
+        minute:'2-digit',
+        second:'2-digit'
+      });
+      return {date, time};
+    }
+
+    function updateClock(){
+      const parts = formatDateTimeParts();
+      if ($('currentDateText')) $('currentDateText').textContent = parts.date;
+      if ($('currentTimeText')) $('currentTimeText').textContent = parts.time;
+    }
+
+    function startClock(){
+      updateClock();
+      if(clockTimer) clearInterval(clockTimer);
+      clockTimer = setInterval(updateClock, 1000);
+    }
+
+    function setLoggedInLayout(isLoggedIn){
+      $('loginFormArea')?.classList.toggle('hidden', isLoggedIn);
+      $('loggedInArea')?.classList.toggle('hidden', !isLoggedIn);
+      if ($('loginCardTitle')) $('loginCardTitle').textContent = isLoggedIn ? '會員資訊' : '會員登入';
+      if ($('loginMiniBadge')) {
+        $('loginMiniBadge').textContent = isLoggedIn ? '已登入' : '未登入';
+        $('loginMiniBadge').className = isLoggedIn ? 'badge badgeOk' : 'badge badgeWarn';
+      }
+    }
+
+    function getPermissions(data, role){
+      const p = (data && data.permissions && typeof data.permissions === 'object') ? data.permissions : {};
+      const isAdmin = role === 'admin' || data?.isAdmin === true;
+      return {
+        equipmentAdmin: isAdmin || p.equipmentAdmin === true,
+        livestockAdmin: isAdmin || p.livestockAdmin === true,
+        orderAdmin: isAdmin || p.orderAdmin === true,
+        shopHomeAdmin: isAdmin || p.shopHomeAdmin === true,
+        userAdmin: isAdmin || p.userAdmin === true
+      };
+    }
+
+    function hasAnyBackendPermission(){
+      return currentRole === 'admin' || !!(
+        currentPermissions.equipmentAdmin ||
+        currentPermissions.orderAdmin ||
+        currentPermissions.shopHomeAdmin ||
+        currentPermissions.userAdmin
+      );
+    }
+
+    function hasLivestockAdminPermission(){
+      return currentRole === 'admin' || currentPermissions.livestockAdmin === true;
+    }
+
+    function canUseEquipmentPage(){
+      return currentStatus === 'active' && (
+        currentRole === 'admin' ||
+        currentRole === 'wholesale' ||
+        currentPermissions.equipmentAdmin === true ||
+        currentPermissions.orderAdmin === true ||
+        currentPermissions.shopHomeAdmin === true ||
+        currentPermissions.userAdmin === true
+      );
+    }
+
+    function canUseLivestockPage(){
+      return currentStatus === 'active' && (
+        currentRole === 'admin' ||
+        currentRole === 'wholesale' ||
+        currentPermissions.livestockAdmin === true
+      );
+    }
+
+    function actorName(){
+      return currentProfile?.contactName ||
+        currentProfile?.name ||
+        currentProfile?.companyName ||
+        currentUser?.displayName ||
+        currentUser?.email ||
+        '';
+    }
+
+    async function writeActivityLog(action, summary, extra = {}){
+      try{
+        if(!db || !currentUser) return false;
+        const profile = currentProfile || {};
+        const role = profile.role || currentRole || '';
+        const permissions = getPermissions(profile, role);
+        await db.collection('activityLogs').add({
+          module:'auth',
+          action,
+          summary:summary || '',
+          target: {
+            page:'index.html',
+            version:VERSION,
+            ...extra
+          },
+          targetCollection:'users',
+          targetId:currentUser.uid,
+          actorUid:currentUser.uid,
+          actorEmail:currentUser.email || profile.email || '',
+          actorName:actorName(),
+          actorRole:role || '',
+          actorPermissions:permissions,
+          page:'index.html',
+          version:VERSION,
+          userAgent:navigator.userAgent || '',
+          createdAt:firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return true;
+      }catch(err){
+        console.warn('activity log failed:', err);
+        return false;
+      }
+    }
+
+    function updateNavAccess(user){
+      const roleBadge = $('roleBadge');
+      const orderBtn = $('goOrderBtn');
+      const memberOrderBtn = $('memberGoOrderBtn');
+      const livestockBtn = $('goLivestockBtn');
+      const memberLivestockBtn = $('memberGoLivestockBtn');
+      const livestockAdminNavCard = $('livestockAdminNavCard');
+      const adminNavCard = $('adminNavCard');
+      const activityLogsNavCard = $('activityLogsNavCard');
+
+      if (!user) {
+        roleBadge.textContent = '未登入';
+        roleBadge.className = 'badge badgeWarn';
+
+        orderBtn.className = 'btn btnDisabled';
+        orderBtn.href = 'javascript:void(0)';
+        orderBtn.onclick = () => alert('請先登入，再進入設備批發頁。');
+
+        livestockBtn.className = 'btn btnDisabled';
+        livestockBtn.href = 'javascript:void(0)';
+        livestockBtn.onclick = () => alert('請先登入，再進入活體販售頁。');
+
+        if(memberOrderBtn){
+          memberOrderBtn.className = 'btn btnDisabled';
+          memberOrderBtn.href = 'javascript:void(0)';
+        }
+        if(memberLivestockBtn){
+          memberLivestockBtn.className = 'btn btnDisabled';
+          memberLivestockBtn.href = 'javascript:void(0)';
+        }
+
+        livestockAdminNavCard.classList.add('hidden');
+        adminNavCard.classList.add('hidden');
+        activityLogsNavCard.classList.add('hidden');
+        return;
+      }
+
+      const equipmentOk = canUseEquipmentPage();
+      const livestockOk = canUseLivestockPage();
+      const livestockAdminOk = hasLivestockAdminPermission() && currentStatus === 'active';
+      const backendOk = hasAnyBackendPermission() && currentStatus === 'active';
+      const logsOk = currentRole === 'admin' || currentPermissions.userAdmin === true;
+
+      if(currentRole === 'admin'){
+        roleBadge.textContent = 'admin 最高管理員';
+        roleBadge.className = 'badge badgeOk';
+      }else if(currentRole === 'staff'){
+        roleBadge.textContent = 'staff 管理人員';
+        roleBadge.className = 'badge';
+      }else if(currentRole === 'wholesale'){
+        roleBadge.textContent = 'wholesale 批發會員';
+        roleBadge.className = 'badge';
+      }else{
+        roleBadge.textContent = currentRole + ' 一般會員';
+        roleBadge.className = 'badge badgeWarn';
+      }
+
+      if(equipmentOk){
+        orderBtn.className = 'btn btnPrimary';
+        orderBtn.href = '/order.html';
+        orderBtn.onclick = null;
+        if(memberOrderBtn){
+          memberOrderBtn.className = 'btn btnPrimary';
+          memberOrderBtn.href = '/order.html';
+        }
+      }else{
+        orderBtn.className = 'btn btnDisabled';
+        orderBtn.href = 'javascript:void(0)';
+        orderBtn.onclick = () => alert('目前帳號沒有設備批發頁權限。');
+        if(memberOrderBtn){
+          memberOrderBtn.className = 'btn btnDisabled';
+          memberOrderBtn.href = 'javascript:void(0)';
+        }
+      }
+
+      if(livestockOk){
+        livestockBtn.className = 'btn btnPrimary';
+        livestockBtn.href = '/livestock_b2b.html';
+        livestockBtn.onclick = null;
+        if(memberLivestockBtn){
+          memberLivestockBtn.className = 'btn btnLine';
+          memberLivestockBtn.href = '/livestock_b2b.html';
+        }
+      }else{
+        livestockBtn.className = 'btn btnDisabled';
+        livestockBtn.href = 'javascript:void(0)';
+        livestockBtn.onclick = () => alert('目前帳號沒有活體販售頁權限。');
+        if(memberLivestockBtn){
+          memberLivestockBtn.className = 'btn btnDisabled';
+          memberLivestockBtn.href = 'javascript:void(0)';
+        }
+      }
+
+      livestockAdminNavCard.classList.toggle('hidden', !livestockAdminOk);
+      adminNavCard.classList.toggle('hidden', !backendOk);
+      activityLogsNavCard.classList.toggle('hidden', !logsOk);
+    }
+
+    function resetUserState(){
+      currentUser = null;
+      currentProfile = null;
+      currentRole = 'guest';
+      currentStatus = 'inactive';
+      currentPermissions = {};
+    }
+
+    function generateBotQuestion(){
+      const a = Math.floor(Math.random() * 7) + 2;
+      const b = Math.floor(Math.random() * 8) + 3;
+      botAnswer = a + b;
+      if($('botQuestionText')) $('botQuestionText').textContent = `請輸入 ${a} + ${b} 的答案`;
+      if($('botAnswerInput')) $('botAnswerInput').value = '';
+    }
+
+    function validateBotQuestion(){
+      if(safe($('companyWebsiteTrap')?.value).trim()) return false;
+      const answer = Number(safe($('botAnswerInput')?.value).trim());
+      return Number.isFinite(answer) && answer === botAnswer;
+    }
+
+    async function loadProfile(user){
+      const snap = await db.collection('users').doc(user.uid).get();
+      if(!snap.exists){
+        return {
+          email:user.email || '',
+          role:'user',
+          status:'inactive',
+          isAdmin:false,
+          permissions:{}
+        };
+      }
+      return snap.data() || {};
+    }
+
+    async function handleSignedIn(user){
+      currentUser = user;
+      currentProfile = await loadProfile(user);
+
+      currentRole = safe(currentProfile.role || (currentProfile.isAdmin ? 'admin' : 'user')).toLowerCase();
+      currentStatus = safe(currentProfile.status || 'active').toLowerCase();
+      currentPermissions = getPermissions(currentProfile, currentRole);
+
+      const displayName = currentProfile.contactName || currentProfile.name || currentProfile.companyName || user.email || '已登入';
+      const companyLine = currentProfile.companyName ? `${currentProfile.companyName}｜${user.email || ''}` : (user.email || '');
+
+      $('memberDisplayName').textContent = displayName;
+      $('memberDisplayEmail').textContent = companyLine;
+      $('memberRoleText').textContent = currentRole || '--';
+      $('memberStatusText').textContent = currentStatus || '--';
+      $('memberStatusText').style.color = currentStatus === 'active' ? 'var(--ok)' : 'var(--warn)';
+
+      setLoggedInLayout(true);
+      updateNavAccess(user);
+      startClock();
+
+      if(pendingLoginLog){
+        pendingLoginLog = false;
+        const ok = await writeActivityLog('login', 'B2B 會員入口登入', {
+          loginType:'email_password',
+          email:user.email || ''
+        });
+        const logMsg = ok ? '已寫入登入紀錄。' : '登入成功，但活動紀錄寫入失敗；請確認 Firestore Rules 是否允許 activityLogs create。';
+        $('memberNotice').textContent = logMsg;
+      }
+    }
+
+    async function login(){
+      const email = safe($('emailInput').value).trim();
+      const password = safe($('passwordInput').value);
+
+      if(!email || !password){
+        setStatus('請輸入 Email 與密碼。', 'warn');
+        return;
+      }
+      if(!validateBotQuestion()){
+        setStatus('安全檢查答案不正確，請重新輸入。', 'danger');
+        generateBotQuestion();
+        return;
+      }
+
+      const btn = $('loginBtn');
+      btn.disabled = true;
+      setStatus('登入中...', '');
+      try{
+        pendingLoginLog = true;
+        await auth.signInWithEmailAndPassword(email, password);
+        setStatus('登入成功，正在讀取會員資料...', '');
+      }catch(err){
+        pendingLoginLog = false;
+        console.error(err);
+        setStatus('登入失敗：' + escapeHtml(err.message || String(err)), 'danger');
+        generateBotQuestion();
+      }finally{
+        btn.disabled = false;
+      }
+    }
+
+    async function logout(){
+      if(!auth || !currentUser){
+        return;
+      }
+      const btn = $('logoutBtn');
+      if(btn) btn.disabled = true;
+      try{
+        await writeActivityLog('logout', 'B2B 會員入口登出', {
+          email:currentUser.email || '',
+          logoutType:'button'
+        });
+      }catch(err){
+        console.warn(err);
+      }
+      try{
+        await auth.signOut();
+      }catch(err){
+        console.error(err);
+        alert('登出失敗：' + (err.message || err));
+      }finally{
+        if(btn) btn.disabled = false;
+      }
+    }
+
+    async function resetPassword(){
+      const email = safe($('emailInput').value).trim();
+      if(!email){
+        setStatus('請先輸入 Email，再按忘記密碼。', 'warn');
+        return;
+      }
+      try{
+        await auth.sendPasswordResetEmail(email);
+        setStatus('已寄出密碼重設 Email，請查看信箱。', '');
+      }catch(err){
+        console.error(err);
+        setStatus('寄送失敗：' + escapeHtml(err.message || String(err)), 'danger');
+      }
+    }
+
+    function bindEvents(){
+      $('loginBtn')?.addEventListener('click', login);
+      $('logoutBtn')?.addEventListener('click', logout);
+      $('resetPasswordBtn')?.addEventListener('click', resetPassword);
+      $('refreshBotQuestionBtn')?.addEventListener('click', generateBotQuestion);
+
+      ['emailInput','passwordInput','botAnswerInput'].forEach(id => {
+        $(id)?.addEventListener('keydown', e => {
+          if(e.key === 'Enter') login();
+        });
+      });
+    }
+
+    function boot(){
+      bindEvents();
+      generateBotQuestion();
+      startClock();
+
+      try{
+        auth = firebase.auth();
+        db = firebase.firestore();
+        auth.languageCode = 'zh-TW';
+      }catch(err){
+        console.error(err);
+        setStatus('Firebase 尚未初始化，請確認已部署到 Firebase Hosting。', 'danger');
+        return;
+      }
+
+      auth.onAuthStateChanged(async user => {
+        if(!user){
+          resetUserState();
+          setLoggedInLayout(false);
+          updateNavAccess(null);
+          setStatus('尚未登入。', 'warn');
+          return;
+        }
+        try{
+          await handleSignedIn(user);
+        }catch(err){
+          console.error(err);
+          setLoggedInLayout(false);
+          updateNavAccess(null);
+          setStatus('讀取會員資料失敗：' + escapeHtml(err.message || String(err)), 'danger');
+        }
+      });
+    }
+
+    window.logout = logout;
+    document.addEventListener('DOMContentLoaded', boot);
+  </script>
+</body>
+</html>

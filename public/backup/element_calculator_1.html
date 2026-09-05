@@ -1,0 +1,1092 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>SEADREAM 水量與元素補充計算 v1.0</title>
+  <meta name="description" content="SEADREAM Aquarium 水量、AF ICP LAB 添加量、SEADREAM 管理者自訂配方與週期消耗計算工具" />
+  <style>
+    :root{
+      --bg:#06131d;
+      --bg2:#081a25;
+      --panel:rgba(9,27,40,.9);
+      --panel2:rgba(11,35,50,.78);
+      --line:rgba(126,206,224,.18);
+      --line2:rgba(126,206,224,.32);
+      --text:#eef8ff;
+      --muted:#9bb7c8;
+      --primary:#18dac8;
+      --blue:#2c9dff;
+      --ok:#70f2b4;
+      --warn:#ffd166;
+      --danger:#ff7d94;
+      --purple:#c5a3ff;
+      --shadow:0 22px 70px rgba(0,0,0,.35);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    html,body{min-height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 0%,rgba(44,157,255,.22),transparent 30%),
+        radial-gradient(circle at 92% 8%,rgba(24,218,200,.18),transparent 28%),
+        linear-gradient(180deg,#06131d 0%,#081a25 42%,#06111a 100%);
+      overflow-x:hidden;
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.18;
+      background-image:
+        linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+      background-size:38px 38px;
+      mask-image:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.05));
+    }
+    a{color:inherit;text-decoration:none}
+    input,select,button,textarea{font:inherit}
+    .hidden{display:none!important}
+    .wrap{width:min(1500px,calc(100vw - 30px));margin:0 auto;position:relative;z-index:1}
+    .hero{padding:20px 0 18px}
+    .heroCard{
+      border:1px solid var(--line);
+      border-radius:32px;
+      background:linear-gradient(135deg,rgba(13,40,58,.95),rgba(6,21,32,.88));
+      box-shadow:var(--shadow);
+      padding:22px 24px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:18px;
+      overflow:hidden;
+      position:relative;
+    }
+    .heroCard::after{
+      content:"";
+      width:390px;height:390px;border-radius:50%;
+      background:radial-gradient(circle,rgba(24,218,200,.16),transparent 66%);
+      position:absolute;right:-140px;top:-180px;pointer-events:none;
+    }
+    .brand{display:flex;align-items:center;gap:16px;min-width:0;position:relative;z-index:1}
+    .logo{
+      width:72px;height:72px;border-radius:22px;
+      display:grid;place-items:center;
+      color:#9ffff4;font-weight:1000;font-size:24px;letter-spacing:.08em;
+      background:linear-gradient(135deg,rgba(24,218,200,.16),rgba(44,157,255,.12));
+      border:1px solid rgba(255,255,255,.14);
+      flex:0 0 auto;
+    }
+    .hero h1{margin:0;font-size:31px;letter-spacing:.02em;line-height:1.15}
+    .hero p{margin:8px 0 0;color:rgba(238,248,255,.75);line-height:1.65}
+    .heroBtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;position:relative;z-index:1}
+    .pill{
+      display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      padding:9px 13px;border-radius:999px;
+      border:1px solid var(--line2);
+      background:rgba(255,255,255,.05);
+      color:#bffff6;font-weight:900;font-size:13px;white-space:nowrap;
+    }
+    .pill.warn{color:#ffe3a5;border-color:rgba(255,209,102,.35);background:rgba(255,209,102,.08)}
+    .pill.ok{color:#a9ffd1;border-color:rgba(112,242,180,.35);background:rgba(112,242,180,.08)}
+
+    .grid{display:grid;grid-template-columns:420px minmax(0,1fr);gap:18px;align-items:start;padding-bottom:38px}
+    .card{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(9,27,40,.94),rgba(7,20,31,.86));
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+      min-width:0;
+    }
+    .card h2{margin:0 0 14px;font-size:21px}
+    .card h3{margin:18px 0 10px;font-size:17px;color:#dffbff}
+    .muted{color:var(--muted)}
+    .small{font-size:12px;color:var(--muted);line-height:1.65}
+    .note{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:12px 14px;
+      background:rgba(24,218,200,.055);
+      color:#d5edf5;
+      line-height:1.7;
+      margin-bottom:14px;
+      font-size:13px;
+    }
+    .warnBox{
+      border:1px solid rgba(255,209,102,.28);
+      background:rgba(255,209,102,.08);
+      color:#ffe6ad;
+      border-radius:18px;
+      padding:12px 14px;
+      line-height:1.65;
+      font-size:13px;
+      margin-top:12px;
+    }
+    .dangerBox{
+      border:1px solid rgba(255,125,148,.30);
+      background:rgba(255,125,148,.08);
+      color:#ffc6cf;
+      border-radius:18px;
+      padding:12px 14px;
+      line-height:1.65;
+      font-size:13px;
+      margin-top:12px;
+    }
+
+    .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .fields.one{grid-template-columns:1fr}
+    .fields.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .field label{display:block;color:var(--muted);font-size:12px;margin:0 0 6px}
+    input,select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:15px;
+      padding:12px 12px;
+      background:rgba(255,255,255,.045);
+      color:var(--text);
+      outline:none;
+      transition:.16s ease;
+      min-height:45px;
+    }
+    input::placeholder{color:rgba(238,248,255,.34)}
+    input:focus,select:focus{
+      border-color:rgba(24,218,200,.58);
+      box-shadow:0 0 0 4px rgba(24,218,200,.08);
+      background:rgba(255,255,255,.065);
+    }
+    option{background:#0b2230;color:#effaff}
+    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    button,.btn{
+      border:0;cursor:pointer;
+      border-radius:15px;
+      min-height:45px;
+      padding:11px 15px;
+      font-weight:950;
+      letter-spacing:.02em;
+      display:inline-flex;align-items:center;justify-content:center;gap:7px;
+      transition:.15s ease;
+    }
+    button:hover,.btn:hover{transform:translateY(-1px)}
+    .primary{background:linear-gradient(135deg,var(--primary),var(--blue));color:#04131d;box-shadow:0 16px 32px rgba(24,218,200,.12)}
+    .secondary{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--line)}
+    .outline{background:transparent;color:#9ffff4;border:1px solid rgba(24,218,200,.38)}
+    .purpleBtn{background:rgba(197,163,255,.11);color:#eadfff;border:1px solid rgba(197,163,255,.28)}
+    .tabRow{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+    .tab{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:rgba(238,248,255,.76);
+      border-radius:999px;
+      min-height:38px;
+      padding:9px 13px;
+      font-size:13px;
+    }
+    .tab.active{background:rgba(24,218,200,.12);border-color:rgba(24,218,200,.5);color:#9ffff4}
+
+    .resultGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .resultBox{
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));
+      padding:14px;
+      min-height:96px;
+    }
+    .resultBox .label{color:var(--muted);font-size:12px;margin-bottom:7px}
+    .resultBox .value{font-size:26px;font-weight:1000;color:#9ffff4;line-height:1.15;word-break:break-word}
+    .resultBox .sub{margin-top:7px;color:rgba(238,248,255,.70);font-size:12px;line-height:1.55}
+    .value.warn{color:var(--warn)}
+    .value.danger{color:var(--danger)}
+    .value.ok{color:var(--ok)}
+    .value.purple{color:var(--purple)}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .formulaBox{
+      font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+      border:1px solid rgba(197,163,255,.28);
+      background:rgba(197,163,255,.075);
+      border-radius:18px;
+      padding:12px;
+      color:#eadfff;
+      line-height:1.65;
+      font-size:12px;
+      white-space:pre-wrap;
+      overflow:auto;
+    }
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid rgba(126,206,224,.13);padding:10px;text-align:left;vertical-align:top}
+    th{color:#dffbff;background:rgba(255,255,255,.035);position:sticky;top:0}
+    td{color:rgba(238,248,255,.82)}
+    .tableWrap{border:1px solid var(--line);border-radius:18px;overflow:auto;max-height:320px;background:rgba(0,0,0,.12)}
+    .statusTag{
+      display:inline-flex;align-items:center;justify-content:center;
+      border-radius:999px;padding:5px 9px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.055);
+      font-size:12px;font-weight:950;white-space:nowrap;
+    }
+    .statusTag.low{color:#ace8ff;border-color:rgba(44,157,255,.38);background:rgba(44,157,255,.10)}
+    .statusTag.normal{color:#a9ffd1;border-color:rgba(112,242,180,.35);background:rgba(112,242,180,.08)}
+    .statusTag.high{color:#ffe3a5;border-color:rgba(255,209,102,.35);background:rgba(255,209,102,.08)}
+    .statusTag.over{color:#ffc6cf;border-color:rgba(255,125,148,.35);background:rgba(255,125,148,.08)}
+    .modeBadge{
+      display:inline-flex;padding:6px 10px;border-radius:999px;
+      font-size:12px;font-weight:950;border:1px solid var(--line2);color:#bffff6;background:rgba(255,255,255,.05)
+    }
+    .modeBadge.manager{color:#eadfff;border-color:rgba(197,163,255,.38);background:rgba(197,163,255,.10)}
+    .sectionLine{height:1px;background:rgba(126,206,224,.15);margin:18px 0}
+    @media(max-width:1180px){
+      .grid{grid-template-columns:1fr}
+      .resultGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:760px){
+      .wrap{width:min(100vw - 18px,1500px)}
+      .heroCard{flex-direction:column;align-items:flex-start;padding:19px;border-radius:26px}
+      .brand{align-items:flex-start}
+      .logo{width:60px;height:60px;border-radius:19px;font-size:20px}
+      .hero h1{font-size:25px}
+      .heroBtns{justify-content:flex-start}
+      .fields,.fields.three,.split,.resultGrid{grid-template-columns:1fr}
+      .card{padding:16px}
+      .btnRow button,.btnRow .btn{flex:1 1 auto}
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="heroCard">
+        <div class="brand">
+          <div class="logo">SD</div>
+          <div>
+            <h1>水量與元素補充計算 v1.0</h1>
+            <p>魚缸水量、AF ICP LAB 添加量、SEADREAM 管理者自訂配方、週期消耗與每日維持量試算。</p>
+          </div>
+        </div>
+        <div class="heroBtns">
+          <a class="pill" href="/index.html">B2B 入口</a>
+          <a class="pill" href="/order.html">設備批發</a>
+          <span id="authPill" class="pill warn">角色讀取中</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap grid">
+    <aside class="card">
+      <h2>① 魚缸水量</h2>
+      <div class="note">可以用尺寸估算水量，也可以直接輸入實際水量。若直接輸入水量，系統會優先使用直接輸入值。</div>
+
+      <div class="fields">
+        <div class="field">
+          <label>客戶 / 魚缸名稱</label>
+          <input id="tankName" placeholder="例如：前缸 / 客戶A SPS缸" value="測試魚缸" />
+        </div>
+        <div class="field">
+          <label>測試日期</label>
+          <input id="testDate" type="date" />
+        </div>
+      </div>
+
+      <h3>尺寸計算</h3>
+      <div class="fields three">
+        <div class="field">
+          <label>長 cm</label>
+          <input id="lenCm" type="number" step="0.1" placeholder="例如 120" />
+        </div>
+        <div class="field">
+          <label>寬 cm</label>
+          <input id="widCm" type="number" step="0.1" placeholder="例如 60" />
+        </div>
+        <div class="field">
+          <label>水高 cm</label>
+          <input id="heiCm" type="number" step="0.1" placeholder="例如 50" />
+        </div>
+      </div>
+      <div class="fields">
+        <div class="field">
+          <label>底缸 / 其他水量 L</label>
+          <input id="sumpL" type="number" step="0.1" value="0" />
+        </div>
+        <div class="field">
+          <label>扣除比例 %（活石 / 底砂）</label>
+          <input id="deductPct" type="number" step="0.1" value="0" />
+        </div>
+      </div>
+
+      <h3>直接輸入水量</h3>
+      <div class="fields one">
+        <div class="field">
+          <label>實際水量 L（優先使用）</label>
+          <input id="directL" type="number" step="0.1" placeholder="例如 1500" />
+        </div>
+      </div>
+
+      <div class="resultBox" style="margin-top:14px">
+        <div class="label">目前使用水量</div>
+        <div id="waterResult" class="value">0 L</div>
+        <div id="waterSub" class="sub">請輸入尺寸或直接水量。</div>
+      </div>
+
+      <div class="sectionLine"></div>
+
+      <h2>② 歷史紀錄暫存</h2>
+      <div class="note">v1.0 先用此瀏覽器暫存，方便測試「本週 vs 上週」。v1.1 再接 Firestore，讓管理者可正式保存客戶魚缸資料。</div>
+      <div class="btnRow">
+        <button id="saveLocalBtn" class="secondary" type="button">儲存本次數據</button>
+        <button id="loadPrevBtn" class="outline" type="button">載入上次數據</button>
+      </div>
+      <div id="localStatus" class="small" style="margin-top:10px">尚未儲存。</div>
+    </aside>
+
+    <section class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <h2 style="margin-bottom:6px">③ 元素補充試算</h2>
+          <div class="small">一般 / 批發會員只顯示 AF ICP LAB 添加方式；SEADREAM 管理者可開啟自訂配方與微量元素精密計算。</div>
+        </div>
+        <span id="modeBadge" class="modeBadge">AF ICP LAB 模式</span>
+      </div>
+
+      <div class="tabRow" style="margin-top:16px">
+        <button id="singleTab" class="tab active" type="button">單次修正量</button>
+        <button id="trackTab" class="tab" type="button">週期追蹤 / 每日消耗</button>
+        <button id="formulaTab" class="tab hidden" type="button">管理者自訂配方</button>
+      </div>
+
+      <div class="split">
+        <div>
+          <h3>產品與元素</h3>
+          <div class="fields">
+            <div class="field">
+              <label>添加方式</label>
+              <select id="productMode">
+                <option value="af">AF ICP LAB / AF Component 添加方式</option>
+                <option id="customModeOption" value="custom" class="hidden">SEADREAM 自訂配方（管理者）</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>元素</label>
+              <select id="elementSelect"></select>
+            </div>
+          </div>
+          <div class="fields">
+            <div class="field">
+              <label>目前數值</label>
+              <input id="currentValue" type="number" step="0.0001" placeholder="例如 390" />
+            </div>
+            <div class="field">
+              <label>目標值</label>
+              <input id="targetValue" type="number" step="0.0001" />
+            </div>
+          </div>
+          <div id="rangeInfo" class="warnBox"></div>
+        </div>
+
+        <div>
+          <h3>本次添加結果</h3>
+          <div class="resultGrid" style="grid-template-columns:1fr 1fr">
+            <div class="resultBox">
+              <div class="label">狀態</div>
+              <div id="statusResult" class="value">-</div>
+              <div id="statusSub" class="sub"></div>
+            </div>
+            <div class="resultBox">
+              <div class="label">差距</div>
+              <div id="diffResult" class="value">0</div>
+              <div id="diffSub" class="sub"></div>
+            </div>
+            <div class="resultBox">
+              <div class="label">總添加量</div>
+              <div id="doseResult" class="value">0 ml</div>
+              <div id="doseSub" class="sub"></div>
+            </div>
+            <div class="resultBox">
+              <div class="label">建議分次</div>
+              <div id="splitResult" class="value">-</div>
+              <div id="splitSub" class="sub"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="formulaPanel" class="hidden">
+        <div class="sectionLine"></div>
+        <h2>④ SEADREAM 管理者自訂配方</h2>
+        <div class="note">這區只給 admin / staff 管理者使用。可用原料重量、定容體積、純度、元素比例，計算母液有效濃度，再自動帶入添加量。</div>
+
+        <div class="fields">
+          <div class="field">
+            <label>常用原料預設</label>
+            <select id="rawPreset">
+              <option value="">手動輸入元素比例</option>
+              <option value="CaCl2_2H2O">氯化鈣二水 CaCl₂·2H₂O｜Ca 27.26%</option>
+              <option value="MgCl2_6H2O">氯化鎂六水 MgCl₂·6H₂O｜Mg 11.96%</option>
+              <option value="KCl">氯化鉀 KCl｜K 52.45%</option>
+              <option value="Na2SO4">無水硫酸鈉 Na₂SO₄｜S 22.57%</option>
+              <option value="KI">碘化鉀 KI｜I 76.45%</option>
+              <option value="KBr">溴化鉀 KBr｜Br 67.14%</option>
+              <option value="SrCl2_6H2O">氯化鍶六水 SrCl₂·6H₂O｜Sr 32.88%</option>
+              <option value="MnCl2_4H2O">氯化錳四水 MnCl₂·4H₂O｜Mn 27.76%</option>
+              <option value="Element100">純元素 / 已知 100% 有效元素</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>產品 / 配方名稱</label>
+            <input id="customName" placeholder="例如：SEADREAM Ca 高濃縮 350g/1000ml" value="SEADREAM 客製配方" />
+          </div>
+        </div>
+
+        <div class="fields">
+          <div class="field">
+            <label>原料重量 g</label>
+            <input id="powderGram" type="number" step="0.001" value="350" />
+          </div>
+          <div class="field">
+            <label>定容後總體積 ml</label>
+            <input id="finalVolumeMl" type="number" step="0.1" value="1000" />
+          </div>
+          <div class="field">
+            <label>原料純度 %</label>
+            <input id="purityPercent" type="number" step="0.01" value="99" />
+          </div>
+          <div class="field">
+            <label>有效元素比例 %</label>
+            <input id="elementPercent" type="number" step="0.001" value="100" />
+          </div>
+        </div>
+
+        <div class="resultGrid">
+          <div class="resultBox">
+            <div class="label">有效元素濃度</div>
+            <div id="activeMgLResult" class="value purple">0</div>
+            <div class="sub">mg/L</div>
+          </div>
+          <div class="resultBox">
+            <div class="label">每 1 ml / 100 L 提升</div>
+            <div id="ppmPerMlResult" class="value purple">0</div>
+            <div class="sub">ppm</div>
+          </div>
+          <div class="resultBox">
+            <div class="label">管理者模式</div>
+            <div class="value purple">ON</div>
+            <div class="sub">可計算巨量與微量元素自製母液</div>
+          </div>
+        </div>
+
+        <div id="formulaText" class="formulaBox" style="margin-top:12px"></div>
+      </div>
+
+      <div id="trackingPanel" class="hidden">
+        <div class="sectionLine"></div>
+        <h2>⑤ 週期追蹤 / 每日消耗</h2>
+        <div class="note">可輸入上次與本次數據，並填入期間已添加量，系統會估算每日消耗與每日維持添加量。</div>
+
+        <div class="fields">
+          <div class="field">
+            <label>上次日期</label>
+            <input id="prevDate" type="date" />
+          </div>
+          <div class="field">
+            <label>本次日期</label>
+            <input id="nowDate" type="date" />
+          </div>
+          <div class="field">
+            <label>間隔天數</label>
+            <input id="trackDays" type="number" step="0.1" value="7" />
+          </div>
+          <div class="field">
+            <label>期間已添加量 ml</label>
+            <input id="periodDoseMl" type="number" step="0.1" value="0" />
+          </div>
+        </div>
+
+        <div class="fields">
+          <div class="field">
+            <label>上次數值</label>
+            <input id="prevValue" type="number" step="0.0001" placeholder="例如 430" />
+          </div>
+          <div class="field">
+            <label>本次數值</label>
+            <input id="nowValue" type="number" step="0.0001" placeholder="例如 400" />
+          </div>
+        </div>
+
+        <div class="resultGrid">
+          <div class="resultBox">
+            <div class="label">期間補充估算提升</div>
+            <div id="periodIncreaseResult" class="value">0</div>
+            <div class="sub">ppm</div>
+          </div>
+          <div class="resultBox">
+            <div class="label">總消耗</div>
+            <div id="totalConsumeResult" class="value warn">0</div>
+            <div class="sub">ppm / 期間</div>
+          </div>
+          <div class="resultBox">
+            <div class="label">每日消耗</div>
+            <div id="dailyConsumeResult" class="value warn">0</div>
+            <div class="sub">ppm / day</div>
+          </div>
+          <div class="resultBox">
+            <div class="label">每日維持添加</div>
+            <div id="dailyDoseResult" class="value ok">0 ml</div>
+            <div class="sub">ml / day</div>
+          </div>
+          <div class="resultBox">
+            <div class="label">每週維持添加</div>
+            <div id="weeklyDoseResult" class="value ok">0 ml</div>
+            <div class="sub">ml / 7 days</div>
+          </div>
+          <div class="resultBox">
+            <div class="label">判斷</div>
+            <div id="trackJudgeResult" class="value">-</div>
+            <div id="trackJudgeSub" class="sub"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sectionLine"></div>
+      <h2>⑥ 目前產品係數 / 元素表</h2>
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>元素</th>
+              <th>建議範圍</th>
+              <th>目標</th>
+              <th>AF 產品</th>
+              <th id="managerTableHead">係數</th>
+            </tr>
+          </thead>
+          <tbody id="elementTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="dangerBox">
+        提醒：本工具是添加量試算。正式添加仍需分次、慢慢添加，並考慮換水、鹽度變化、ICP 誤差、沉澱、吸附與生物消耗。微量元素尤其不可一次大量添加。
+      </div>
+    </section>
+  </main>
+
+  <script src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="/__/firebase/init.js?useEmulator=false"></script>
+
+  <script>
+    const VERSION = 'element_calculator_v1_0_custom_formula_preview';
+    const $ = (id) => document.getElementById(id);
+    const n = (id) => {
+      const v = Number($(id)?.value);
+      return Number.isFinite(v) ? v : 0;
+    };
+    const fmt = (v, digits=2) => {
+      if(!Number.isFinite(v)) return '-';
+      const abs = Math.abs(v);
+      let d = digits;
+      if(abs > 1000) d = 0;
+      if(abs > 100 && abs <= 1000) d = 1;
+      if(abs > 0 && abs < 0.01) d = 5;
+      if(abs > 0 && abs < 0.001) d = 6;
+      return Number(v).toLocaleString('zh-TW', {maximumFractionDigits:d});
+    };
+    const today = new Date().toISOString().slice(0,10);
+
+    let auth = null;
+    let db = null;
+    let currentUser = null;
+    let currentProfile = null;
+    let isManager = false;
+    let activePanel = 'single';
+
+    const ELEMENTS = [
+      {key:'B',  label:'B（硼）', unit:'ppm', type:'macro', min:4.05, max:5.00, target:4.525, maxDaily:0.50, afProduct:'Borium', afCoef:22.6},
+      {key:'Ca', label:'Ca（鈣）', unit:'ppm', type:'macro', min:380, max:460, target:420, maxDaily:20, afProduct:'Component 1', afCoef:54.1},
+      {key:'Mg', label:'Mg（鎂）', unit:'ppm', type:'macro', min:1180, max:1460, target:1320, maxDaily:50, afProduct:'Component 2', afCoef:38.3},
+      {key:'K',  label:'K（鉀）', unit:'ppm', type:'macro', min:360, max:420, target:390, maxDaily:10, afProduct:'AF Potassium', afCoef:52.45},
+      {key:'Sr', label:'Sr（鍶）', unit:'ppm', type:'macro', min:6, max:10, target:8, maxDaily:1, afProduct:'AF Strontium', afCoef:10},
+      {key:'I',  label:'I（碘）', unit:'ppm', type:'trace', min:0.055, max:0.070, target:0.0625, maxDaily:0.005, afProduct:'Iodum', afCoef:4.52},
+      {key:'Fe', label:'Fe（鐵）', unit:'ppm', type:'trace', min:0.002, max:0.006, target:0.004, maxDaily:0.001, afProduct:'Ferrum', afCoef:0.452},
+      {key:'Mn', label:'Mn（錳）', unit:'ppm', type:'trace', min:0.0001, max:0.0022, target:0.00115, maxDaily:0.0005, afProduct:'Manganum', afCoef:0.452},
+      {key:'V',  label:'V（釩）', unit:'ppm', type:'trace', min:0.0001, max:0.0025, target:0.00130, maxDaily:0.0005, afProduct:'Vanadium', afCoef:0.452},
+      {key:'Co', label:'Co（鈷）', unit:'ppm', type:'trace', min:0.0001, max:0.0006, target:0.00035, maxDaily:0.0001, afProduct:'Cobaltum', afCoef:0.226},
+      {key:'Cr', label:'Cr（鉻）', unit:'ppm', type:'trace', min:0.0001, max:0.0004, target:0.00025, maxDaily:0.0001, afProduct:'Chromium', afCoef:0.226},
+      {key:'S',  label:'S（硫）', unit:'ppm', type:'macro', min:740, max:990, target:865, maxDaily:50, afProduct:'—', afCoef:null, managerOnly:true},
+      {key:'Br', label:'Br（溴）', unit:'ppm', type:'macro', min:55, max:74, target:64.5, maxDaily:2, afProduct:'—', afCoef:null, managerOnly:true},
+      {key:'Mo', label:'Mo（鉬）', unit:'ppm', type:'trace', min:0.0045, max:0.012, target:0.00825, maxDaily:0.002, afProduct:'—', afCoef:null, managerOnly:true},
+      {key:'Zn', label:'Zn（鋅）', unit:'ppm', type:'trace', min:0.001, max:0.007, target:0.004, maxDaily:0.001, afProduct:'—', afCoef:null, managerOnly:true}
+    ];
+
+    const RAW_PRESETS = {
+      CaCl2_2H2O:{element:'Ca', percent:27.26, purity:99, label:'CaCl₂·2H₂O'},
+      MgCl2_6H2O:{element:'Mg', percent:11.96, purity:99, label:'MgCl₂·6H₂O'},
+      KCl:{element:'K', percent:52.45, purity:99, label:'KCl'},
+      Na2SO4:{element:'S', percent:22.57, purity:99, label:'Na₂SO₄'},
+      KI:{element:'I', percent:76.45, purity:99, label:'KI'},
+      KBr:{element:'Br', percent:67.14, purity:99, label:'KBr'},
+      SrCl2_6H2O:{element:'Sr', percent:32.88, purity:99, label:'SrCl₂·6H₂O'},
+      MnCl2_4H2O:{element:'Mn', percent:27.76, purity:99, label:'MnCl₂·4H₂O'},
+      Element100:{element:null, percent:100, purity:100, label:'100%'}
+    };
+
+    function asTrue(v){ return v === true || v === 'true' || v === 1 || v === '1'; }
+    function getRole(profile){
+      if(!profile) return 'guest';
+      if(profile.role) return String(profile.role).toLowerCase();
+      if(profile.isAdmin) return 'admin';
+      return 'user';
+    }
+    function getPerms(profile){
+      return (profile && profile.permissions && typeof profile.permissions === 'object') ? profile.permissions : {};
+    }
+    function checkManager(profile){
+      const role = getRole(profile);
+      const p = getPerms(profile);
+      return role === 'admin' || role === 'staff' || asTrue(profile?.isAdmin) ||
+        asTrue(p.equipmentAdmin) || asTrue(p.livestockAdmin) || asTrue(p.orderAdmin) ||
+        asTrue(p.shopHomeAdmin) || asTrue(p.userAdmin);
+    }
+
+    function availableElements(){
+      const mode = $('productMode').value;
+      if(isManager && mode === 'custom') return ELEMENTS;
+      return ELEMENTS.filter(e => e.afCoef && !e.managerOnly);
+    }
+
+    function selectedElement(){
+      const key = $('elementSelect').value;
+      return ELEMENTS.find(e => e.key === key) || ELEMENTS[0];
+    }
+
+    function populateElements(){
+      const list = availableElements();
+      const old = $('elementSelect').value;
+      $('elementSelect').innerHTML = list.map(e => `<option value="${e.key}">${e.label}${e.type === 'trace' ? '｜微量' : '｜巨量'}</option>`).join('');
+      if(list.find(e => e.key === old)) $('elementSelect').value = old;
+      updateElementDefaults();
+    }
+
+    function waterVolume(){
+      const direct = n('directL');
+      const len = n('lenCm'), wid = n('widCm'), hei = n('heiCm'), sump = n('sumpL'), deduct = n('deductPct');
+      const display = (len * wid * hei) / 1000 + sump;
+      const net = Math.max(0, display * (1 - deduct / 100));
+      return direct > 0 ? direct : net;
+    }
+
+    function updateWater(){
+      const direct = n('directL');
+      const len = n('lenCm'), wid = n('widCm'), hei = n('heiCm'), sump = n('sumpL'), deduct = n('deductPct');
+      const gross = (len * wid * hei) / 1000 + sump;
+      const net = Math.max(0, gross * (1 - deduct / 100));
+      const water = waterVolume();
+      $('waterResult').textContent = fmt(water, 1) + ' L';
+      if(direct > 0){
+        $('waterSub').textContent = '目前使用直接輸入水量。尺寸計算僅作參考。';
+      }else if(water > 0){
+        $('waterSub').textContent = `尺寸估算 ${fmt(gross,1)} L，扣除 ${fmt(deduct,1)}% 後約 ${fmt(net,1)} L。`;
+      }else{
+        $('waterSub').textContent = '請輸入尺寸或直接水量。';
+      }
+    }
+
+    function updateElementDefaults(){
+      const e = selectedElement();
+      if(e){
+        $('targetValue').value = e.target;
+        $('rangeInfo').innerHTML = `建議範圍：<b>${fmt(e.min)}～${fmt(e.max)} ${e.unit}</b>，預設目標：<b>${fmt(e.target)} ${e.unit}</b>。${e.afProduct && e.afProduct !== '—' ? 'AF 產品：<b>' + e.afProduct + '</b>。' : '此元素目前只建議管理者使用自訂配方。'}`;
+      }
+      renderTable();
+      calculateAll();
+    }
+
+    function productMetrics(){
+      const e = selectedElement();
+      const mode = $('productMode').value;
+
+      if(mode === 'custom' && isManager){
+        const powder = n('powderGram');
+        const finalMl = n('finalVolumeMl');
+        const purity = n('purityPercent') / 100;
+        const elementPercent = n('elementPercent') / 100;
+        if(powder <= 0 || finalMl <= 0 || purity <= 0 || elementPercent <= 0){
+          return {ok:false, reason:'請完整輸入自訂配方濃度。'};
+        }
+        const activeMgL = powder * 1000 * purity * elementPercent / (finalMl / 1000);
+        const ppmPerMlPer100L = activeMgL / 100000;
+        return {
+          ok:true,
+          mode:'custom',
+          productName:$('customName').value || 'SEADREAM 自訂配方',
+          activeMgL,
+          ppmPerMlPer100L,
+          doseMlForDiff:(diff, waterL) => diff * waterL / activeMgL * 1000,
+          increaseFromDose:(doseMl, waterL) => doseMl * activeMgL / 1000 / waterL
+        };
+      }
+
+      if(!e.afCoef){
+        return {ok:false, reason:'此元素沒有 AF ICP LAB 係數，請管理者切換自訂配方。'};
+      }
+      return {
+        ok:true,
+        mode:'af',
+        productName:e.afProduct,
+        coef:e.afCoef,
+        ppmPerMlPer100L:e.afCoef / 100,
+        activeMgL:null,
+        doseMlForDiff:(diff, waterL) => diff * waterL / e.afCoef,
+        increaseFromDose:(doseMl, waterL) => doseMl * e.afCoef / waterL
+      };
+    }
+
+    function statusOf(value, e){
+      if(!Number.isFinite(value)) return {txt:'-', cls:''};
+      if(value < e.min) return {txt:'偏低', cls:'low'};
+      if(value <= e.max) return {txt:'正常', cls:'normal'};
+      if(value <= e.max * 1.12) return {txt:'偏高', cls:'high'};
+      return {txt:'過高', cls:'over'};
+    }
+
+    function calculateSingle(){
+      const e = selectedElement();
+      const water = waterVolume();
+      const current = n('currentValue');
+      const target = n('targetValue') || e.target;
+      const diff = Math.max(0, target - current);
+      const st = statusOf(current, e);
+      const metric = productMetrics();
+
+      $('statusResult').textContent = st.txt;
+      $('statusResult').className = 'value ' + (st.cls === 'normal' ? 'ok' : st.cls === 'low' ? 'warn' : st.cls === 'high' ? 'warn' : st.cls === 'over' ? 'danger' : '');
+      $('statusSub').innerHTML = current ? `目前 ${fmt(current)} ${e.unit}｜建議 ${fmt(e.min)}～${fmt(e.max)} ${e.unit}` : '請輸入目前數值。';
+
+      $('diffResult').textContent = fmt(diff, 4);
+      $('diffSub').textContent = diff > 0 ? `${e.label} 需提升到 ${fmt(target)} ${e.unit}` : '目前不需要往上補充。';
+
+      if(!water || water <= 0){
+        $('doseResult').textContent = '0 ml';
+        $('doseSub').textContent = '請先輸入水量。';
+        $('splitResult').textContent = '-';
+        $('splitSub').textContent = '';
+        return;
+      }
+      if(!metric.ok){
+        $('doseResult').textContent = '無法計算';
+        $('doseSub').textContent = metric.reason;
+        $('splitResult').textContent = '-';
+        $('splitSub').textContent = '';
+        return;
+      }
+
+      const dose = diff > 0 ? metric.doseMlForDiff(diff, water) : 0;
+      const splitDays = diff > 0 ? Math.max(1, Math.ceil(diff / (e.maxDaily || diff))) : 0;
+      const dailyDose = splitDays > 0 ? dose / splitDays : 0;
+
+      $('doseResult').textContent = fmt(dose, 1) + ' ml';
+      $('doseSub').innerHTML = `${metric.productName}｜水量 ${fmt(water,1)} L｜每 1 ml / 100 L 提升約 ${fmt(metric.ppmPerMlPer100L, 5)} ppm`;
+      $('splitResult').textContent = splitDays ? splitDays + ' 天' : '-';
+      $('splitSub').textContent = splitDays ? `建議每日約 ${fmt(dailyDose, 1)} ml。微量元素請更保守分次。` : '不需要補充。';
+    }
+
+    function updateFormulaPanel(){
+      const metric = productMetrics();
+      if(!isManager || $('productMode').value !== 'custom'){
+        $('formulaPanel').classList.add('hidden');
+        return;
+      }
+      $('formulaPanel').classList.toggle('hidden', activePanel !== 'formula' && $('productMode').value !== 'custom');
+      if(metric.ok){
+        const powder = n('powderGram');
+        const finalMl = n('finalVolumeMl');
+        const purity = n('purityPercent');
+        const ep = n('elementPercent');
+        $('activeMgLResult').textContent = fmt(metric.activeMgL, 2);
+        $('ppmPerMlResult').textContent = fmt(metric.ppmPerMlPer100L, 6);
+        $('formulaText').textContent =
+`有效元素濃度 mg/L =
+原料重量 g × 1000 × 純度 × 有效元素比例 ÷ 定容體積 L
+
+= ${powder} × 1000 × ${purity/100} × ${ep/100} ÷ ${finalMl/1000}
+= ${fmt(metric.activeMgL, 4)} mg/L
+
+每 1 ml / 100 L 可提升 ppm =
+有效元素濃度 ÷ 100000
+= ${fmt(metric.ppmPerMlPer100L, 8)} ppm
+
+添加量 ml =
+需要提升 ppm × 魚缸水量 L ÷ 有效元素濃度 mg/L × 1000`;
+      }else{
+        $('activeMgLResult').textContent = '0';
+        $('ppmPerMlResult').textContent = '0';
+        $('formulaText').textContent = metric.reason || '請輸入完整配方。';
+      }
+    }
+
+    function calculateTrack(){
+      const e = selectedElement();
+      const water = waterVolume();
+      const prev = n('prevValue');
+      const now = n('nowValue');
+      const days = n('trackDays');
+      const periodDose = n('periodDoseMl');
+      const metric = productMetrics();
+
+      if(!water || !metric.ok || !days){
+        $('periodIncreaseResult').textContent = '0';
+        $('totalConsumeResult').textContent = '0';
+        $('dailyConsumeResult').textContent = '0';
+        $('dailyDoseResult').textContent = '0 ml';
+        $('weeklyDoseResult').textContent = '0 ml';
+        $('trackJudgeResult').textContent = '-';
+        $('trackJudgeSub').textContent = !water ? '請先輸入水量。' : (!metric.ok ? metric.reason : '請輸入間隔天數。');
+        return;
+      }
+
+      const addedIncrease = periodDose > 0 ? metric.increaseFromDose(periodDose, water) : 0;
+      const totalConsumption = prev + addedIncrease - now;
+      const dailyConsumption = totalConsumption / days;
+      const dailyDose = dailyConsumption > 0 ? metric.doseMlForDiff(dailyConsumption, water) : 0;
+      const weeklyDose = dailyDose * 7;
+
+      $('periodIncreaseResult').textContent = fmt(addedIncrease, 5);
+      $('totalConsumeResult').textContent = fmt(totalConsumption, 5);
+      $('dailyConsumeResult').textContent = fmt(dailyConsumption, 5);
+      $('dailyDoseResult').textContent = fmt(dailyDose, 1) + ' ml';
+      $('weeklyDoseResult').textContent = fmt(weeklyDose, 1) + ' ml';
+
+      if(totalConsumption > 0){
+        $('trackJudgeResult').textContent = '有消耗';
+        $('trackJudgeResult').className = 'value warn';
+        $('trackJudgeSub').textContent = `估算 ${e.label} 每日消耗 ${fmt(dailyConsumption,5)} ${e.unit}，可用 ${metric.productName} 每日維持約 ${fmt(dailyDose,1)} ml。`;
+      }else if(totalConsumption < 0){
+        $('trackJudgeResult').textContent = '數值上升';
+        $('trackJudgeResult').className = 'value ok';
+        $('trackJudgeSub').textContent = '可能是期間補充、換水、鹽度變化或測試誤差造成，不建議依此增加每日添加。';
+      }else{
+        $('trackJudgeResult').textContent = '持平';
+        $('trackJudgeResult').className = 'value ok';
+        $('trackJudgeSub').textContent = '目前期間內沒有明顯消耗。';
+      }
+    }
+
+    function calculateAll(){
+      updateWater();
+      calculateSingle();
+      updateFormulaPanel();
+      calculateTrack();
+    }
+
+    function setPanel(panel){
+      activePanel = panel;
+      $('singleTab').classList.toggle('active', panel === 'single');
+      $('trackTab').classList.toggle('active', panel === 'track');
+      $('formulaTab').classList.toggle('active', panel === 'formula');
+      $('trackingPanel').classList.toggle('hidden', panel !== 'track');
+      if(isManager && $('productMode').value === 'custom'){
+        $('formulaPanel').classList.toggle('hidden', panel !== 'formula' && panel !== 'single');
+      }else{
+        $('formulaPanel').classList.add('hidden');
+      }
+      calculateAll();
+    }
+
+    function applyRoleUI(){
+      const customOption = $('customModeOption');
+      const formulaTab = $('formulaTab');
+      if(isManager){
+        customOption.classList.remove('hidden');
+        customOption.disabled = false;
+        formulaTab.classList.remove('hidden');
+        $('modeBadge').textContent = 'SEADREAM 管理者可用精密模式';
+        $('modeBadge').className = 'modeBadge manager';
+      }else{
+        $('productMode').value = 'af';
+        customOption.classList.add('hidden');
+        customOption.disabled = true;
+        formulaTab.classList.add('hidden');
+        $('modeBadge').textContent = 'AF ICP LAB 模式';
+        $('modeBadge').className = 'modeBadge';
+      }
+      populateElements();
+      calculateAll();
+    }
+
+    function renderTable(){
+      const mode = $('productMode').value;
+      const list = availableElements();
+      $('managerTableHead').textContent = isManager ? '係數 / 濃度資訊' : 'AF 係數';
+      $('elementTableBody').innerHTML = list.map(e => {
+        const afInfo = e.afCoef ? e.afProduct : '管理者自訂配方';
+        let coefInfo = e.afCoef ? `係數 ${e.afCoef}｜1 ml/100 L ≈ ${fmt(e.afCoef/100,5)} ppm` : '需輸入自訂配方';
+        if(!isManager && !e.afCoef) coefInfo = '—';
+        return `<tr>
+          <td><b>${e.label}</b><br><span class="small">${e.type === 'trace' ? '微量元素' : '巨量元素'}</span></td>
+          <td>${fmt(e.min)}～${fmt(e.max)} ${e.unit}</td>
+          <td>${fmt(e.target)} ${e.unit}</td>
+          <td>${afInfo}</td>
+          <td>${coefInfo}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function applyPreset(){
+      const key = $('rawPreset').value;
+      const preset = RAW_PRESETS[key];
+      if(!preset) return;
+      if(preset.element){
+        const exists = availableElements().find(e => e.key === preset.element);
+        if(exists) $('elementSelect').value = preset.element;
+      }
+      $('elementPercent').value = preset.percent;
+      $('purityPercent').value = preset.purity;
+      updateElementDefaults();
+    }
+
+    function storageKey(){
+      const e = selectedElement();
+      const tank = ($('tankName').value || '未命名魚缸').trim();
+      return 'seadream_element_calc_records_v1';
+    }
+
+    function allLocalRecords(){
+      try{ return JSON.parse(localStorage.getItem(storageKey()) || '[]'); }
+      catch(e){ return []; }
+    }
+
+    function saveLocal(){
+      const e = selectedElement();
+      const tank = ($('tankName').value || '未命名魚缸').trim();
+      const rec = {
+        tankName:tank,
+        element:e.key,
+        elementLabel:e.label,
+        date:$('testDate').value || today,
+        waterL:waterVolume(),
+        value:n('currentValue'),
+        target:n('targetValue') || e.target,
+        productMode:$('productMode').value,
+        createdAt:new Date().toISOString()
+      };
+      let arr = allLocalRecords();
+      arr.push(rec);
+      arr = arr.slice(-100);
+      localStorage.setItem(storageKey(), JSON.stringify(arr));
+      $('localStatus').textContent = `已暫存：${tank}｜${e.label}｜${rec.date}｜${fmt(rec.value)}。`;
+    }
+
+    function loadPrevious(){
+      const e = selectedElement();
+      const tank = ($('tankName').value || '未命名魚缸').trim();
+      const currentDate = $('testDate').value || today;
+      const arr = allLocalRecords()
+        .filter(r => r.tankName === tank && r.element === e.key && r.date <= currentDate)
+        .sort((a,b) => String(b.date).localeCompare(String(a.date)) || String(b.createdAt).localeCompare(String(a.createdAt)));
+
+      if(!arr.length){
+        $('localStatus').textContent = '找不到同魚缸、同元素的上次暫存資料。';
+        return;
+      }
+
+      const rec = arr[0];
+      $('prevDate').value = rec.date || '';
+      $('prevValue').value = rec.value ?? '';
+      $('nowDate').value = currentDate;
+      $('nowValue').value = $('currentValue').value || '';
+      if(rec.waterL && !$('directL').value) $('directL').value = rec.waterL;
+
+      if(rec.date && currentDate){
+        const d1 = new Date(rec.date);
+        const d2 = new Date(currentDate);
+        const days = Math.round((d2 - d1) / 86400000);
+        if(days > 0) $('trackDays').value = days;
+      }
+      $('localStatus').textContent = `已載入上次資料：${rec.date}｜${e.label} ${fmt(rec.value)}。`;
+      setPanel('track');
+      calculateAll();
+    }
+
+    async function bootFirebase(){
+      try{
+        auth = firebase.auth();
+        db = firebase.firestore();
+      }catch(err){
+        console.warn('Firebase not ready:', err);
+        isManager = false;
+        $('authPill').textContent = '一般試算';
+        $('authPill').className = 'pill warn';
+        applyRoleUI();
+        return;
+      }
+
+      auth.onAuthStateChanged(async user => {
+        currentUser = user;
+        currentProfile = null;
+        isManager = false;
+
+        if(!user){
+          $('authPill').textContent = '未登入｜AF模式';
+          $('authPill').className = 'pill warn';
+          applyRoleUI();
+          return;
+        }
+
+        try{
+          const snap = await db.collection('users').doc(user.uid).get();
+          currentProfile = snap.exists ? snap.data() : {};
+          isManager = checkManager(currentProfile);
+          const role = getRole(currentProfile);
+          $('authPill').textContent = (user.email || '已登入') + '｜' + (isManager ? '管理者' : role);
+          $('authPill').className = isManager ? 'pill ok' : 'pill';
+        }catch(err){
+          console.warn(err);
+          $('authPill').textContent = '已登入｜資料讀取失敗';
+          $('authPill').className = 'pill warn';
+        }
+        applyRoleUI();
+      });
+    }
+
+    function bind(){
+      document.querySelectorAll('input,select').forEach(el => {
+        el.addEventListener('input', calculateAll);
+        el.addEventListener('change', calculateAll);
+      });
+
+      $('productMode').addEventListener('change', () => {
+        populateElements();
+        if($('productMode').value === 'custom' && isManager) setPanel('formula');
+        else setPanel('single');
+      });
+      $('elementSelect').addEventListener('change', updateElementDefaults);
+      $('rawPreset').addEventListener('change', applyPreset);
+      $('singleTab').addEventListener('click', () => setPanel('single'));
+      $('trackTab').addEventListener('click', () => setPanel('track'));
+      $('formulaTab').addEventListener('click', () => setPanel('formula'));
+      $('saveLocalBtn').addEventListener('click', saveLocal);
+      $('loadPrevBtn').addEventListener('click', loadPrevious);
+    }
+
+    function initDates(){
+      $('testDate').value = today;
+      $('nowDate').value = today;
+      const prev = new Date();
+      prev.setDate(prev.getDate() - 7);
+      $('prevDate').value = prev.toISOString().slice(0,10);
+      $('trackDays').value = 7;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initDates();
+      bind();
+      populateElements();
+      bootFirebase();
+      calculateAll();
+    });
+  </script>
+</body>
+</html>

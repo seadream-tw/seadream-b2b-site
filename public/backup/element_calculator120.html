@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>SEADREAM 多魚缸元素比較 v1.2</title>
+  <meta name="description" content="SEADREAM Aquarium 多魚缸水量、元素補充、同魚缸同元素歷史比較與每日消耗試算工具" />
+  <style>
+    :root{
+      --bg:#06131d;--bg2:#081a25;--panel:rgba(9,27,40,.92);--panel2:rgba(11,35,50,.78);
+      --line:rgba(126,206,224,.18);--line2:rgba(126,206,224,.34);
+      --text:#eef8ff;--muted:#9bb7c8;--primary:#18dac8;--blue:#2c9dff;--ok:#70f2b4;
+      --warn:#ffd166;--danger:#ff7d94;--purple:#c5a3ff;--shadow:0 22px 70px rgba(0,0,0,.35);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    html,body{min-height:100%}
+    body{
+      margin:0;color:var(--text);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;
+      background:
+        radial-gradient(circle at 9% 0%,rgba(44,157,255,.22),transparent 30%),
+        radial-gradient(circle at 92% 7%,rgba(24,218,200,.18),transparent 28%),
+        linear-gradient(180deg,#06131d 0%,#081a25 42%,#06111a 100%);
+      overflow-x:hidden;
+    }
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;
+      background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+      background-size:38px 38px;mask-image:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.05));
+    }
+    a{color:inherit;text-decoration:none}
+    input,select,button,textarea{font:inherit}
+    .hidden{display:none!important}
+    .wrap{width:min(1680px,calc(100vw - 28px));margin:0 auto;position:relative;z-index:1}
+    .hero{padding:18px 0}
+    .heroCard{
+      border:1px solid var(--line);border-radius:32px;
+      background:linear-gradient(135deg,rgba(13,40,58,.96),rgba(6,21,32,.9));
+      box-shadow:var(--shadow);padding:21px 23px;
+      display:flex;align-items:center;justify-content:space-between;gap:18px;position:relative;overflow:hidden;
+    }
+    .heroCard::after{
+      content:"";width:420px;height:420px;border-radius:50%;position:absolute;right:-145px;top:-190px;
+      background:radial-gradient(circle,rgba(24,218,200,.16),transparent 66%);pointer-events:none;
+    }
+    .brand{display:flex;gap:16px;align-items:center;min-width:0;position:relative;z-index:1}
+    .logo{
+      width:72px;height:72px;border-radius:22px;display:grid;place-items:center;flex:0 0 auto;
+      color:#9ffff4;font-size:24px;font-weight:1000;letter-spacing:.08em;
+      background:linear-gradient(135deg,rgba(24,218,200,.16),rgba(44,157,255,.12));
+      border:1px solid rgba(255,255,255,.14);
+    }
+    h1{margin:0;font-size:31px;line-height:1.15;letter-spacing:.02em}
+    .hero p{margin:8px 0 0;color:rgba(238,248,255,.75);line-height:1.65}
+    .heroBtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;position:relative;z-index:1}
+    .pill{
+      display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;border-radius:999px;
+      border:1px solid var(--line2);background:rgba(255,255,255,.05);color:#bffff6;font-weight:900;font-size:13px;white-space:nowrap;
+    }
+    .pill.warn{color:#ffe3a5;border-color:rgba(255,209,102,.35);background:rgba(255,209,102,.08)}
+    .pill.ok{color:#a9ffd1;border-color:rgba(112,242,180,.35);background:rgba(112,242,180,.08)}
+    .layout{display:grid;grid-template-columns:430px minmax(0,1fr);gap:18px;padding-bottom:40px;align-items:start}
+    .card{
+      border:1px solid var(--line);border-radius:var(--radius);padding:19px;min-width:0;
+      background:linear-gradient(180deg,rgba(9,27,40,.94),rgba(7,20,31,.86));
+      box-shadow:var(--shadow);
+    }
+    .card h2{font-size:21px;margin:0 0 12px}
+    .card h3{font-size:16px;margin:17px 0 10px;color:#dffbff}
+    .note,.warnBox,.dangerBox{
+      border-radius:18px;padding:12px 14px;line-height:1.65;font-size:13px;margin:10px 0;
+    }
+    .note{border:1px solid var(--line);background:rgba(24,218,200,.055);color:#d5edf5}
+    .warnBox{border:1px solid rgba(255,209,102,.28);background:rgba(255,209,102,.08);color:#ffe6ad}
+    .dangerBox{border:1px solid rgba(255,125,148,.30);background:rgba(255,125,148,.08);color:#ffc6cf}
+    .small{font-size:12px;color:var(--muted);line-height:1.65}
+    .muted{color:var(--muted)}
+    .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .fields.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .fields.one{grid-template-columns:1fr}
+    .field label{display:block;color:var(--muted);font-size:12px;margin:0 0 6px}
+    input,select{
+      width:100%;min-height:44px;border:1px solid var(--line);border-radius:15px;padding:11px 12px;
+      background:rgba(255,255,255,.045);color:var(--text);outline:none;transition:.16s ease;
+    }
+    input::placeholder{color:rgba(238,248,255,.34)}
+    input:focus,select:focus{border-color:rgba(24,218,200,.58);box-shadow:0 0 0 4px rgba(24,218,200,.08);background:rgba(255,255,255,.065)}
+    option{background:#0b2230;color:#effaff}
+    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button,.btn{
+      border:0;cursor:pointer;border-radius:15px;min-height:43px;padding:10px 14px;font-weight:950;letter-spacing:.02em;
+      display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.15s ease;
+    }
+    button:hover,.btn:hover{transform:translateY(-1px)}
+    .primary{background:linear-gradient(135deg,var(--primary),var(--blue));color:#04131d;box-shadow:0 16px 32px rgba(24,218,200,.12)}
+    .secondary{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--line)}
+    .outline{background:transparent;color:#9ffff4;border:1px solid rgba(24,218,200,.38)}
+    .dangerBtn{background:rgba(255,125,148,.10);color:#ffc6cf;border:1px solid rgba(255,125,148,.32)}
+    .purpleBtn{background:rgba(197,163,255,.11);color:#eadfff;border:1px solid rgba(197,163,255,.28)}
+    .tankList{display:grid;gap:8px;margin-top:10px}
+    .tankBtn{
+      width:100%;min-height:auto;text-align:left;justify-content:space-between;
+      border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--text);
+      padding:12px 13px;border-radius:18px;
+    }
+    .tankBtn.active{border-color:rgba(24,218,200,.55);background:rgba(24,218,200,.10)}
+    .tankTitle{font-weight:1000;font-size:15px}
+    .tankMeta{font-size:12px;color:var(--muted);margin-top:4px}
+    .resultBox{
+      border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));
+      padding:13px;min-height:86px;
+    }
+    .resultBox .label{color:var(--muted);font-size:12px;margin-bottom:7px}
+    .resultBox .value{font-size:25px;font-weight:1000;color:#9ffff4;line-height:1.15;word-break:break-word}
+    .resultBox .sub{margin-top:7px;color:rgba(238,248,255,.70);font-size:12px;line-height:1.55}
+    .resultGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-top:12px}
+    .sectionLine{height:1px;background:rgba(126,206,224,.15);margin:18px 0}
+    .topTools{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .modeBadge{
+      display:inline-flex;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:950;
+      border:1px solid var(--line2);color:#bffff6;background:rgba(255,255,255,.05)
+    }
+    .modeBadge.manager{color:#eadfff;border-color:rgba(197,163,255,.38);background:rgba(197,163,255,.10)}
+    .tableWrap{border:1px solid var(--line);border-radius:18px;overflow:auto;background:rgba(0,0,0,.13);max-height:470px}
+    table{width:100%;border-collapse:collapse;min-width:1080px}
+    th,td{border-bottom:1px solid rgba(126,206,224,.13);padding:10px;text-align:left;vertical-align:top}
+    th{color:#dffbff;background:#0b1c2a;position:sticky;top:0;z-index:2}
+    td{color:rgba(238,248,255,.82)}
+    .miniInput{min-width:90px;max-width:130px;min-height:38px;border-radius:12px;padding:8px 9px}
+    .statusTag{
+      display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:5px 9px;
+      border:1px solid var(--line);background:rgba(255,255,255,.055);font-size:12px;font-weight:950;white-space:nowrap;
+    }
+    .statusTag.low{color:#ace8ff;border-color:rgba(44,157,255,.38);background:rgba(44,157,255,.10)}
+    .statusTag.normal{color:#a9ffd1;border-color:rgba(112,242,180,.35);background:rgba(112,242,180,.08)}
+    .statusTag.high{color:#ffe3a5;border-color:rgba(255,209,102,.35);background:rgba(255,209,102,.08)}
+    .statusTag.over{color:#ffc6cf;border-color:rgba(255,125,148,.35);background:rgba(255,125,148,.08)}
+    .doseText{color:#9ffff4;font-weight:1000}.diffText{color:#ffe3a5;font-weight:1000}.goodText{color:#a9ffd1;font-weight:1000}
+    .badText{color:#ffc6cf;font-weight:1000}.purpleText{color:#eadfff;font-weight:1000}
+    .empty{padding:26px;text-align:center;color:var(--muted)}
+    .formulaBox{
+      font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+      border:1px solid rgba(197,163,255,.28);background:rgba(197,163,255,.075);
+      border-radius:18px;padding:12px;color:#eadfff;line-height:1.65;font-size:12px;white-space:pre-wrap;overflow:auto;
+    }
+    .tabRow{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
+    .tab{
+      border:1px solid var(--line);background:rgba(255,255,255,.04);color:rgba(238,248,255,.76);
+      border-radius:999px;min-height:37px;padding:8px 13px;font-size:13px;
+    }
+    .tab.active{background:rgba(24,218,200,.12);border-color:rgba(24,218,200,.5);color:#9ffff4}
+    @media(max-width:1220px){
+      .layout{grid-template-columns:1fr}.resultGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:760px){
+      .wrap{width:min(100vw - 18px,1680px)}
+      .heroCard{flex-direction:column;align-items:flex-start;border-radius:26px;padding:18px}
+      .brand{align-items:flex-start}.logo{width:60px;height:60px;border-radius:19px;font-size:20px}
+      h1{font-size:24px}.fields,.fields.three,.resultGrid{grid-template-columns:1fr}
+      .card{padding:15px}.btnRow button,.btnRow .btn{flex:1 1 auto}
+      table{min-width:980px}
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="heroCard">
+        <div class="brand">
+          <div class="logo">SD</div>
+          <div>
+            <h1>多魚缸元素比較 v1.2</h1>
+            <p>A / B / C 多魚缸同批輸入，同魚缸 + 同元素自動與上次比較，估算每日消耗與補充量。</p>
+          </div>
+        </div>
+        <div class="heroBtns">
+          <a class="pill" href="/index.html">B2B 入口</a>
+          <a class="pill" href="/element_calculator.html">單缸計算</a>
+          <span id="authPill" class="pill warn">角色讀取中</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap layout">
+    <aside class="card">
+      <h2>① 檢測批次 / 魚缸資料</h2>
+      <div class="note">v1.2 先用瀏覽器暫存測試多魚缸邏輯。正式版 v1.3 會接 Firestore 儲存客戶、魚缸與歷史數據。</div>
+
+      <div class="fields">
+        <div class="field">
+          <label>客戶 / 分店 / 案場</label>
+          <input id="customerName" value="海洋夢店內" placeholder="例如：海洋夢店內 / 客戶A" />
+        </div>
+        <div class="field">
+          <label>本次檢測日期</label>
+          <input id="batchDate" type="date" />
+        </div>
+      </div>
+      <div class="fields">
+        <div class="field">
+          <label>批次名稱</label>
+          <input id="batchTitle" placeholder="例如：2026-06-17 ICP" />
+        </div>
+        <div class="field">
+          <label>預設比較天數</label>
+          <input id="defaultDays" type="number" step="0.1" value="7" />
+        </div>
+      </div>
+
+      <div class="btnRow">
+        <button id="saveBatchBtn" class="primary" type="button">儲存本次批次</button>
+        <button id="loadLastBatchBtn" class="secondary" type="button">載入上次批次</button>
+      </div>
+      <div class="btnRow">
+        <button id="exportCsvBtn" class="outline" type="button">匯出 CSV</button>
+        <button id="clearAllLocalBtn" class="dangerBtn" type="button">清除本機暫存</button>
+      </div>
+      <div id="batchStatus" class="small" style="margin-top:10px">尚未儲存批次。</div>
+
+      <div class="sectionLine"></div>
+
+      <div class="topTools">
+        <h2 style="margin:0">② 魚缸清單</h2>
+        <button id="addTankBtn" class="outline" type="button">新增魚缸</button>
+      </div>
+      <div class="btnRow">
+        <button id="makeAbcBtn" class="secondary" type="button">快速建立 A / B / C</button>
+      </div>
+      <div id="tankList" class="tankList"></div>
+
+      <div class="sectionLine"></div>
+
+      <h2>③ 目前魚缸設定</h2>
+      <div class="fields">
+        <div class="field">
+          <label>魚缸代號（比較依據）</label>
+          <input id="tankCode" placeholder="A / B / C" />
+        </div>
+        <div class="field">
+          <label>魚缸名稱</label>
+          <input id="tankName" placeholder="例如 A 魚缸 SPS" />
+        </div>
+      </div>
+
+      <h3>水量</h3>
+      <div class="fields three">
+        <div class="field"><label>長 cm</label><input id="lenCm" type="number" step="0.1" /></div>
+        <div class="field"><label>寬 cm</label><input id="widCm" type="number" step="0.1" /></div>
+        <div class="field"><label>水高 cm</label><input id="heiCm" type="number" step="0.1" /></div>
+      </div>
+      <div class="fields">
+        <div class="field"><label>底缸 / 其他水量 L</label><input id="sumpL" type="number" step="0.1" value="0" /></div>
+        <div class="field"><label>扣除比例 %</label><input id="deductPct" type="number" step="0.1" value="0" /></div>
+      </div>
+      <div class="fields one">
+        <div class="field"><label>直接輸入實際水量 L（優先）</label><input id="directL" type="number" step="0.1" placeholder="例如 2000" /></div>
+      </div>
+
+      <div class="resultBox" style="margin-top:12px">
+        <div class="label">目前魚缸水量</div>
+        <div id="selectedWaterText" class="value">0 L</div>
+        <div id="selectedTankSub" class="sub">請選擇或新增魚缸。</div>
+      </div>
+
+      <div class="btnRow">
+        <button id="duplicateTankBtn" class="secondary" type="button">複製目前魚缸</button>
+        <button id="deleteTankBtn" class="dangerBtn" type="button">刪除目前魚缸</button>
+      </div>
+    </aside>
+
+    <section class="card">
+      <div class="topTools">
+        <div>
+          <h2 style="margin-bottom:5px">④ 本次數據輸入 / 同魚缸比較</h2>
+          <div class="small">切換魚缸輸入數據。儲存批次後，下次同客戶、同魚缸代號、同元素會自動比對上次資料。</div>
+        </div>
+        <span id="modeBadge" class="modeBadge">AF ICP LAB 模式</span>
+      </div>
+
+      <div class="tabRow">
+        <button id="inputTab" class="tab active" type="button">目前魚缸輸入</button>
+        <button id="summaryTab" class="tab" type="button">多魚缸總覽</button>
+        <button id="compareTab" class="tab" type="button">與上次比較</button>
+        <button id="formulaTab" class="tab hidden" type="button">管理者自訂配方</button>
+      </div>
+
+      <div class="fields">
+        <div class="field">
+          <label>計算模式</label>
+          <select id="productMode">
+            <option value="af">AF ICP LAB / AF Component 添加方式</option>
+            <option id="customModeOption" value="custom" class="hidden">SEADREAM 自訂配方（管理者）</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>元素篩選</label>
+          <select id="elementFilter"></select>
+        </div>
+      </div>
+
+      <div id="inputPanel">
+        <div class="resultGrid">
+          <div class="resultBox">
+            <div class="label">目前魚缸</div>
+            <div id="currentTankText" class="value">-</div>
+            <div id="currentTankWaterText" class="sub"></div>
+          </div>
+          <div class="resultBox">
+            <div class="label">已輸入元素</div>
+            <div id="inputCountText" class="value">0</div>
+            <div class="sub">目前魚缸</div>
+          </div>
+          <div class="resultBox">
+            <div class="label">需補充元素</div>
+            <div id="needDoseCountText" class="value">0</div>
+            <div class="sub">目前魚缸</div>
+          </div>
+          <div class="resultBox">
+            <div class="label">與上次可比較</div>
+            <div id="compareCountText" class="value">0</div>
+            <div class="sub">目前魚缸</div>
+          </div>
+        </div>
+
+        <h3>目前魚缸元素輸入</h3>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>元素</th>
+                <th>目前數據</th>
+                <th>目標</th>
+                <th>期間已添加 ml</th>
+                <th>上次數據</th>
+                <th>狀態</th>
+                <th>差距</th>
+                <th>本次建議補充</th>
+                <th>每日消耗 / 每日維持</th>
+              </tr>
+            </thead>
+            <tbody id="inputRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="summaryPanel" class="hidden">
+        <h3>多魚缸本次總覽</h3>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>魚缸</th>
+                <th>水量</th>
+                <th>元素</th>
+                <th>目前數據</th>
+                <th>目標</th>
+                <th>狀態</th>
+                <th>差距</th>
+                <th>建議補充</th>
+                <th>產品 / 係數</th>
+              </tr>
+            </thead>
+            <tbody id="summaryRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="comparePanel" class="hidden">
+        <h3>與上次批次比較：同魚缸 + 同元素</h3>
+        <div class="note">比較邏輯：同一客戶名稱、同一魚缸代號、同一元素，日期早於本次的最新一筆資料。</div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>魚缸</th>
+                <th>元素</th>
+                <th>上次日期</th>
+                <th>上次數據</th>
+                <th>本次數據</th>
+                <th>期間添加</th>
+                <th>估算總消耗</th>
+                <th>每日消耗</th>
+                <th>每日維持添加</th>
+                <th>判斷</th>
+              </tr>
+            </thead>
+            <tbody id="compareRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="formulaPanel" class="hidden">
+        <div class="sectionLine"></div>
+        <h2>⑤ SEADREAM 管理者自訂配方</h2>
+        <div class="note">自訂配方模式適合管理者計算巨量與微量元素母液。切到自訂配方後，表格會以「元素篩選」目前選定元素為主，避免把同一配方誤套到所有元素。</div>
+
+        <div class="fields">
+          <div class="field">
+            <label>自訂配方元素</label>
+            <select id="customElementSelect"></select>
+          </div>
+          <div class="field">
+            <label>常用原料預設</label>
+            <select id="rawPreset">
+              <option value="">手動輸入元素比例</option>
+              <option value="CaCl2_2H2O">氯化鈣二水 CaCl₂·2H₂O｜Ca 27.26%</option>
+              <option value="MgCl2_6H2O">氯化鎂六水 MgCl₂·6H₂O｜Mg 11.96%</option>
+              <option value="KCl">氯化鉀 KCl｜K 52.45%</option>
+              <option value="Na2SO4">無水硫酸鈉 Na₂SO₄｜S 22.57%</option>
+              <option value="KI">碘化鉀 KI｜I 76.45%</option>
+              <option value="KBr">溴化鉀 KBr｜Br 67.14%</option>
+              <option value="SrCl2_6H2O">氯化鍶六水 SrCl₂·6H₂O｜Sr 32.88%</option>
+              <option value="MnCl2_4H2O">氯化錳四水 MnCl₂·4H₂O｜Mn 27.76%</option>
+              <option value="Element100">純元素 / 已知 100% 有效元素</option>
+            </select>
+          </div>
+        </div>
+        <div class="fields">
+          <div class="field"><label>產品 / 配方名稱</label><input id="customName" value="SEADREAM 客製配方" /></div>
+          <div class="field"><label>原料重量 g</label><input id="powderGram" type="number" step="0.001" value="350" /></div>
+          <div class="field"><label>定容後總體積 ml</label><input id="finalVolumeMl" type="number" step="0.1" value="1000" /></div>
+          <div class="field"><label>原料純度 %</label><input id="purityPercent" type="number" step="0.01" value="99" /></div>
+          <div class="field"><label>有效元素比例 %</label><input id="elementPercent" type="number" step="0.001" value="100" /></div>
+        </div>
+
+        <div class="resultGrid">
+          <div class="resultBox">
+            <div class="label">有效元素濃度</div>
+            <div id="activeMgLText" class="value" style="color:var(--purple)">0</div>
+            <div class="sub">mg/L</div>
+          </div>
+          <div class="resultBox">
+            <div class="label">每 1 ml / 100 L 提升</div>
+            <div id="ppmPerMlText" class="value" style="color:var(--purple)">0</div>
+            <div class="sub">ppm</div>
+          </div>
+          <div class="resultBox">
+            <div class="label">套用元素</div>
+            <div id="customApplyElementText" class="value" style="color:var(--purple)">-</div>
+            <div class="sub">請確認不要套錯元素</div>
+          </div>
+          <div class="resultBox">
+            <div class="label">模式</div>
+            <div class="value" style="color:var(--purple)">管理者</div>
+            <div class="sub">可用微量元素自配</div>
+          </div>
+        </div>
+        <div id="formulaText" class="formulaBox" style="margin-top:12px"></div>
+      </div>
+
+      <div class="dangerBox">
+        提醒：本工具為試算。微量元素不可一次大量添加；正式添加請分次、慢慢添加，並考慮換水、鹽度變化、ICP 誤差、沉澱、吸附與生物消耗。
+      </div>
+    </section>
+  </main>
+
+  <script src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="/__/firebase/init.js?useEmulator=false"></script>
+
+  <script>
+    const VERSION = 'element_calculator_v1_2_multi_tank_compare_preview';
+    const $ = (id) => document.getElementById(id);
+    const today = new Date().toISOString().slice(0,10);
+    const STORAGE_KEY = 'seadream_element_multi_tank_batches_v1';
+
+    const ELEMENTS = [
+      {key:'B',  label:'B（硼）', unit:'ppm', type:'macro', min:4.05, max:5.00, target:4.525, maxDaily:0.50, afProduct:'Borium', afCoef:22.6},
+      {key:'Ca', label:'Ca（鈣）', unit:'ppm', type:'macro', min:380, max:460, target:420, maxDaily:20, afProduct:'Component 1', afCoef:54.1},
+      {key:'Mg', label:'Mg（鎂）', unit:'ppm', type:'macro', min:1180, max:1460, target:1320, maxDaily:50, afProduct:'Component 2', afCoef:38.3},
+      {key:'K',  label:'K（鉀）', unit:'ppm', type:'macro', min:360, max:420, target:390, maxDaily:10, afProduct:'AF Potassium', afCoef:52.45},
+      {key:'Sr', label:'Sr（鍶）', unit:'ppm', type:'macro', min:6, max:10, target:8, maxDaily:1, afProduct:'AF Strontium', afCoef:10},
+      {key:'I',  label:'I（碘）', unit:'ppm', type:'trace', min:0.055, max:0.070, target:0.0625, maxDaily:0.005, afProduct:'Iodum', afCoef:4.52},
+      {key:'Fe', label:'Fe（鐵）', unit:'ppm', type:'trace', min:0.002, max:0.006, target:0.004, maxDaily:0.001, afProduct:'Ferrum', afCoef:0.452},
+      {key:'Mn', label:'Mn（錳）', unit:'ppm', type:'trace', min:0.0001, max:0.0022, target:0.00115, maxDaily:0.0005, afProduct:'Manganum', afCoef:0.452},
+      {key:'V',  label:'V（釩）', unit:'ppm', type:'trace', min:0.0001, max:0.0025, target:0.00130, maxDaily:0.0005, afProduct:'Vanadium', afCoef:0.452},
+      {key:'Co', label:'Co（鈷）', unit:'ppm', type:'trace', min:0.0001, max:0.0006, target:0.00035, maxDaily:0.0001, afProduct:'Cobaltum', afCoef:0.226},
+      {key:'Cr', label:'Cr（鉻）', unit:'ppm', type:'trace', min:0.0001, max:0.0004, target:0.00025, maxDaily:0.0001, afProduct:'Chromium', afCoef:0.226},
+      {key:'S',  label:'S（硫）', unit:'ppm', type:'macro', min:740, max:990, target:865, maxDaily:50, afProduct:'管理者自訂', afCoef:null, managerOnly:true},
+      {key:'Br', label:'Br（溴）', unit:'ppm', type:'macro', min:55, max:74, target:64.5, maxDaily:2, afProduct:'管理者自訂', afCoef:null, managerOnly:true},
+      {key:'Mo', label:'Mo（鉬）', unit:'ppm', type:'trace', min:0.0045, max:0.012, target:0.00825, maxDaily:0.002, afProduct:'管理者自訂', afCoef:null, managerOnly:true},
+      {key:'Zn', label:'Zn（鋅）', unit:'ppm', type:'trace', min:0.001, max:0.007, target:0.004, maxDaily:0.001, afProduct:'管理者自訂', afCoef:null, managerOnly:true}
+    ];
+
+    const RAW_PRESETS = {
+      CaCl2_2H2O:{element:'Ca', percent:27.26, purity:99, label:'CaCl₂·2H₂O'},
+      MgCl2_6H2O:{element:'Mg', percent:11.96, purity:99, label:'MgCl₂·6H₂O'},
+      KCl:{element:'K', percent:52.45, purity:99, label:'KCl'},
+      Na2SO4:{element:'S', percent:22.57, purity:99, label:'Na₂SO₄'},
+      KI:{element:'I', percent:76.45, purity:99, label:'KI'},
+      KBr:{element:'Br', percent:67.14, purity:99, label:'KBr'},
+      SrCl2_6H2O:{element:'Sr', percent:32.88, purity:99, label:'SrCl₂·6H₂O'},
+      MnCl2_4H2O:{element:'Mn', percent:27.76, purity:99, label:'MnCl₂·4H₂O'},
+      Element100:{element:null, percent:100, purity:100, label:'100%'}
+    };
+
+    let auth = null, db = null, currentUser = null, currentProfile = null;
+    let isManager = false;
+    let activeTab = 'input';
+    let selectedTankId = null;
+    let tanks = [];
+    let values = {};
+
+    function num(v){ const x = Number(v); return Number.isFinite(x) ? x : 0; }
+    function n(id){ return num($(id)?.value); }
+    function hasVal(v){ return v !== null && v !== undefined && String(v).trim() !== ''; }
+    function fmt(v, digits=2){
+      if(!Number.isFinite(v)) return '-';
+      const abs = Math.abs(v);
+      let d = digits;
+      if(abs >= 1000) d = 0;
+      else if(abs >= 100) d = 1;
+      else if(abs > 0 && abs < 0.001) d = 6;
+      else if(abs > 0 && abs < 0.01) d = 5;
+      return Number(v).toLocaleString('zh-TW',{maximumFractionDigits:d});
+    }
+    function esc(s){ return String(s ?? '').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+    function uid(){ return 't_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,7); }
+    function asTrue(v){ return v === true || v === 'true' || v === 1 || v === '1'; }
+    function getRole(profile){ if(!profile) return 'guest'; if(profile.role) return String(profile.role).toLowerCase(); if(profile.isAdmin) return 'admin'; return 'user'; }
+    function getPerms(profile){ return (profile && profile.permissions && typeof profile.permissions === 'object') ? profile.permissions : {}; }
+    function checkManager(profile){
+      const role = getRole(profile), p = getPerms(profile);
+      return role === 'admin' || role === 'staff' || asTrue(profile?.isAdmin) ||
+        asTrue(p.equipmentAdmin) || asTrue(p.livestockAdmin) || asTrue(p.orderAdmin) ||
+        asTrue(p.shopHomeAdmin) || asTrue(p.userAdmin);
+    }
+
+    function allBatches(){
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+      catch(e){ return []; }
+    }
+    function saveBatches(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+
+    function currentTank(){ return tanks.find(t => t.id === selectedTankId) || tanks[0] || null; }
+    function tankWater(t){
+      if(!t) return 0;
+      const direct = num(t.directL);
+      if(direct > 0) return direct;
+      const gross = (num(t.lenCm) * num(t.widCm) * num(t.heiCm)) / 1000 + num(t.sumpL);
+      return Math.max(0, gross * (1 - num(t.deductPct) / 100));
+    }
+    function normalizeCode(code){ return String(code || '').trim().toUpperCase(); }
+
+    function availableElements(){
+      const mode = $('productMode')?.value || 'af';
+      const filter = $('elementFilter')?.value || 'all';
+      let list;
+      if(isManager && mode === 'custom'){
+        const key = $('customElementSelect')?.value || filter;
+        list = ELEMENTS.filter(e => e.key === key);
+      }else{
+        list = ELEMENTS.filter(e => e.afCoef && !e.managerOnly);
+        if(filter !== 'all') list = list.filter(e => e.key === filter);
+      }
+      return list;
+    }
+
+    function elementByKey(key){ return ELEMENTS.find(e => e.key === key); }
+    function record(tankId, elementKey){
+      if(!values[tankId]) values[tankId] = {};
+      if(!values[tankId][elementKey]){
+        const e = elementByKey(elementKey);
+        values[tankId][elementKey] = { value:'', target:e ? e.target : '', periodDoseMl:'' };
+      }
+      return values[tankId][elementKey];
+    }
+
+    function metricForElement(e){
+      if(!e) return {ok:false, reason:'元素不存在'};
+      const mode = $('productMode')?.value || 'af';
+      if(mode === 'custom' && isManager){
+        const powder = n('powderGram');
+        const finalMl = n('finalVolumeMl');
+        const purity = n('purityPercent') / 100;
+        const elementPercent = n('elementPercent') / 100;
+        if(powder <= 0 || finalMl <= 0 || purity <= 0 || elementPercent <= 0){
+          return {ok:false, reason:'請完整輸入自訂配方濃度。'};
+        }
+        const activeMgL = powder * 1000 * purity * elementPercent / (finalMl / 1000);
+        return {
+          ok:true, mode:'custom', productName:$('customName').value || 'SEADREAM 自訂配方',
+          activeMgL, ppmPerMlPer100L:activeMgL / 100000,
+          doseForDiff:(diff, waterL) => diff * waterL / activeMgL * 1000,
+          increaseFromDose:(doseMl, waterL) => waterL > 0 ? doseMl * activeMgL / 1000 / waterL : 0,
+          coefText:`有效濃度 ${fmt(activeMgL,2)} mg/L｜1 ml/100 L ≈ ${fmt(activeMgL/100000,6)} ppm`
+        };
+      }
+
+      if(!e.afCoef) return {ok:false, reason:'此元素沒有 AF ICP LAB 係數，請管理者使用自訂配方。'};
+      return {
+        ok:true, mode:'af', productName:e.afProduct, coef:e.afCoef, ppmPerMlPer100L:e.afCoef / 100,
+        doseForDiff:(diff, waterL) => e.afCoef > 0 ? diff * waterL / e.afCoef : 0,
+        increaseFromDose:(doseMl, waterL) => waterL > 0 ? doseMl * e.afCoef / waterL : 0,
+        coefText:`係數 ${e.afCoef}｜1 ml/100 L ≈ ${fmt(e.afCoef/100,5)} ppm`
+      };
+    }
+
+    function statusOf(value, e){
+      if(!hasVal(value)) return {txt:'-', cls:''};
+      const v = num(value);
+      if(v < e.min) return {txt:'偏低', cls:'low'};
+      if(v <= e.max) return {txt:'正常', cls:'normal'};
+      if(v <= e.max * 1.12) return {txt:'偏高', cls:'high'};
+      return {txt:'過高', cls:'over'};
+    }
+
+    function batchDate(){ return $('batchDate').value || today; }
+    function customerName(){ return ($('customerName').value || '').trim() || '未命名客戶'; }
+
+    function previousRecordFor(tank, elementKey){
+      const currentDate = batchDate();
+      const batches = allBatches()
+        .filter(b => String(b.customerName || '') === customerName() && String(b.date || '') < currentDate)
+        .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')) || String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+
+      const code = normalizeCode(tank?.code);
+      for(const b of batches){
+        const prevTank = (b.tanks || []).find(t => normalizeCode(t.code) === code);
+        if(!prevTank) continue;
+        const rec = b.values?.[prevTank.id]?.[elementKey];
+        if(rec && hasVal(rec.value)){
+          return {batch:b, tank:prevTank, record:rec};
+        }
+      }
+      return null;
+    }
+
+    function daysBetween(prevDate, nowDate){
+      const d1 = new Date(prevDate);
+      const d2 = new Date(nowDate);
+      const diff = Math.round((d2 - d1) / 86400000);
+      return diff > 0 ? diff : Math.max(1, n('defaultDays') || 7);
+    }
+
+    function calcLine(tank, e){
+      const rec = record(tank.id, e.key);
+      const water = tankWater(tank);
+      const metric = metricForElement(e);
+      const currentHas = hasVal(rec.value);
+      const current = num(rec.value);
+      const target = hasVal(rec.target) ? num(rec.target) : e.target;
+      const diff = currentHas ? Math.max(0, target - current) : 0;
+      const dose = currentHas && water > 0 && metric.ok && diff > 0 ? metric.doseForDiff(diff, water) : 0;
+      const st = statusOf(rec.value, e);
+      const prev = previousRecordFor(tank, e.key);
+      const periodDose = num(rec.periodDoseMl);
+      let compare = null;
+      if(prev && currentHas && metric.ok && water > 0){
+        const days = daysBetween(prev.batch.date, batchDate());
+        const prevValue = num(prev.record.value);
+        const periodIncrease = periodDose > 0 ? metric.increaseFromDose(periodDose, water) : 0;
+        const totalConsumption = prevValue + periodIncrease - current;
+        const dailyConsumption = totalConsumption / days;
+        const dailyDose = dailyConsumption > 0 ? metric.doseForDiff(dailyConsumption, water) : 0;
+        compare = { prev, days, prevValue, periodIncrease, totalConsumption, dailyConsumption, dailyDose };
+      }
+      return {tank,e,rec,water,metric,currentHas,current,target,diff,dose,st,compare};
+    }
+
+    function buildElementOptions(){
+      const afList = ELEMENTS.filter(e => e.afCoef && !e.managerOnly);
+      $('elementFilter').innerHTML = '<option value="all">全部 AF ICP LAB 元素</option>' + afList.map(e => `<option value="${e.key}">${e.label}${e.type === 'trace' ? '｜微量' : '｜巨量'}</option>`).join('');
+      $('customElementSelect').innerHTML = ELEMENTS.map(e => `<option value="${e.key}">${e.label}${e.type === 'trace' ? '｜微量' : '｜巨量'}</option>`).join('');
+    }
+
+    function renderTankList(){
+      const box = $('tankList');
+      if(!tanks.length){
+        box.innerHTML = '<div class="empty">尚未建立魚缸。請按「新增魚缸」或「快速建立 A/B/C」。</div>';
+        return;
+      }
+      box.innerHTML = tanks.map(t => {
+        const active = t.id === selectedTankId ? 'active' : '';
+        return `<button class="tankBtn ${active}" type="button" data-tank-id="${esc(t.id)}">
+          <span>
+            <div class="tankTitle">${esc(t.code || '')}｜${esc(t.name || '')}</div>
+            <div class="tankMeta">${fmt(tankWater(t),1)} L｜已輸入 ${countInputForTank(t.id)} 個元素</div>
+          </span>
+          <span class="statusTag ${active ? 'normal' : ''}">${active ? '目前' : '切換'}</span>
+        </button>`;
+      }).join('');
+      box.querySelectorAll('[data-tank-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectedTankId = btn.dataset.tankId;
+          renderAll();
+        });
+      });
+    }
+
+    function countInputForTank(tankId){
+      const map = values[tankId] || {};
+      return Object.values(map).filter(r => hasVal(r.value)).length;
+    }
+
+    function syncTankEditorFromState(){
+      const t = currentTank();
+      if(!t){
+        ['tankCode','tankName','lenCm','widCm','heiCm','sumpL','deductPct','directL'].forEach(id => $(id).value = '');
+        $('selectedWaterText').textContent = '0 L';
+        $('selectedTankSub').textContent = '請選擇或新增魚缸。';
+        return;
+      }
+      $('tankCode').value = t.code || '';
+      $('tankName').value = t.name || '';
+      $('lenCm').value = t.lenCm || '';
+      $('widCm').value = t.widCm || '';
+      $('heiCm').value = t.heiCm || '';
+      $('sumpL').value = t.sumpL || 0;
+      $('deductPct').value = t.deductPct || 0;
+      $('directL').value = t.directL || '';
+      $('selectedWaterText').textContent = fmt(tankWater(t),1) + ' L';
+      $('selectedTankSub').textContent = `比較會使用魚缸代號「${t.code || '-'}」，請保持每次批次的代號相同。`;
+    }
+
+    function updateTankFromEditor(){
+      const t = currentTank();
+      if(!t) return;
+      t.code = normalizeCode($('tankCode').value);
+      t.name = $('tankName').value || t.code || '未命名魚缸';
+      t.lenCm = $('lenCm').value;
+      t.widCm = $('widCm').value;
+      t.heiCm = $('heiCm').value;
+      t.sumpL = $('sumpL').value;
+      t.deductPct = $('deductPct').value;
+      t.directL = $('directL').value;
+      renderAll(false);
+    }
+
+    function addTank(code='', name='', directL=''){
+      const finalCode = normalizeCode(code) || String.fromCharCode(65 + tanks.length);
+      const t = {id:uid(), code:finalCode, name:name || finalCode + ' 魚缸', lenCm:'', widCm:'', heiCm:'', sumpL:0, deductPct:0, directL:directL || ''};
+      tanks.push(t);
+      values[t.id] = {};
+      selectedTankId = t.id;
+      renderAll();
+    }
+
+    function makeABC(){
+      const defaults = [
+        {code:'A', name:'A 魚缸', water:2000},
+        {code:'B', name:'B 魚缸', water:1000},
+        {code:'C', name:'C 魚缸', water:700}
+      ];
+      defaults.forEach(d => {
+        if(!tanks.find(t => normalizeCode(t.code) === d.code)) addTank(d.code, d.name, d.water);
+      });
+      const a = tanks.find(t => normalizeCode(t.code) === 'A') || tanks[0];
+      selectedTankId = a?.id || selectedTankId;
+      renderAll();
+    }
+
+    function deleteCurrentTank(){
+      const t = currentTank();
+      if(!t) return;
+      if(!confirm(`確定刪除 ${t.code}｜${t.name} 嗎？目前頁面內的該魚缸數據也會移除。`)) return;
+      tanks = tanks.filter(x => x.id !== t.id);
+      delete values[t.id];
+      selectedTankId = tanks[0]?.id || null;
+      renderAll();
+    }
+
+    function duplicateCurrentTank(){
+      const t = currentTank();
+      if(!t) return;
+      const copy = {...t, id:uid(), code:normalizeCode(t.code + '_COPY'), name:(t.name || t.code) + ' 複製'};
+      tanks.push(copy);
+      values[copy.id] = JSON.parse(JSON.stringify(values[t.id] || {}));
+      selectedTankId = copy.id;
+      renderAll();
+    }
+
+    function renderInputRows(){
+      const t = currentTank();
+      if(!t){
+        $('inputRows').innerHTML = '<tr><td colspan="9"><div class="empty">請先新增或選擇魚缸。</div></td></tr>';
+        return;
+      }
+      const list = availableElements();
+      if(!list.length){
+        $('inputRows').innerHTML = '<tr><td colspan="9"><div class="empty">目前模式沒有可用元素。</div></td></tr>';
+        return;
+      }
+      $('inputRows').innerHTML = list.map(e => {
+        const line = calcLine(t,e);
+        const r = line.rec;
+        const status = line.currentHas ? `<span class="statusTag ${line.st.cls}">${line.st.txt}</span>` : '<span class="small">尚未輸入</span>';
+        const prevText = line.compare
+          ? `${fmt(line.compare.prevValue,5)} ${e.unit}<br><span class="small">${line.compare.prev.batch.date}</span>`
+          : '<span class="small">無上次資料</span>';
+        const diffText = line.currentHas
+          ? (line.diff > 0 ? `<span class="diffText">${fmt(line.diff,5)} ${e.unit}</span>` : '<span class="goodText">不需補</span>')
+          : '<span class="small">-</span>';
+        const doseText = line.currentHas && line.metric.ok
+          ? (line.diff > 0 ? `<span class="doseText">${fmt(line.dose,1)} ml</span><br><span class="small">${line.metric.productName}</span>` : '<span class="goodText">0 ml</span>')
+          : `<span class="small">${line.metric.reason || '-'}</span>`;
+        const dailyText = line.compare
+          ? `${line.compare.dailyConsumption > 0 ? '<span class="diffText">' : '<span class="goodText">'}${fmt(line.compare.dailyConsumption,5)} ${e.unit}/day</span><br><span class="doseText">${fmt(line.compare.dailyDose,1)} ml/day</span>`
+          : '<span class="small">尚無比較</span>';
+
+        return `<tr>
+          <td><b>${e.label}</b><br><span class="small">${e.type === 'trace' ? '微量元素' : '巨量元素'}｜${line.metric.productName || e.afProduct}</span></td>
+          <td><input class="miniInput dataInput" data-tank="${esc(t.id)}" data-element="${e.key}" data-field="value" type="number" step="0.0001" value="${esc(r.value)}" placeholder="${fmt(e.target,5)}" /></td>
+          <td><input class="miniInput dataInput" data-tank="${esc(t.id)}" data-element="${e.key}" data-field="target" type="number" step="0.0001" value="${esc(hasVal(r.target) ? r.target : e.target)}" /></td>
+          <td><input class="miniInput dataInput" data-tank="${esc(t.id)}" data-element="${e.key}" data-field="periodDoseMl" type="number" step="0.1" value="${esc(r.periodDoseMl)}" placeholder="0" /></td>
+          <td>${prevText}</td>
+          <td>${status}</td>
+          <td>${diffText}</td>
+          <td>${doseText}</td>
+          <td>${dailyText}</td>
+        </tr>`;
+      }).join('');
+
+      $('inputRows').querySelectorAll('.dataInput').forEach(inp => {
+        inp.addEventListener('input', e => {
+          const el = e.currentTarget;
+          const r = record(el.dataset.tank, el.dataset.element);
+          r[el.dataset.field] = el.value;
+          renderAll(false, false);
+        });
+      });
+    }
+
+    function renderSummaryRows(){
+      const rows = [];
+      tanks.forEach(t => {
+        availableElements().forEach(e => {
+          const line = calcLine(t,e);
+          if(!line.currentHas) return;
+          const status = `<span class="statusTag ${line.st.cls}">${line.st.txt}</span>`;
+          const diffText = line.diff > 0 ? `<span class="diffText">${fmt(line.diff,5)} ${e.unit}</span>` : '<span class="goodText">不需補</span>';
+          const doseText = line.metric.ok
+            ? (line.diff > 0 ? `<span class="doseText">${fmt(line.dose,1)} ml</span>` : '<span class="goodText">0 ml</span>')
+            : `<span class="small">${line.metric.reason || '-'}</span>`;
+          rows.push(`<tr>
+            <td><b>${esc(t.code)}</b>｜${esc(t.name)}</td>
+            <td>${fmt(line.water,1)} L</td>
+            <td><b>${e.label}</b></td>
+            <td>${fmt(line.current,5)} ${e.unit}</td>
+            <td>${fmt(line.target,5)} ${e.unit}</td>
+            <td>${status}</td>
+            <td>${diffText}</td>
+            <td>${doseText}</td>
+            <td>${line.metric.productName || e.afProduct}<br><span class="small">${line.metric.coefText || line.metric.reason || ''}</span></td>
+          </tr>`);
+        });
+      });
+      $('summaryRows').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="9"><div class="empty">尚未輸入任何魚缸元素數據。</div></td></tr>';
+    }
+
+    function renderCompareRows(){
+      const rows = [];
+      tanks.forEach(t => {
+        availableElements().forEach(e => {
+          const line = calcLine(t,e);
+          if(!line.currentHas || !line.compare) return;
+          const c = line.compare;
+          let judge = '<span class="goodText">持平或上升</span>';
+          let judgeSub = '不建議因此增加每日添加。';
+          if(c.totalConsumption > 0){
+            judge = '<span class="diffText">有消耗</span>';
+            judgeSub = `建議觀察並可設定每日約 ${fmt(c.dailyDose,1)} ml。`;
+          }
+          rows.push(`<tr>
+            <td><b>${esc(t.code)}</b>｜${esc(t.name)}<br><span class="small">${fmt(line.water,1)} L</span></td>
+            <td><b>${e.label}</b></td>
+            <td>${c.prev.batch.date}<br><span class="small">${c.days} 天</span></td>
+            <td>${fmt(c.prevValue,5)} ${e.unit}</td>
+            <td>${fmt(line.current,5)} ${e.unit}</td>
+            <td>${fmt(num(line.rec.periodDoseMl),1)} ml<br><span class="small">估升 ${fmt(c.periodIncrease,5)} ${e.unit}</span></td>
+            <td>${c.totalConsumption > 0 ? '<span class="diffText">' : '<span class="goodText">'}${fmt(c.totalConsumption,5)} ${e.unit}</span></td>
+            <td>${fmt(c.dailyConsumption,5)} ${e.unit}/day</td>
+            <td><span class="doseText">${fmt(c.dailyDose,1)} ml/day</span><br><span class="small">${line.metric.productName}</span></td>
+            <td>${judge}<br><span class="small">${judgeSub}</span></td>
+          </tr>`);
+        });
+      });
+      $('compareRows').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="10"><div class="empty">目前沒有可比較資料。請先儲存一次批次，下一次同客戶、同魚缸代號、同元素就會自動比較。</div></td></tr>';
+    }
+
+    function updateStats(){
+      const t = currentTank();
+      $('currentTankText').textContent = t ? `${t.code}｜${t.name}` : '-';
+      $('currentTankWaterText').textContent = t ? `${fmt(tankWater(t),1)} L` : '';
+      if(!t){
+        $('inputCountText').textContent = '0';
+        $('needDoseCountText').textContent = '0';
+        $('compareCountText').textContent = '0';
+        return;
+      }
+      const lines = availableElements().map(e => calcLine(t,e));
+      $('inputCountText').textContent = lines.filter(x => x.currentHas).length;
+      $('needDoseCountText').textContent = lines.filter(x => x.currentHas && x.diff > 0).length;
+      $('compareCountText').textContent = lines.filter(x => x.compare).length;
+    }
+
+    function renderFormula(){
+      const show = isManager && $('productMode').value === 'custom';
+      $('formulaPanel').classList.toggle('hidden', !(show && activeTab === 'formula'));
+      if(!show) return;
+      const e = elementByKey($('customElementSelect').value);
+      $('customApplyElementText').textContent = e ? e.key : '-';
+      const metric = metricForElement(e);
+      if(metric.ok){
+        $('activeMgLText').textContent = fmt(metric.activeMgL,2);
+        $('ppmPerMlText').textContent = fmt(metric.ppmPerMlPer100L,6);
+        $('formulaText').textContent =
+`有效元素濃度 mg/L =
+原料重量 g × 1000 × 純度 × 有效元素比例 ÷ 定容體積 L
+
+= ${n('powderGram')} × 1000 × ${n('purityPercent')/100} × ${n('elementPercent')/100} ÷ ${n('finalVolumeMl')/1000}
+= ${fmt(metric.activeMgL,4)} mg/L
+
+每 1 ml / 100 L 可提升 ppm =
+有效元素濃度 ÷ 100000
+= ${fmt(metric.ppmPerMlPer100L,8)} ppm
+
+添加量 ml =
+需要提升 ppm × 魚缸水量 L ÷ 有效元素濃度 mg/L × 1000`;
+      }else{
+        $('activeMgLText').textContent = '0';
+        $('ppmPerMlText').textContent = '0';
+        $('formulaText').textContent = metric.reason || '請輸入完整配方。';
+      }
+    }
+
+    function setTab(tab){
+      activeTab = tab;
+      $('inputTab').classList.toggle('active', tab === 'input');
+      $('summaryTab').classList.toggle('active', tab === 'summary');
+      $('compareTab').classList.toggle('active', tab === 'compare');
+      $('formulaTab').classList.toggle('active', tab === 'formula');
+      $('inputPanel').classList.toggle('hidden', tab !== 'input');
+      $('summaryPanel').classList.toggle('hidden', tab !== 'summary');
+      $('comparePanel').classList.toggle('hidden', tab !== 'compare');
+      renderAll(false);
+    }
+
+    function renderAll(fillEditor=True, fillInput=True){
+      renderTankList();
+      if(fillEditor) syncTankEditorFromState();
+      renderInputRows();
+      renderSummaryRows();
+      renderCompareRows();
+      updateStats();
+      renderFormula();
+      const isCustom = isManager && $('productMode').value === 'custom';
+      $('modeBadge').textContent = isCustom ? 'SEADREAM 管理者自訂配方' : 'AF ICP LAB 模式';
+      $('modeBadge').className = isCustom ? 'modeBadge manager' : 'modeBadge';
+    }
+
+    function currentBatchObject(){
+      return {
+        id:'b_' + Date.now().toString(36),
+        version:VERSION,
+        customerName:customerName(),
+        date:batchDate(),
+        title:$('batchTitle').value || (batchDate() + ' 檢測'),
+        defaultDays:n('defaultDays') || 7,
+        tanks:JSON.parse(JSON.stringify(tanks)),
+        values:JSON.parse(JSON.stringify(values)),
+        mode:$('productMode').value,
+        createdAt:new Date().toISOString()
+      };
+    }
+
+    function saveCurrentBatch(){
+      if(!tanks.length){
+        alert('請先建立魚缸。');
+        return;
+      }
+      const batch = currentBatchObject();
+      let arr = allBatches();
+      arr.push(batch);
+      arr = arr.slice(-80);
+      saveBatches(arr);
+      $('batchStatus').textContent = `已儲存批次：${batch.title}｜${batch.customerName}｜${batch.date}｜魚缸 ${batch.tanks.length} 個。`;
+      renderAll();
+    }
+
+    function loadLastBatch(){
+      const currentDate = batchDate();
+      const arr = allBatches()
+        .filter(b => String(b.customerName || '') === customerName() && String(b.date || '') < currentDate)
+        .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')) || String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+      if(!arr.length){
+        alert('找不到此客戶日期之前的上次批次。');
+        return;
+      }
+      const b = arr[0];
+      tanks = JSON.parse(JSON.stringify(b.tanks || []));
+      values = {};
+      tanks.forEach(t => { values[t.id] = {}; });
+      selectedTankId = tanks[0]?.id || null;
+      $('batchStatus').textContent = `已載入上次魚缸清單：${b.title}｜${b.date}。目前數據請重新輸入，本頁會用上次資料做比較。`;
+      renderAll();
+    }
+
+    function exportCSV(){
+      const lines = [];
+      lines.push(['客戶','本次日期','魚缸代號','魚缸名稱','水量L','元素','目前數據','目標','狀態','差距','建議補充ml','上次日期','上次數據','期間添加ml','每日消耗','每日維持ml'].map(csv).join(','));
+      tanks.forEach(t => {
+        availableElements().forEach(e => {
+          const line = calcLine(t,e);
+          if(!line.currentHas) return;
+          lines.push([
+            customerName(), batchDate(), t.code, t.name, fmt(line.water,1), e.key, line.current, line.target, line.st.txt, line.diff, line.dose,
+            line.compare?.prev.batch.date || '', line.compare?.prevValue ?? '', line.rec.periodDoseMl || 0,
+            line.compare?.dailyConsumption ?? '', line.compare?.dailyDose ?? ''
+          ].map(csv).join(','));
+        });
+      });
+      const blob = new Blob(['\ufeff' + lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'seadream_multi_tank_element_' + batchDate() + '.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+    }
+
+    function csv(v){ return '"' + String(v ?? '').replace(/"/g,'""') + '"'; }
+
+    function applyRoleUI(){
+      if(isManager){
+        $('customModeOption').classList.remove('hidden');
+        $('customModeOption').disabled = false;
+        $('formulaTab').classList.remove('hidden');
+      }else{
+        $('productMode').value = 'af';
+        $('customModeOption').classList.add('hidden');
+        $('customModeOption').disabled = true;
+        $('formulaTab').classList.add('hidden');
+        if(activeTab === 'formula') setTab('input');
+      }
+      renderAll();
+    }
+
+    function applyPreset(){
+      const p = RAW_PRESETS[$('rawPreset').value];
+      if(!p) return;
+      if(p.element){
+        $('customElementSelect').value = p.element;
+      }
+      $('elementPercent').value = p.percent;
+      $('purityPercent').value = p.purity;
+      $('elementFilter').value = p.element || $('elementFilter').value;
+      renderAll();
+    }
+
+    function bind(){
+      ['customerName','batchDate','batchTitle','defaultDays'].forEach(id => $(id).addEventListener('input', () => renderAll(false)));
+      ['tankCode','tankName','lenCm','widCm','heiCm','sumpL','deductPct','directL'].forEach(id => $(id).addEventListener('input', updateTankFromEditor));
+
+      $('addTankBtn').addEventListener('click', () => addTank());
+      $('makeAbcBtn').addEventListener('click', makeABC);
+      $('deleteTankBtn').addEventListener('click', deleteCurrentTank);
+      $('duplicateTankBtn').addEventListener('click', duplicateCurrentTank);
+      $('saveBatchBtn').addEventListener('click', saveCurrentBatch);
+      $('loadLastBatchBtn').addEventListener('click', loadLastBatch);
+      $('exportCsvBtn').addEventListener('click', exportCSV);
+      $('clearAllLocalBtn').addEventListener('click', () => {
+        if(!confirm('確定清除本機暫存的所有多魚缸批次資料嗎？')) return;
+        localStorage.removeItem(STORAGE_KEY);
+        $('batchStatus').textContent = '已清除本機暫存批次。';
+        renderAll();
+      });
+
+      $('inputTab').addEventListener('click', () => setTab('input'));
+      $('summaryTab').addEventListener('click', () => setTab('summary'));
+      $('compareTab').addEventListener('click', () => setTab('compare'));
+      $('formulaTab').addEventListener('click', () => setTab('formula'));
+
+      $('productMode').addEventListener('change', () => {
+        if($('productMode').value === 'custom' && isManager){
+          $('elementFilter').value = $('customElementSelect').value;
+          setTab('formula');
+        }else{
+          setTab('input');
+        }
+        renderAll();
+      });
+      $('elementFilter').addEventListener('change', () => {
+        if($('productMode').value === 'custom' && isManager){
+          $('customElementSelect').value = $('elementFilter').value === 'all' ? 'Ca' : $('elementFilter').value;
+        }
+        renderAll();
+      });
+      $('customElementSelect').addEventListener('change', () => {
+        $('elementFilter').value = $('customElementSelect').value;
+        renderAll();
+      });
+      ['customName','powderGram','finalVolumeMl','purityPercent','elementPercent'].forEach(id => $(id).addEventListener('input', () => renderAll(false)));
+      $('rawPreset').addEventListener('change', applyPreset);
+    }
+
+    async function bootFirebase(){
+      try{
+        auth = firebase.auth();
+        db = firebase.firestore();
+      }catch(err){
+        $('authPill').textContent = '未登入｜AF模式';
+        $('authPill').className = 'pill warn';
+        isManager = false;
+        applyRoleUI();
+        return;
+      }
+
+      auth.onAuthStateChanged(async user => {
+        currentUser = user;
+        currentProfile = null;
+        isManager = false;
+        if(!user){
+          $('authPill').textContent = '未登入｜AF模式';
+          $('authPill').className = 'pill warn';
+          applyRoleUI();
+          return;
+        }
+        try{
+          const snap = await db.collection('users').doc(user.uid).get();
+          currentProfile = snap.exists ? snap.data() : {};
+          isManager = checkManager(currentProfile);
+          $('authPill').textContent = (user.email || '已登入') + '｜' + (isManager ? '管理者' : getRole(currentProfile));
+          $('authPill').className = isManager ? 'pill ok' : 'pill';
+        }catch(err){
+          $('authPill').textContent = '已登入｜權限讀取失敗';
+          $('authPill').className = 'pill warn';
+        }
+        applyRoleUI();
+      });
+    }
+
+    function init(){
+      $('batchDate').value = today;
+      $('batchTitle').value = today + ' 檢測';
+      buildElementOptions();
+      bind();
+      makeABC();
+      bootFirebase();
+      renderAll();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

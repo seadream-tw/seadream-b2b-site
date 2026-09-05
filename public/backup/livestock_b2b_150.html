@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEADREAM B2B 活體專區 v1.4</title>
+  <style>
+    :root{
+      --bg:#061723;--panel:#0b2230;--panel2:#0e2a3b;--line:#1d4659;--text:#e8f6ff;--muted:#9bb7c7;
+      --aqua:#39f5e6;--blue:#25a8ff;--warn:#ffd166;--danger:#ff6b6b;--ok:#57ffb6;--radius:20px;
+      --shadow:0 18px 50px rgba(0,0,0,.32);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(circle at 78% 8%,#0b3a3d 0,#061723 42%,#041019 100%);color:var(--text);font-family:"Microsoft JhengHei",Arial,sans-serif;line-height:1.55}
+    a{color:var(--aqua);text-decoration:none}.wrap{width:min(1500px,calc(100% - 28px));margin:18px auto 70px}
+    .hero,.panel,.summary{border:1px solid var(--line);border-radius:28px;background:linear-gradient(135deg,rgba(13,42,56,.96),rgba(6,23,35,.94));box-shadow:var(--shadow)}
+    .hero{padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:16px}.hero h1{margin:0;font-size:34px;letter-spacing:.5px}.hero p{margin:7px 0 0;color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:999px;border:1px solid rgba(57,245,230,.35);background:rgba(57,245,230,.08);font-weight:900;color:#7bfff4;white-space:nowrap}
+    .topLinks{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end}.topLinks a{border:1px solid rgba(57,245,230,.28);background:#102b3a;color:var(--text);border-radius:13px;padding:9px 12px;font-weight:900}
+    .loginBox{margin-top:16px;border:1px solid var(--line);border-radius:20px;padding:16px;background:rgba(13,42,56,.65)}
+    .toolbar{margin-top:16px;padding:14px;display:grid;grid-template-columns:1.05fr .65fr .75fr .65fr .65fr auto;gap:10px;align-items:center}
+    input,select,textarea{width:100%;border:1px solid #244e63;background:#071c29;color:var(--text);border-radius:14px;padding:11px 12px;outline:none;font-size:15px}textarea{min-height:78px;resize:vertical}
+    .btn{border:0;border-radius:15px;padding:11px 16px;font-weight:900;cursor:pointer;color:#06202b;background:linear-gradient(135deg,var(--aqua),var(--blue));white-space:nowrap}.btn.secondary{background:#102b3a;color:var(--text);border:1px solid #285569}.btn.danger{background:#3c1820;color:#ffd8df;border:1px solid #7d2d3b}.btn:disabled{opacity:.45;cursor:not-allowed}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;margin-top:16px;align-items:start}.panel{padding:14px}.listHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.listHead h2{margin:0;font-size:22px}.count{border:1px solid #285569;border-radius:999px;padding:7px 12px;color:#bfe8f7;background:#102b3a;font-weight:900}
+    .productList{display:flex;flex-direction:column;gap:10px}.row{display:grid;grid-template-columns:92px minmax(0,1fr) 150px 195px;gap:12px;align-items:center;border:1px solid var(--line);border-radius:18px;background:linear-gradient(90deg,rgba(10,35,50,.95),rgba(7,26,38,.9));padding:10px;min-height:116px}
+    .thumb{width:92px;height:92px;border-radius:15px;overflow:hidden;background:#061824;border:1px solid #1c4659;cursor:pointer}.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .code{display:inline-flex;align-items:center;max-width:100%;padding:4px 8px;border-radius:999px;background:rgba(57,245,230,.12);border:1px solid rgba(57,245,230,.35);color:#8ffff6;font-size:12px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.title{font-weight:900;font-size:18px;margin:7px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{color:var(--muted);font-size:14px;display:flex;gap:6px;flex-wrap:wrap}.batch{color:#cbeaff;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.badge{font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid #285569;color:#cfe8f2;background:#102b3a}.badge.ok{color:#8fffd2;border-color:rgba(87,255,182,.35);background:rgba(87,255,182,.08)}.badge.warn{color:#ffe09a;border-color:rgba(255,209,102,.35);background:rgba(255,209,102,.08)}.badge.sold{color:#ffb3bd;border-color:rgba(255,107,107,.35);background:rgba(255,107,107,.08)}
+    .priceBox{border:1px solid #1c4659;background:#081d2b;border-radius:16px;padding:10px}.priceLabel{font-size:12px;color:#b1c8d5}.price{font-size:22px;font-weight:900;color:#76fff4;line-height:1.2}.rowActions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rowActions .btn{padding:10px 12px}.empty{border:1px dashed #2c6077;border-radius:22px;padding:30px;text-align:center;color:var(--muted)}
+    .summary{position:sticky;top:14px;padding:16px}.summary h2{margin:0 0 8px;font-size:21px}.summaryTop{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px dashed rgba(157,190,205,.25);padding-bottom:10px;margin-bottom:10px}.summaryTotal{font-weight:900;color:#76fff4;font-size:18px}.cartList{max-height:45vh;overflow:auto;padding-right:3px}.cartItem{display:grid;grid-template-columns:50px 1fr auto;gap:8px;align-items:center;border:1px solid #244e63;border-radius:14px;padding:7px;background:#061824;margin-bottom:8px}.cartItem img{width:50px;height:50px;object-fit:cover;border-radius:10px}.cartTitle{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.small{font-size:13px;color:var(--muted)}.summaryLines{margin:10px 0;border-top:1px dashed rgba(157,190,205,.25);padding-top:10px}.line{display:flex;align-items:center;justify-content:space-between;margin:6px 0;color:#d7ecf7}.line strong{color:#76fff4}.summaryActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}.modal.show{display:flex}.dialog{width:min(980px,100%);max-height:92vh;overflow:auto;border:1px solid var(--line);border-radius:26px;background:#071b28;box-shadow:var(--shadow);padding:18px}.detail{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.bigimg{background:#031019;border-radius:20px;overflow:hidden;min-height:300px;display:flex;align-items:center;justify-content:center}.bigimg img{width:100%;height:100%;max-height:70vh;object-fit:contain}.mobileBar{display:none}
+    @media(max-width:1160px){.toolbar{grid-template-columns:1fr 1fr}.layout{grid-template-columns:1fr}.summary{position:relative;top:auto}.row{grid-template-columns:88px minmax(0,1fr) 130px 180px}}
+    @media(max-width:760px){.wrap{width:min(100% - 18px,1500px);margin-top:10px;margin-bottom:110px}.hero{align-items:flex-start;flex-direction:column;padding:19px;border-radius:24px}.hero h1{font-size:25px}.toolbar{grid-template-columns:1fr;border-radius:22px}.panel{padding:11px;border-radius:22px}.row{grid-template-columns:72px minmax(0,1fr);gap:10px;min-height:auto}.thumb{width:72px;height:72px}.title{font-size:16px;white-space:normal}.priceBox{grid-column:1/3;padding:8px}.rowActions{grid-column:1/3;grid-template-columns:1fr 1fr}.summary{display:none}.mobileBar{display:flex;position:fixed;left:10px;right:10px;bottom:10px;z-index:40;gap:8px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:18px;background:rgba(7,26,38,.96);box-shadow:var(--shadow);padding:10px}.mobileBar strong{color:#76fff4}.detail{grid-template-columns:1fr}.bigimg{min-height:260px}.dialog{padding:14px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <h1>SEADREAM B2B 活體專區 v1.4</h1>
+        <p>新增到貨目錄 / 批次分支篩選，例如定期進口 → 20260616 → SPS。每顆活體都是唯一商品，不設定數量。</p>
+      </div>
+      <div class="topLinks"><a href="index.html">會員入口</a><a href="order.html">設備批發</a><span class="pill" id="authPill">檢查登入中</span></div>
+    </section>
+
+    <div id="loginNotice" class="loginBox" style="display:none"><strong>需要批發會員登入。</strong><br><a href="index.html">回 B2B 會員入口</a></div>
+
+    <section id="app" style="display:none">
+      <div class="toolbar panel">
+        <input id="searchText" placeholder="搜尋編號、名稱、分類、批次" />
+        <select id="filterSource"><option value="all">全部來源</option><option value="farm">自家繁殖場</option><option value="import">定期進口</option></select>
+        <select id="filterBatch"><option value="all">全部到貨目錄 / 批次</option></select>
+        <select id="filterCategory"><option value="all">全部分類</option><option>SPS</option><option>LPS</option><option>Soft Coral</option><option>Fish</option><option>Other</option></select>
+        <select id="filterStatus"><option value="all">全部狀態</option><option value="available">只看可販售</option><option value="reserved">已保留</option><option value="sold">已售出</option></select>
+        <button class="btn secondary" id="reloadBtn">重新讀取</button>
+      </div>
+
+      <div class="layout">
+        <main class="panel">
+          <div class="listHead"><h2>活體清單</h2><div class="count" id="itemCount">0 顆</div></div>
+          <div class="productList" id="productList"><div class="empty">讀取中...</div></div>
+        </main>
+
+        <aside class="summary" id="summaryPanel">
+          <h2>報價 / 下單總表</h2>
+          <div class="summaryTop"><span>已選活體</span><strong id="cartCount">0 顆</strong></div>
+          <div class="cartList" id="cartList"><div class="small">尚未加入活體。</div></div>
+          <div class="summaryLines">
+            <div class="line"><span>活體項目</span><strong id="cartItemCount">0</strong></div>
+            <div class="line"><span>本次參考合計</span><strong id="cartTotal">NT$ 0</strong></div>
+          </div>
+          <textarea id="message" placeholder="補充需求，例如想保留、確認狀態、出貨方式"></textarea>
+          <div class="summaryActions"><button class="btn" onclick="submitOrder()">送出報價單</button><button class="btn secondary" onclick="clearCart()">清空</button></div>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <div class="mobileBar" id="mobileBar" style="display:none"><div>已選 <strong id="mobileCount">0</strong> 顆<br><strong id="mobileTotal">NT$ 0</strong></div><button class="btn" onclick="scrollToSummary()">查看總表</button></div>
+  <div class="modal" id="detailModal"><div class="dialog" id="detailBox"></div></div>
+
+  <script src="/__/firebase/10.12.5/firebase-app-compat.js"></script>
+  <script src="/__/firebase/10.12.5/firebase-auth-compat.js"></script>
+  <script src="/__/firebase/10.12.5/firebase-firestore-compat.js"></script>
+  <script src="/__/firebase/init.js"></script>
+  <script>
+    const auth=firebase.auth(), db=firebase.firestore(), $=(id)=>document.getElementById(id);
+    let currentUser=null, profile={}, allItems=[], cart=[], pendingItemId=new URLSearchParams(location.search).get('item');
+    function money(n){return 'NT$ '+Number(n||0).toLocaleString('zh-TW')}
+    function sourceText(s){return s==='farm'?'自家繁殖場':s==='import'?'定期進口':'未設定'}
+    function statusText(s){return ({available:'可販售',reserved:'已保留',sold:'已售出',hidden:'隱藏'})[s]||s||'未設定'}
+    function statusClass(s){return s==='available'?'ok':s==='sold'?'sold':s==='reserved'?'warn':''}
+
+    auth.onAuthStateChanged(async u=>{
+      currentUser=u;
+      if(!u)return deny('未登入');
+      try{
+        const snap=await db.collection('users').doc(u.uid).get();
+        profile=snap.exists?snap.data():{};
+        const role=profile.role||'';
+        const ok=(profile.status||'active')==='active'&&(role==='admin'||role==='wholesale'||profile.isAdmin===true);
+        if(!ok)return deny('權限不足');
+        $('authPill').textContent=(role||'會員')+' 已登入';
+        $('loginNotice').style.display='none';
+        $('app').style.display='block';
+        loadItems();
+      }catch(e){deny('權限檢查失敗：'+e.message)}
+    });
+    function deny(t){$('authPill').textContent=t;$('loginNotice').style.display='block';$('app').style.display='none'}
+
+    $('reloadBtn').onclick=loadItems;
+    ['searchText','filterSource','filterBatch','filterCategory','filterStatus'].forEach(id=>$(id).addEventListener('input',render));
+    ['filterSource','filterBatch','filterCategory','filterStatus'].forEach(id=>$(id).addEventListener('change',render));
+
+    async function loadItems(){
+      try{
+        $('productList').innerHTML='<div class="empty">讀取中...</div>';
+        const qs=await db.collection('b2bLivestockItems').orderBy('createdAt','desc').limit(300).get();
+        allItems=qs.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.status!=='hidden');
+        render();
+        if(pendingItemId){setTimeout(()=>openDetail(pendingItemId),200); pendingItemId=null;}
+      }catch(e){console.error(e);$('productList').innerHTML='<div class="empty">讀取失敗：'+escapeHtml(e.message)+'</div>'}
+    }
+    function batchValue(it){return String(it.batchKey||String(it.batchName||'').replace(/[^0-9A-Za-z\u4e00-\u9fa5_-]/g,'').slice(0,30)||'').trim()}
+    function sameBatch(it,val){if(!val||val==='all')return true;const key=batchValue(it),name=String(it.batchName||'').trim();return key===val||name===val}
+    function updateBatchOptions(){
+      const previous=$('filterBatch').value,fs=$('filterSource').value,fc=$('filterCategory').value;
+      const map=new Map();
+      allItems.forEach(it=>{if((fs==='all'||it.sourceType===fs)&&(fc==='all'||it.category===fc)){const key=batchValue(it);if(key&&!map.has(key))map.set(key,it.batchName||it.batchKey||key)}});
+      const rows=Array.from(map.entries()).sort((a,b)=>String(b[1]).localeCompare(String(a[1]),'zh-Hant'));
+      $('filterBatch').innerHTML='<option value="all">全部到貨目錄 / 批次</option>'+rows.map(([k,v])=>`<option value="${escapeAttr(k)}">${escapeHtml(v)}</option>`).join('');
+      $('filterBatch').value=rows.some(([k])=>k===previous)?previous:'all';
+    }
+    function filtered(){
+      updateBatchOptions();
+      const q=$('searchText').value.trim().toLowerCase(),fs=$('filterSource').value,fb=$('filterBatch').value,fc=$('filterCategory').value,st=$('filterStatus').value;
+      return allItems.filter(it=>{
+        const txt=[it.livestockCode,it.title,it.batchName,it.batchKey,it.category,it.description].join(' ').toLowerCase();
+        return(!q||txt.includes(q))&&(fs==='all'||it.sourceType===fs)&&sameBatch(it,fb)&&(fc==='all'||it.category===fc)&&(st==='all'||it.status===st);
+      });
+    }
+    function render(){
+      const list=filtered();
+      $('itemCount').textContent=list.length+' 顆';
+      $('productList').innerHTML=list.map(renderRow).join('')||'<div class="empty">目前沒有符合條件的活體。</div>';
+      updateCart();
+    }
+    function renderRow(it){
+      const disabled=it.status==='sold'||it.status==='hidden';
+      const img=it.thumbnailUrl||it.mainImageUrl||'';
+      return `<article class="row">
+        <div class="thumb" onclick="openDetail('${escapeAttr(it.id)}')"><img loading="lazy" src="${escapeAttr(img)}" alt="${escapeAttr(it.title||'活體')}"></div>
+        <div class="info">
+          <span class="code">${escapeHtml(it.livestockCode||it.id)}</span>
+          <div class="title">${escapeHtml(it.title||'未命名活體')}</div>
+          <div class="meta"><span>${escapeHtml(sourceText(it.sourceType))}</span><span>|</span><span>${escapeHtml(it.category||'未分類')}</span></div>
+          <div class="batch">目錄 / 批次：${escapeHtml(it.batchName||'')}</div>
+          <div class="badges"><span class="badge ${statusClass(it.status)}">${escapeHtml(statusText(it.status))}</span></div>
+        </div>
+        <div class="priceBox"><div class="priceLabel">售價 / 參考價</div><div class="price">${money(it.price)}</div></div>
+        <div class="rowActions"><button class="btn" onclick="addCart('${escapeAttr(it.id)}')" ${disabled?'disabled':''}>加入報價</button><button class="btn secondary" onclick="openDetail('${escapeAttr(it.id)}')">大圖</button></div>
+      </article>`;
+    }
+    window.openDetail=function(id){
+      const it=allItems.find(x=>x.id===id); if(!it)return;
+      const disabled=it.status==='sold'||it.status==='hidden';
+      $('detailBox').innerHTML=`<div class="detail"><div class="bigimg"><img src="${escapeAttr(it.mainImageUrl||it.thumbnailUrl||'')}" alt="${escapeAttr(it.title||'活體')}"></div><div><span class="code">${escapeHtml(it.livestockCode||it.id)}</span><h2>${escapeHtml(it.title||'未命名活體')}</h2><div class="price">${money(it.price)}</div><div class="badges"><span class="badge">${escapeHtml(sourceText(it.sourceType))}</span><span class="badge">${escapeHtml(it.category||'未分類')}</span><span class="badge ${statusClass(it.status)}">${escapeHtml(statusText(it.status))}</span></div><p>${escapeHtml(it.description||'')}</p><p class="small">目錄 / 批次：${escapeHtml(it.batchName||'')}</p><div class="rowActions"><button class="btn" onclick="addCart('${escapeAttr(it.id)}')" ${disabled?'disabled':''}>加入報價</button><button class="btn secondary" onclick="shareItem('${escapeAttr(it.id)}')">分享</button><button class="btn secondary" onclick="closeModal('detailModal')">關閉</button></div></div></div>`;
+      $('detailModal').classList.add('show');
+    };
+    window.addCart=function(id){
+      const it=allItems.find(x=>x.id===id); if(!it)return;
+      if(it.status==='sold'||it.status==='hidden')return alert('這顆目前不可加入報價。');
+      if(cart.some(x=>x.id===id))return updateCart();
+      cart.push(it); updateCart();
+    };
+    function updateCart(){
+      const total=cart.reduce((s,x)=>s+Number(x.price||0),0);
+      $('cartCount').textContent=cart.length+' 顆'; $('cartItemCount').textContent=cart.length; $('cartTotal').textContent=money(total);
+      $('mobileCount').textContent=cart.length; $('mobileTotal').textContent=money(total); $('mobileBar').style.display=cart.length?'flex':'none';
+      $('cartList').innerHTML=cart.map(it=>`<div class="cartItem"><img src="${escapeAttr(it.thumbnailUrl||it.mainImageUrl||'')}"><div><div class="cartTitle">${escapeHtml(it.livestockCode||it.id)}</div><div class="small">${escapeHtml(it.title||'未命名活體')}</div><div class="small">${escapeHtml(it.category||'')}｜${money(it.price)}</div></div><button class="btn danger" onclick="removeCart('${escapeAttr(it.id)}')">×</button></div>`).join('')||'<div class="small">尚未加入活體。</div>';
+    }
+    window.removeCart=function(id){cart=cart.filter(x=>x.id!==id);updateCart()};
+    window.clearCart=function(){cart=[];updateCart()};
+    window.scrollToSummary=function(){document.getElementById('summaryPanel').scrollIntoView({behavior:'smooth',block:'start'})};
+    window.submitOrder=async function(){
+      if(!cart.length)return alert('請先加入活體。');
+      if(!currentUser)return alert('請先登入。');
+      try{
+        await db.collection('orders').add({
+          type:'livestock',orderType:'livestock',source:'livestock_b2b.html',status:'submitted',createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+          createdByUid:currentUser.uid,uid:currentUser.uid,email:currentUser.email||'',customerEmail:currentUser.email||'',
+          customerName:profile.companyName||profile.contactName||profile.name||currentUser.email||'',companyName:profile.companyName||'',contactName:profile.contactName||profile.name||'',phone:profile.phone||'',lineId:profile.lineId||'',taxId:profile.taxId||'',
+          note:$('message').value.trim(),message:$('message').value.trim(),
+          items:cart.map(it=>({livestockId:it.id,sku:it.livestockCode||it.id,livestockCode:it.livestockCode||it.id,name:it.title||'',title:it.title||'',price:Number(it.price||0),qty:1,quantity:1,subtotal:Number(it.price||0),category:it.category||'',sourceType:it.sourceType||'',status:it.status||'',thumbnailUrl:it.thumbnailUrl||'',batchName:it.batchName||'',batchKey:it.batchKey||''})),
+          total:cart.reduce((s,x)=>s+Number(x.price||0),0),itemCount:cart.length
+        });
+        alert('已送出活體報價單。'); cart=[]; $('message').value=''; updateCart();
+      }catch(e){console.error(e);alert('送出失敗：'+e.message)}
+    };
+    window.shareItem=async function(id){const url=location.origin+location.pathname+'?item='+encodeURIComponent(id);const it=allItems.find(x=>x.id===id)||{};if(navigator.share){try{await navigator.share({title:it.title||'SEADREAM 活體',text:it.title||'',url});return}catch(e){}}await navigator.clipboard.writeText(url);alert('分享連結已複製')};
+    function closeModal(id){$(id).classList.remove('show')} window.closeModal=closeModal;
+    document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')}));
+    function escapeHtml(s){return String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+    function escapeAttr(s){return escapeHtml(s).replace(/'/g,'&#39;')}
+  </script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SEADREAM Aquarium｜專業海水水族、珊瑚、設備與工程服務</title>
+<meta name="description" content="SEADREAM Aquarium 海洋夢水族：專業海水魚缸規劃、活體珊瑚、設備耗材、水質管理與商城服務。">
+<meta name="robots" content="index,follow">
+<style>
+:root{
+  --bg:#06111d;--panel:#0b2135;--panel2:#10304d;--card:#0e2a42;
+  --line:rgba(148,197,255,.20);--line2:rgba(114,239,221,.34);
+  --text:#e8f4ff;--muted:#9eb8ce;--brand:#4cc9f0;--brand2:#72efdd;
+  --gold:#ffd166;--ok:#51cf66;--shadow:0 22px 70px rgba(0,0,0,.34);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 10% 0%,rgba(76,201,240,.16),transparent 28%),
+    radial-gradient(circle at 90% 8%,rgba(114,239,221,.11),transparent 26%),
+    linear-gradient(180deg,#06111d 0%,#071827 54%,#050d16 100%);
+  min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit}
+[hidden]{display:none!important}
+.wrap{width:min(1420px,calc(100vw - 28px));margin:0 auto}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(4,15,27,.92);backdrop-filter:blur(15px);border-bottom:1px solid var(--line)}
+.topbarInner{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,var(--brand),#1b7fff 55%,var(--brand2));color:#03121f;font-weight:1000;box-shadow:0 10px 28px rgba(76,201,240,.23)}
+.logo img{width:100%;height:100%;object-fit:contain}
+.brand h1{margin:0;font-size:22px;line-height:1.05}
+.brand p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.nav{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+.btn{min-height:40px;padding:9px 13px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.05);color:var(--text);font-weight:850;display:inline-flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}
+.btn:hover{border-color:rgba(114,239,221,.55);transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(135deg,#138fc8,#1b7fff);border-color:transparent}
+.btn.success{background:linear-gradient(135deg,#17b788,#0ca678);border-color:transparent}
+.btn.warn{background:rgba(255,209,102,.11);border-color:rgba(255,209,102,.40);color:#ffe3a0}
+.btn.small{min-height:34px;padding:7px 10px;font-size:12px}
+.pill{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:999px;padding:7px 10px;background:rgba(255,255,255,.045);color:#dceeff;font-size:12px;font-weight:850;white-space:nowrap}
+.pill.aqua{border-color:rgba(114,239,221,.40);background:rgba(114,239,221,.08);color:#cffff7}
+.hero{padding:22px 0 14px}
+.heroCard{
+  min-height:390px;border:1px solid var(--line);border-radius:28px;overflow:hidden;position:relative;
+  background:
+    linear-gradient(90deg,rgba(3,18,34,.97) 0%,rgba(3,20,38,.87) 46%,rgba(3,20,38,.40) 100%),
+    radial-gradient(circle at 84% 28%,rgba(55,209,238,.34),transparent 23%),
+    radial-gradient(circle at 73% 72%,rgba(114,239,221,.18),transparent 18%),
+    linear-gradient(135deg,#0c3453,#082039);
+  box-shadow:var(--shadow);
+}
+.heroCard:after{content:"";position:absolute;right:-3%;bottom:-42%;width:58%;height:120%;border-radius:50%;background:radial-gradient(circle,rgba(58,204,234,.25),rgba(15,93,137,.08) 46%,transparent 70%)}
+.heroContent{position:relative;z-index:2;width:min(760px,66%);padding:42px 44px}
+.eyebrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.hero h2{margin:0;font-size:clamp(34px,4.4vw,58px);line-height:1.06;letter-spacing:-.035em}
+.hero h2 span{color:var(--brand2)}
+.hero p{margin:16px 0 0;color:#bed1df;line-height:1.8;font-size:17px}
+.heroActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.trustBar{position:absolute;z-index:3;right:26px;bottom:25px;display:grid;grid-template-columns:repeat(2,180px);gap:10px}
+.trustItem{border:1px solid rgba(148,197,255,.23);border-radius:16px;padding:13px;background:rgba(3,17,30,.78);backdrop-filter:blur(8px)}
+.trustItem strong{display:block;font-size:14px}
+.trustItem span{display:block;color:var(--muted);font-size:11px;margin-top:5px;line-height:1.4}
+.mainShowcase{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:16px;margin-top:16px}
+.panel{border:1px solid var(--line);border-radius:22px;background:rgba(11,33,53,.82);box-shadow:0 12px 36px rgba(0,0,0,.18);overflow:hidden}
+.panelHead{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panelHead h2,.panelHead h3{margin:0;font-size:22px}
+.panelBody{padding:16px}
+.categoryGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.categoryCard{min-height:142px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.035);padding:12px;display:flex;flex-direction:column;transition:.16s ease;overflow:hidden}
+.categoryCard:hover{border-color:rgba(114,239,221,.50);background:rgba(114,239,221,.07);transform:translateY(-2px)}
+.categoryTop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.categoryIcon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:rgba(76,201,240,.13);border:1px solid rgba(114,239,221,.18);font-size:23px;overflow:hidden}
+.categoryIcon img{width:100%;height:100%;object-fit:contain;padding:4px}
+.categoryCount{font-size:11px;color:#cffff7;border:1px solid rgba(114,239,221,.25);border-radius:999px;padding:4px 7px;background:rgba(114,239,221,.06)}
+.categoryCard strong{font-size:15px;margin-top:10px;line-height:1.3}
+.categoryCard span.link{font-size:12px;color:var(--brand2);margin-top:auto;padding-top:9px;font-weight:850}
+.previewTools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.productPreviewGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,230px));gap:11px;justify-content:start}
+.previewCard{width:100%;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.035);overflow:hidden;display:flex;flex-direction:column}
+.previewImage{height:170px;background:#f3f5f7;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:10px}
+.previewImage img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:scale-down}
+.previewBadge{position:absolute;left:8px;top:8px;border-radius:999px;padding:5px 8px;background:#2179dc;color:#fff;font-size:11px;font-weight:900}
+.previewBody{padding:11px;display:flex;flex-direction:column;gap:5px;min-height:130px}
+.previewName{font-weight:950;font-size:14px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.previewMeta{color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.previewPrice{font-weight:1000;color:#fff;margin-top:auto;font-size:16px}
+.previewActions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}
+.section{padding:20px 0}
+.sectionHead{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:13px}
+.sectionHead h2{margin:0;font-size:27px}
+.sectionHead p{margin:7px 0 0;color:var(--muted);line-height:1.6}
+.brandGrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.brandCard{border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.035);padding:10px;text-align:center;min-height:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.brandLogo{height:54px;width:100%;display:grid;place-items:center;margin-bottom:7px}
+.brandLogo img{max-width:100%;max-height:54px;width:auto;height:auto;object-fit:contain}
+.brandInitial{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:rgba(76,201,240,.13);border:1px solid rgba(114,239,221,.18);font-weight:1000;color:#cffff7}
+.brandCard strong{font-size:13px;line-height:1.3}
+.brandCard span{color:var(--muted);font-size:11px;margin-top:4px}
+.serviceGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.serviceCard{border:1px solid var(--line);border-radius:17px;background:rgba(11,33,53,.78);padding:16px;overflow:hidden}
+.serviceMedia{width:54px;height:54px;border-radius:15px;display:grid;place-items:center;background:rgba(76,201,240,.12);border:1px solid rgba(114,239,221,.17);font-size:25px;overflow:hidden}
+.serviceMedia img{width:100%;height:100%;object-fit:contain;padding:4px}
+.serviceCard h3{margin:10px 0 0;font-size:17px}
+.serviceCard p{margin:7px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
+.latestPanel{margin-top:15px}
+.dynamicEmpty{grid-column:1/-1;border:1px dashed var(--line);border-radius:15px;padding:20px;text-align:center;color:var(--muted)}
+.footer{border-top:1px solid var(--line);padding:26px 0 38px;color:var(--muted)}
+.footerInner{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+@media(max-width:1180px){.mainShowcase{grid-template-columns:1fr}.categoryGrid{grid-template-columns:repeat(4,minmax(0,1fr))}.brandGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:820px){
+  .topbarInner{align-items:flex-start;flex-direction:column}.nav{justify-content:flex-start}
+  .heroContent{width:100%;padding:30px 24px 175px}.trustBar{left:22px;right:22px;grid-template-columns:1fr 1fr}
+  .categoryGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.serviceGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.brandGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:560px){
+  .wrap{width:min(100% - 18px,1420px)}.brand h1{font-size:18px}.brand p{font-size:11px}
+  .heroContent{padding:25px 18px 205px}.hero h2{font-size:31px}.hero p{font-size:14px}
+  .trustBar{grid-template-columns:1fr;bottom:15px}.trustItem:nth-child(n+3){display:none}
+  .categoryGrid,.serviceGrid{grid-template-columns:1fr 1fr}.brandGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .productPreviewGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.previewImage{height:145px}.previewActions{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbarInner">
+    <a class="brand" href="index.html">
+      <div class="logo" id="siteLogo">SD</div>
+      <div><h1 id="siteTitle">海洋夢商城</h1><p id="siteSubtitle">SEADREAM Aquarium｜專業海水水族公司 v1.4</p></div>
+    </a>
+    <nav class="nav">
+      <a class="btn small" href="official-products.html">產品介紹</a>
+      <a class="btn small" href="#brands">品牌代理</a>
+      <a class="btn small" href="#services">服務項目</a>
+      <a class="btn small primary" href="shop.html">商品商城</a>
+      <a class="btn small success" href="livestock.html">活體珊瑚</a>
+      <a class="btn small warn" data-b2b hidden href="https://b2b.seadream.com.tw/" target="_blank" rel="noopener">B2B 批發登入</a>
+      <span id="authStatus"></span>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="heroCard">
+      <div class="heroContent">
+        <div class="eyebrow">
+          <span class="pill aqua">專業海水水族</span><span class="pill">珊瑚養護</span><span class="pill">水質管理</span><span class="pill">設備整合</span>
+        </div>
+        <h2>海水專業設備、<span>珊瑚養護與系統整合</span></h2>
+        <p>從設備選購、魚缸規劃、活體珊瑚到水質調整，SEADREAM 提供一般客戶、專業玩家與水族店家完整服務。</p>
+        <div class="heroActions">
+          <a class="btn primary" href="shop.html">進入商品商城</a>
+          <a class="btn success" href="livestock.html">活體珊瑚專區</a>
+          <a class="btn warn" data-b2b hidden href="https://b2b.seadream.com.tw/" target="_blank" rel="noopener">B2B 批發登入</a>
+        </div>
+      </div>
+      <div class="trustBar">
+        <div class="trustItem"><strong>專業選物</strong><span>依照不同系統需求選擇設備。</span></div>
+        <div class="trustItem"><strong>技術支援</strong><span>水質、設備與飼養問題協助。</span></div>
+        <div class="trustItem"><strong>商城詢價</strong><span>一般客戶可直接加入詢價清單。</span></div>
+        <div class="trustItem" data-b2b hidden><strong>B2B 系統</strong><span>批發會員專屬價格與下單。</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mainShowcase">
+    <div class="panel">
+      <div class="panelHead"><h2>產品分類</h2><a class="btn small" href="shop.html">查看全部分類</a></div>
+      <div class="panelBody"><div id="categoryGrid" class="categoryGrid"><div class="dynamicEmpty">正在整理分類…</div></div></div>
+    </div>
+    <div class="panel">
+      <div class="panelHead"><h2>商城商品預覽</h2><div class="previewTools"><span class="pill" id="previewCount">0 項</span><a class="btn small primary" href="shop.html">進入商城</a></div></div>
+      <div class="panelBody"><div id="previewGrid" class="productPreviewGrid"><div class="dynamicEmpty">正在讀取商品…</div></div></div>
+    </div>
+  </section>
+
+  <section class="panel latestPanel">
+    <div class="panelHead"><h2>最新商品</h2><div class="previewTools"><span class="pill aqua" id="newCount">0 項</span><a class="btn small" href="official-products.html">查看全部新品</a></div></div>
+    <div class="panelBody"><div id="newGrid" class="productPreviewGrid"><div class="dynamicEmpty">正在讀取最新商品…</div></div></div>
+  </section>
+
+  <section class="section" id="brands">
+    <div class="sectionHead"><div><h2>主要品牌</h2><p>新品牌會依公開商品自動加入；品牌 Logo 可在商城後台上傳。</p></div></div>
+    <div id="brandGrid" class="brandGrid"><div class="dynamicEmpty">正在讀取品牌…</div></div>
+  </section>
+
+  <section class="section" id="services">
+    <div class="sectionHead"><div><h2>專業服務</h2><p>管理員可在商城後台修改服務名稱、說明、圖示與排序。</p></div></div>
+    <div id="serviceGrid" class="serviceGrid"><div class="dynamicEmpty">正在讀取服務內容…</div></div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footerInner">
+    <div><strong style="color:#dffffb">SEADREAM Aquarium</strong><div style="margin-top:5px">專業海水水族・珊瑚・設備・工程服務</div></div>
+    <div class="nav"><a class="btn small" href="shop.html">商品商城</a><a class="btn small" href="livestock.html">活體珊瑚</a><a class="btn small" href="signup.html">會員登入</a><a class="btn small warn" data-b2b hidden href="https://b2b.seadream.com.tw/" target="_blank" rel="noopener">B2B</a></div>
+  </div>
+</footer>
+
+<script src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+<script src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+<script src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+<script src="/__/firebase/10.12.2/firebase-storage-compat.js"></script>
+<script src="/__/firebase/init.js?useEmulator=false"></script>
+<script>
+const VERSION='seadream_home_v1_4_admin_brand_category_service_b2b_gate';
+const PRIORITY_CATEGORIES=['微量元素','工具 / 耗材','馬達 / 造浪','過濾耗材','反應器 / 設備','海鹽','珊瑚營養 / 飼料','主要元素 / 平衡'];
+const FALLBACK_CATEGORY_META={
+ '微量元素':['🪸','I、Fe、Mn、Sr 等元素補充'],'工具 / 耗材':['🧰','清潔、餵食、維修與日常工具'],
+ '馬達 / 造浪':['🌊','主循環、造浪與流量設備'],'過濾耗材':['🧻','濾材、活性碳、樹脂與濾袋'],
+ '反應器 / 設備':['⚙️','鈣反、媒體桶與設備本體'],'海鹽':['🧂','新缸建立與日常換水海鹽'],
+ '珊瑚營養 / 飼料':['🪸','珊瑚飼料、胺基酸與營養補充'],'主要元素 / 平衡':['KH','KH、Ca、Mg 與離子平衡']
+};
+const FALLBACK_SERVICES=[
+ {id:'planning',title:'海水缸規劃',description:'依空間、飼養方向與預算規劃缸體、底缸、管路與設備。',icon:'📐',sortOrder:10,status:'active'},
+ {id:'livestock',title:'珊瑚與活體',description:'SPS、LPS、澳洲珊瑚、定期進口與自家繁殖品項。',icon:'🪸',sortOrder:20,status:'active'},
+ {id:'water',title:'水質與 ICP',description:'依 KH、Ca、Mg、營養鹽與 ICP 數據提供補充與調整方向。',icon:'🧪',sortOrder:30,status:'active'},
+ {id:'service',title:'維護與工程',description:'住宅、商用展示缸、大型系統設備整合與長期維護。',icon:'🛠️',sortOrder:40,status:'active'}
+];
+function $(id){return document.getElementById(id)}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function safe(v){return String(v??'').trim()}
+function norm(v){return safe(v).replace(/\s*\/\s*/g,' / ').toLowerCase()}
+function displayCategory(v){return safe(v).replace(/\s*\/\s*/g,' / ')}
+function money(v){return 'NT$ '+Math.round(Number(v||0)).toLocaleString('zh-TW')}
+function initFirebase(){try{return !!(window.firebase&&firebase.apps.length)}catch(e){return false}}
+function tsMs(v){try{return v&&v.toMillis?v.toMillis():v&&v.seconds?v.seconds*1000:new Date(v||0).getTime()||0}catch(e){return 0}}
+async function resolveStorage(value){
+ const x=safe(value); if(!x)return''; if(/^https?:\/\//i.test(x))return x;
+ try{return await firebase.storage().ref(x).getDownloadURL()}catch(e){return''}
+}
+async function resolveProductImage(p){
+ const useThumb=p.thumbnailFit==='contain'&&safe(p.thumbnailUrl||p.thumbnailImageUrl);
+ const vals=useThumb
+  ?[p.thumbnailUrl,p.thumbnailImageUrl,p.mainImageUrl,p.imageUrl,p.externalImageUrl,p.mainImagePath,p.mainImageStoragePath]
+  :[p.mainImageUrl,p.imageUrl,p.externalImageUrl,p.mainImagePath,p.mainImageStoragePath,p.thumbnailUrl,p.thumbnailImageUrl];
+ for(const value of vals){const url=await resolveStorage(value);if(url)return url}
+ return'';
+}
+function publicVisible(p){return p.publicVisible!==false&&p.b2bOnly!==true&&p.status!=='inactive'&&p.status!=='deleted'}
+function shopVisible(p){return publicVisible(p)&&p.syncToShop!==false}
+function categoryLink(name){return `shop.html?category=${encodeURIComponent(name)}`}
+function brandLink(name){return `shop.html?brand=${encodeURIComponent(name)}`}
+function productCard(p,label){
+ const sku=safe(p.sku||p.id),name=safe(p.name||sku),brand=safe(p.brandName||p.brand||'SEADREAM'),category=displayCategory(p.categoryName||p.category||'未分類');
+ return `<article class="previewCard">
+   <div class="previewImage">${p._image?`<img src="${esc(p._image)}" alt="${esc(name)}" loading="lazy">`:'暫無圖片'}${label?`<span class="previewBadge">${esc(label)}</span>`:''}</div>
+   <div class="previewBody"><div class="previewName">${esc(name)}</div><div class="previewMeta">${esc(brand)} ｜ ${esc(category)}</div>
+   <div class="previewPrice">${money(p.salePrice||p.userPrice||p.price)}</div>
+   <div class="previewActions"><a class="btn small" href="official-product.html?sku=${encodeURIComponent(sku)}">介紹</a><a class="btn small primary" href="product.html?sku=${encodeURIComponent(sku)}">商城</a></div></div>
+ </article>`;
+}
+function initial(name){const s=safe(name);return s.slice(0,2).toUpperCase()||'SD'}
+async function loadHome(){
+ if(!initFirebase())return;
+ const [productSnap,brandSnap,settingSnap]=await Promise.all([
+  firebase.firestore().collection('publicProducts').get(),
+  firebase.firestore().collection('shopBrandShowcase').get(),
+  firebase.firestore().collection('shopSettings').get()
+ ]);
+ const products=productSnap.docs.map(d=>({id:d.id,...d.data()})).filter(publicVisible);
+ const shop=products.filter(shopVisible);
+ const settings=settingSnap.docs.map(d=>({id:d.id,...d.data()}));
+ const categoryCfg=new Map(settings.filter(x=>x.type==='categoryDisplay').map(x=>[norm(x.name),x]));
+ const serviceItems=settings.filter(x=>x.type==='homeService'&&x.status!=='inactive').sort((a,b)=>Number(a.sortOrder||999)-Number(b.sortOrder||999));
+ const brandCfg=new Map(brandSnap.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.status!=='inactive').map(x=>[norm(x.name),x]));
+ await Promise.all(shop.map(async p=>p._image=await resolveProductImage(p)));
+
+ const counts={}; const categoryNames={};
+ shop.forEach(p=>{const n=displayCategory(p.categoryName||p.category||p.categoryId||'未分類');const k=norm(n);counts[k]=(counts[k]||0)+1;categoryNames[k]=n});
+ const categoryItems=Object.keys(counts).map(k=>{
+  const c=categoryCfg.get(k)||{}; const name=c.name||categoryNames[k];
+  const priority=PRIORITY_CATEGORIES.indexOf(name);
+  return {key:k,name,count:counts[k],cfg:c,priority:priority<0?999:priority,sortOrder:Number(c.sortOrder??9999)};
+ }).filter(x=>x.cfg.status!=='inactive').sort((a,b)=>a.sortOrder-b.sortOrder||a.priority-b.priority||b.count-a.count||a.name.localeCompare(b.name,'zh-Hant')).slice(0,8);
+ $('categoryGrid').innerHTML=categoryItems.length?categoryItems.map(x=>{
+   const fallback=FALLBACK_CATEGORY_META[x.name]||['📦','查看相關商品']; const media=x.cfg.imageUrl?`<img src="${esc(x.cfg.imageUrl)}" alt="${esc(x.name)}">`:esc(x.cfg.icon||fallback[0]);
+   return `<a class="categoryCard" href="${categoryLink(x.name)}"><div class="categoryTop"><div class="categoryIcon">${media}</div><span class="categoryCount">${x.count} 項</span></div><strong>${esc(x.name)}</strong><span class="link">前往商城查看 →</span></a>`;
+ }).join(''):'<div class="dynamicEmpty">目前尚無公開分類。</div>';
+
+ const sorted=[...shop].sort((a,b)=>tsMs(b.updatedAt||b.createdAt)-tsMs(a.updatedAt||a.createdAt));
+ const preview=sorted.slice(0,4); $('previewCount').textContent=`${preview.length} 項`; $('previewGrid').innerHTML=preview.length?preview.map(p=>productCard(p,'商品')).join(''):'<div class="dynamicEmpty">目前尚無公開商品。</div>';
+ let newest=shop.filter(p=>p.showOnOfficialNew===true).sort((a,b)=>tsMs(b.updatedAt||b.createdAt)-tsMs(a.updatedAt||a.createdAt));if(!newest.length)newest=sorted;newest=newest.slice(0,6);
+ $('newCount').textContent=`${newest.length} 項`; $('newGrid').innerHTML=newest.length?newest.map(p=>productCard(p,'新品')).join(''):'<div class="dynamicEmpty">目前尚無最新商品。</div>';
+
+ const brandCounts={}; const brandNames={};
+ shop.forEach(p=>{const n=safe(p.brandName||p.brand||p.brandId||'其他');const k=norm(n);brandCounts[k]=(brandCounts[k]||0)+1;brandNames[k]=n});
+ const allBrandKeys=new Set([...Object.keys(brandCounts),...brandCfg.keys()]);
+ const brands=[...allBrandKeys].map(k=>{const cfg=brandCfg.get(k)||{};return {key:k,name:cfg.name||brandNames[k]||k,count:brandCounts[k]||0,cfg,sortOrder:Number(cfg.sortOrder??9999)}})
+  .filter(x=>x.name&&x.name!=='其他'&&x.cfg.status!=='inactive').sort((a,b)=>a.sortOrder-b.sortOrder||b.count-a.count||a.name.localeCompare(b.name,'zh-Hant'));
+ $('brandGrid').innerHTML=brands.length?brands.map(x=>`<a class="brandCard" href="${brandLink(x.name)}"><div class="brandLogo">${x.cfg.imageUrl?`<img src="${esc(x.cfg.imageUrl)}" alt="${esc(x.name)}">`:`<div class="brandInitial">${esc(initial(x.name))}</div>`}</div><strong>${esc(x.name)}</strong><span>${x.count} 項商品</span></a>`).join(''):'<div class="dynamicEmpty">目前尚無品牌資料。</div>';
+
+ const services=serviceItems.length?serviceItems:FALLBACK_SERVICES;
+ $('serviceGrid').innerHTML=services.map(s=>`<article class="serviceCard"><div class="serviceMedia">${s.imageUrl?`<img src="${esc(s.imageUrl)}" alt="${esc(s.title)}">`:esc(s.icon||'🔧')}</div><h3>${esc(s.title)}</h3><p>${esc(s.description)}</p></article>`).join('');
+}
+async function loadSettings(){
+ if(!initFirebase())return;
+ try{const s=await firebase.firestore().collection('shopSettings').doc('site').get();if(s.exists){const d=s.data()||{};if(d.logoUrl)$('siteLogo').innerHTML=`<img src="${esc(d.logoUrl)}" alt="SEADREAM Logo">`;if(d.title)$('siteTitle').textContent=d.title;if(d.subtitle)$('siteSubtitle').textContent=d.subtitle}}catch(e){console.warn(e)}
+}
+function canSeeB2B(profile){const role=safe(profile?.role).toLowerCase();return profile?.status!=='inactive'&&(profile?.isAdmin===true||role==='admin'||role==='wholesale')}
+function setB2BVisibility(show){document.querySelectorAll('[data-b2b]').forEach(el=>el.hidden=!show)}
+function watchAuth(){
+ if(!initFirebase())return;
+ firebase.auth().onAuthStateChanged(async user=>{
+  const el=$('authStatus');setB2BVisibility(false);
+  if(!el)return;
+  if(!user){el.innerHTML='<a class="btn small" href="signup.html">登入 / 註冊</a>';return}
+  let profile=null;try{const s=await firebase.firestore().collection('users').doc(user.uid).get();profile=s.exists?s.data():null}catch(e){}
+  setB2BVisibility(canSeeB2B(profile));
+  el.innerHTML=`<span class="pill aqua">${esc(profile?.contactName||profile?.name||user.email||'已登入')}</span><button class="btn small" id="logoutBtn">登出</button>`;
+  setTimeout(()=>{$('logoutBtn').onclick=async()=>{await firebase.auth().signOut();location.reload()}},0);
+ });
+}
+document.addEventListener('DOMContentLoaded',()=>{setB2BVisibility(false);loadSettings();loadHome().catch(e=>console.error(e));watchAuth()});
+</script>
+<script src="/shop_chat_widget.js"></script>
+</body>
+</html>

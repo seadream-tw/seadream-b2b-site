@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SEADREAM B2B 測試首頁</title>
+  <style>
+    :root{
+      --bg:#f3f7f7;
+      --ink:#102933;
+      --muted:#657b83;
+      --sea:#0b7d73;
+      --sea2:#12a395;
+      --card:#fff;
+      --line:#d9e5e5;
+      --red:#c43d35;
+      --gold:#b8812d;
+      --shadow:0 10px 30px rgba(16,41,51,.09);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:"Microsoft JhengHei","Noto Sans TC",Arial,sans-serif;
+      line-height:1.5;
+    }
+
+    header{
+      background:linear-gradient(135deg,#09242d,#0b7d73);
+      color:#fff;
+      padding:22px 18px;
+      box-shadow:var(--shadow);
+    }
+
+    .wrap{
+      max-width:1180px;
+      margin:0 auto;
+      padding:18px;
+    }
+
+    .top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    h1{
+      margin:0;
+      font-size:28px;
+    }
+
+    .sub{
+      opacity:.9;
+      margin-top:6px;
+      font-size:14px;
+    }
+
+    .badge{
+      display:inline-flex;
+      background:rgba(255,255,255,.14);
+      padding:7px 10px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:12px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:16px;
+      margin-top:16px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+
+    .card h2{
+      margin:0 0 12px;
+      font-size:20px;
+    }
+
+    input,button{
+      font:inherit;
+    }
+
+    .input{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:11px 12px;
+      margin:6px 0;
+      background:#fff;
+    }
+
+    .btn{
+      border:0;
+      border-radius:12px;
+      padding:11px 14px;
+      background:var(--sea);
+      color:white;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .btn.secondary{
+      background:#102933;
+    }
+
+    .btn.light{
+      background:#edf5f4;
+      color:var(--ink);
+    }
+
+    .btn.red{
+      background:var(--red);
+    }
+
+    .row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .status{
+      padding:10px 12px;
+      border-radius:12px;
+      background:#edf5f4;
+      color:var(--muted);
+      font-size:13px;
+      margin-top:10px;
+      white-space:pre-wrap;
+    }
+
+    .ok{
+      color:#278c54;
+      font-weight:900;
+    }
+
+    .err{
+      color:var(--red);
+      font-weight:900;
+    }
+
+    .product{
+      display:grid;
+      grid-template-columns:128px minmax(0,1fr);
+      gap:14px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      margin:10px 0;
+      background:#fff;
+    }
+
+    .thumb{
+      width:128px;
+      height:128px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#eef5f5;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      color:var(--muted);
+      font-weight:800;
+      text-align:center;
+    }
+
+    .thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .pname{
+      font-size:18px;
+      font-weight:900;
+    }
+
+    .meta{
+      color:var(--muted);
+      font-size:13px;
+      margin:4px 0;
+    }
+
+    .price{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+
+    .pill{
+      background:#edf5f4;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:13px;
+      font-weight:900;
+    }
+
+    .pill.wh{
+      background:#fff1e6;
+      color:var(--red);
+    }
+
+    .small{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:8px;
+    }
+
+    .footer{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:18px;
+    }
+
+    @media(max-width:850px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+
+      .product{
+        grid-template-columns:96px 1fr;
+      }
+
+      .thumb{
+        width:96px;
+        height:96px;
+      }
+
+      h1{
+        font-size:23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap top">
+    <div>
+      <h1>SEADREAM B2B 測試首頁</h1>
+      <div class="sub">Firebase Hosting / Authentication / Firestore / Storage 連線測試</div>
+    </div>
+    <span class="badge" id="buildBadge">b2b.seadream.com.tw</span>
+  </div>
+</header>
+
+<main class="wrap grid">
+  <section class="card">
+    <h2>會員登入測試</h2>
+
+    <input
+      id="email"
+      class="input"
+      placeholder="Email"
+      value="jamison90132@gmail.com"
+      autocomplete="email"
+    >
+
+    <input
+      id="password"
+      class="input"
+      placeholder="密碼"
+      type="password"
+      autocomplete="current-password"
+    >
+
+    <div class="row" style="margin-top:8px">
+      <button class="btn" id="loginBtn">登入</button>
+      <button class="btn light" id="logoutBtn">登出</button>
+      <button class="btn secondary" id="reloadBtn">重新載入商品</button>
+    </div>
+
+    <div class="status" id="authStatus">尚未登入。未登入時只會看到公開商品資料與一般價。</div>
+
+    <div class="small">
+      若登入失敗，請先確認 Firebase Authentication 的「電子郵件/密碼」已啟用，以及使用者帳號已建立。
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>商品資料測試</h2>
+
+    <div class="status" id="dataStatus">準備讀取 Firestore products...</div>
+
+    <div id="productList"></div>
+
+    <div class="footer">
+      測試目標：讀取 products，取得 mainImagePath 後從 Storage 顯示圖片；登入 admin 後嘗試讀取 wholesalePrices。
+    </div>
+  </section>
+</main>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+  } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
+
+  import {
+    getFirestore,
+    collection,
+    getDocs,
+    doc,
+    getDoc
+  } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+
+  import {
+    getStorage,
+    ref,
+    getDownloadURL
+  } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js';
+
+  /*
+    重要：
+    這裡不再手動寫 apiKey。
+    Firebase Hosting 會自動提供正確的專案設定，避免 apiKey 打錯。
+    只有部署到 Firebase Hosting 後才會正常使用。
+  */
+  const firebaseConfig = await fetch('/__/firebase/init.json').then((res) => {
+    if (!res.ok) {
+      throw new Error('Firebase config 載入失敗，請確認網站已部署在 Firebase Hosting。');
+    }
+    return res.json();
+  });
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  const $ = (id) => document.getElementById(id);
+
+  const money = (n) => {
+    return 'NT$ ' + Number(n || 0).toLocaleString('zh-Hant-TW');
+  };
+
+  const esc = (s) => {
+    return String(s ?? '').replace(/[&<>"']/g, (m) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[m]));
+  };
+
+  let currentUserDoc = null;
+
+  async function loadUserDoc(user) {
+    currentUserDoc = null;
+
+    if (!user) {
+      return null;
+    }
+
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) {
+        currentUserDoc = snap.data();
+      }
+      return currentUserDoc;
+    } catch (e) {
+      console.warn('讀取 users 文件失敗：', e);
+      return null;
+    }
+  }
+
+  async function imageUrl(path) {
+    if (!path) {
+      return '';
+    }
+
+    try {
+      return await getDownloadURL(ref(storage, path));
+    } catch (e) {
+      console.warn('Storage image load failed:', path, e);
+      return '';
+    }
+  }
+
+  async function readWholesalePrice(sku) {
+    if (!auth.currentUser || !sku) {
+      return null;
+    }
+
+    try {
+      const snap = await getDoc(doc(db, 'wholesalePrices', sku));
+      return snap.exists() ? snap.data() : null;
+    } catch (e) {
+      console.warn('讀取 wholesalePrices 被拒絕或失敗：', e);
+      return null;
+    }
+  }
+
+  async function loadProducts() {
+    $('dataStatus').textContent = '正在讀取 Firestore products...';
+    $('productList').innerHTML = '';
+
+    try {
+      const querySnap = await getDocs(collection(db, 'products'));
+
+      if (querySnap.empty) {
+        $('dataStatus').innerHTML = '<span class="err">products 集合目前沒有資料。</span>';
+        return;
+      }
+
+      const rows = [];
+
+      for (const d of querySnap.docs) {
+        const p = d.data();
+        const sku = p.sku || d.id;
+        const img = await imageUrl(p.mainImagePath);
+        const wh = await readWholesalePrice(sku);
+
+        rows.push(`
+          <div class="product">
+            <div class="thumb">
+              ${img ? `<img src="${esc(img)}" alt="${esc(p.name || sku)}">` : '無圖片'}
+            </div>
+
+            <div>
+              <div class="pname">${esc(p.name || d.id)}</div>
+
+              <div class="meta">
+                SKU：${esc(sku)} ｜ 品牌：${esc(p.brand || '')} ｜ 分類：${esc(p.category || '')}
+              </div>
+
+              <div class="meta">${esc(p.description || '')}</div>
+
+              <div class="price">
+                <span class="pill">一般價 ${money(p.userPrice)}</span>
+                ${
+                  wh
+                    ? `<span class="pill wh">批發價 ${money(wh.wholesalePrice)}</span>`
+                    : `<span class="pill">批發價：需批發商 / 管理員登入</span>`
+                }
+              </div>
+
+              <div class="small">
+                mainImagePath：${esc(p.mainImagePath || '未設定')}
+              </div>
+            </div>
+          </div>
+        `);
+      }
+
+      $('productList').innerHTML = rows.join('');
+      $('dataStatus').innerHTML = '<span class="ok">Firestore / Storage 讀取成功。</span>';
+
+    } catch (e) {
+      $('dataStatus').innerHTML =
+        '<span class="err">讀取失敗：</span> ' + esc(e.message || e);
+    }
+  }
+
+  $('loginBtn').onclick = async () => {
+    const email = $('email').value.trim();
+    const password = $('password').value;
+
+    if (!email || !password) {
+      $('authStatus').innerHTML = '<span class="err">請輸入 Email 與密碼。</span>';
+      return;
+    }
+
+    try {
+      $('authStatus').textContent = '正在登入...';
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (e) {
+      $('authStatus').innerHTML =
+        '<span class="err">登入失敗：</span>' + esc(e.message || e);
+    }
+  };
+
+  $('logoutBtn').onclick = async () => {
+    try {
+      await signOut(auth);
+    } catch (e) {
+      $('authStatus').innerHTML =
+        '<span class="err">登出失敗：</span>' + esc(e.message || e);
+    }
+  };
+
+  $('reloadBtn').onclick = loadProducts;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      $('authStatus').textContent = '尚未登入。未登入時只會看到公開商品資料與一般價。';
+      currentUserDoc = null;
+      await loadProducts();
+      return;
+    }
+
+    const profile = await loadUserDoc(user);
+
+    $('authStatus').innerHTML =
+      `<span class="ok">已登入：</span>${esc(user.email)}
+角色：${esc(profile?.role || '未設定')}
+狀態：${esc(profile?.status || '未設定')}`;
+
+    await loadProducts();
+  });
+
+  loadProducts();
+</script>
+</body>
+</html>

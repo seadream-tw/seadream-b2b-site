@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SEADREAM 商城管理中心 v3.0</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{--bg:#06111d;--panel:#0b2135;--card:#0e2a42;--line:rgba(148,197,255,.20);--text:#e8f4ff;--muted:#9eb8ce;--brand:#4cc9f0;--brand2:#72efdd;--danger:#ff6b6b;--warn:#ffd166;--ok:#51cf66;--shadow:0 18px 55px rgba(0,0,0,.35)}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;background:radial-gradient(circle at 12% 0%,rgba(76,201,240,.14),transparent 28%),radial-gradient(circle at 90% 15%,rgba(114,239,221,.10),transparent 28%),var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--brand2);text-decoration:none}button,input,select,textarea{font:inherit}button{cursor:pointer}[hidden],.hidden{display:none!important}.wrap{width:min(1420px,calc(100vw - 28px));margin:0 auto}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(6,17,29,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.topbarInner{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,var(--brand),#1b7fff 55%,var(--brand2));display:grid;place-items:center;color:#03121f;font-weight:1000}.brand h1{margin:0;font-size:21px}.brand p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.btn{border:1px solid var(--line);background:rgba(255,255,255,.055);color:var(--text);border-radius:12px;padding:9px 12px;min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:850}.btn:hover{border-color:rgba(114,239,221,.5)}.btn.primary{background:linear-gradient(135deg,#1ba6d6,#1b7fff);border-color:transparent}.btn.success{background:linear-gradient(135deg,#19b37a,#0ca678);border-color:transparent}.btn.danger{background:rgba(255,107,107,.13);border-color:rgba(255,107,107,.36);color:#ffcaca}.btn.small{font-size:12px;padding:7px 9px;min-height:32px}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:#d9edff;background:rgba(255,255,255,.045);font-size:12px}
+.hero{padding:22px 0 14px}.panel{border:1px solid var(--line);border-radius:20px;background:rgba(15,43,69,.62);box-shadow:0 12px 34px rgba(0,0,0,.18);overflow:hidden}.panelHead{padding:15px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.panelHead h2,.panelHead h3{margin:0}.panelBody{padding:16px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.tab{border:1px solid var(--line);border-radius:12px;padding:9px 12px;background:rgba(255,255,255,.045);color:var(--text);font-weight:900}.tab.active{border-color:rgba(114,239,221,.55);background:rgba(114,239,221,.12);color:#dffff8}
+.adminGrid{display:grid;grid-template-columns:380px minmax(0,1fr);gap:16px;align-items:start;margin-bottom:38px}.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.formGrid .full{grid-column:1/-1}label{display:grid;gap:6px;color:var(--muted);font-size:13px}.formControl{width:100%;background:rgba(255,255,255,.075);color:var(--text);border:1px solid var(--line);border-radius:13px;padding:11px 12px;outline:none}.formControl:focus{border-color:rgba(114,239,221,.58);box-shadow:0 0 0 3px rgba(114,239,221,.09)}textarea.formControl{min-height:100px;resize:vertical}option{color:#061522}
+.preview{border:1px dashed rgba(148,197,255,.25);border-radius:15px;min-height:120px;display:grid;place-items:center;overflow:hidden;background:rgba(255,255,255,.035);color:var(--muted);margin-top:11px}.preview img{max-width:100%;max-height:170px;object-fit:contain;padding:8px}
+.list{display:grid;gap:9px}.row{border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.04);padding:11px;display:grid;grid-template-columns:80px minmax(0,1fr) auto;gap:11px;align-items:center}.rowImage{width:80px;height:66px;border:1px solid rgba(148,197,255,.18);border-radius:12px;display:grid;place-items:center;overflow:hidden;color:var(--muted);background:rgba(0,0,0,.12);font-size:12px}.rowImage img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;padding:5px}.rowTitle{font-weight:950}.rowMeta{color:var(--muted);font-size:12px;line-height:1.5;margin-top:3px}.rowActions{display:grid;gap:6px}.empty{border:1px dashed rgba(148,197,255,.25);border-radius:15px;color:var(--muted);padding:22px;text-align:center}.notice{border:1px solid rgba(114,239,221,.25);border-radius:14px;padding:11px;background:rgba(114,239,221,.07);color:#dffff8;line-height:1.6;font-size:13px}.toast{position:fixed;right:16px;bottom:16px;z-index:200;display:grid;gap:8px;width:min(380px,calc(100vw - 32px))}.toastMsg{border:1px solid var(--line);background:rgba(8,26,43,.97);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
+
+.dashboardGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.metric{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);padding:15px}.metric strong{display:block;font-size:27px;color:var(--brand2)}.metric span{display:block;color:var(--muted);font-size:12px;margin-top:7px;line-height:1.45}.workflow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.workflowStep{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.035);padding:14px;min-height:145px;display:flex;flex-direction:column}.workflowStep .num{width:30px;height:30px;border-radius:999px;background:linear-gradient(135deg,#1ba6d6,#1b7fff);display:grid;place-items:center;font-weight:1000}.workflowStep h3{margin:10px 0 0;font-size:16px}.workflowStep p{margin:7px 0 12px;color:var(--muted);font-size:12px;line-height:1.55;flex:1}.quickGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.quickCard{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.035);padding:15px}.quickCard h3{margin:0}.quickCard p{color:var(--muted);font-size:12px;line-height:1.6}.stepFooter{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}.statusOk{color:#7bf3bd}.statusWarn{color:#ffe19b}.statusBad{color:#ffc0c0}.progressHint{border-left:4px solid var(--brand2);padding:11px 13px;border-radius:0 12px 12px 0;background:rgba(114,239,221,.06);line-height:1.65;color:#dffff8}.csvColumns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.csvColumns code{display:block;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.18);padding:9px;color:#dffff8;white-space:normal}
+@media(max-width:1100px){.dashboardGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.workflow{grid-template-columns:repeat(2,minmax(0,1fr))}.quickGrid{grid-template-columns:1fr 1fr}}
+@media(max-width:920px){.adminGrid{grid-template-columns:1fr}.formGrid{grid-template-columns:1fr}.row{grid-template-columns:70px minmax(0,1fr)}.rowActions{grid-column:1/-1;grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.wrap{width:min(100% - 18px,1420px)}.topbarInner{align-items:flex-start;flex-direction:column}.formGrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="wrap topbarInner"><a class="brand" href="index.html"><div class="logo">SD</div><div><h1>SEADREAM 商城管理中心</h1><p>管理首頁・品牌分類・商品 CSV・官網內容 v3.0</p></div></a><nav class="nav"><button class="btn small primary" type="button" data-jump="dashboard">管理首頁</button><a class="btn small" href="/order.html">商品管理</a><a class="btn small" href="https://www.seadream.com.tw/" target="_blank" rel="noopener">官網首頁</a><a class="btn small" href="https://www.seadream.com.tw/shop.html" target="_blank" rel="noopener">商品商城</a><button id="logoutBtn" class="btn small">登出</button></nav></div></header>
+<main class="wrap">
+<section class="hero"><div class="panel"><div class="panelHead"><h3>管理員登入</h3><span class="pill" id="adminState">檢查中…</span></div><div class="panelBody"><div class="formGrid"><label><span>Email</span><input id="adminEmail" class="formControl" value="jamison90132@gmail.com"></label><label><span>密碼</span><input id="adminPassword" class="formControl" type="password"></label></div><button id="loginBtn" class="btn primary" style="margin-top:11px">管理員登入</button></div></div></section>
+<div id="tools" hidden>
+  <div class="tabs">
+    <button class="tab active" data-tab="dashboard">管理首頁</button>
+    <button class="tab" data-tab="brands">① 品牌管理</button>
+    <button class="tab" data-tab="categories">② 分類管理</button>
+    <button class="tab" data-tab="products">③ 商品與 CSV</button>
+    <button class="tab" data-tab="site">④ 官網設定</button>
+    <button class="tab" data-tab="services">⑤ 專業服務</button>
+    <button class="tab" data-tab="sync">⑥ 同步與預覽</button>
+  </div>
+
+  <section class="tabPage" data-page="dashboard">
+    <div class="panel" style="margin-bottom:16px"><div class="panelHead"><h3>管理進度總覽</h3><button id="refreshDashboardBtn" class="btn small">重新整理</button></div><div class="panelBody">
+      <div class="dashboardGrid">
+        <div class="metric"><strong id="metricProducts">－</strong><span>B2B 商品數</span></div>
+        <div class="metric"><strong id="metricPublic">－</strong><span>公開商品數</span></div>
+        <div class="metric"><strong id="metricBrands">－</strong><span>品牌數</span></div>
+        <div class="metric"><strong id="metricCategories">－</strong><span>分類數</span></div>
+      </div>
+      <div id="dashboardStatus" class="progressHint" style="margin-top:13px">正在檢查商品與公開同步狀態…</div>
+    </div></div>
+    <div class="panel"><div class="panelHead"><h3>建議操作流程</h3><span class="pill">從左到右完成</span></div><div class="panelBody"><div class="workflow">
+      <article class="workflowStep"><div class="num">1</div><h3>品牌管理</h3><p>建立品牌、上傳 Logo、處理重複名稱，再進入分類。</p><button class="btn small" data-jump="brands">開始品牌管理</button></article>
+      <article class="workflowStep"><div class="num">2</div><h3>分類管理</h3><p>建立分類、上傳代表圖、設定首頁排序。</p><button class="btn small" data-jump="categories">開始分類管理</button></article>
+      <article class="workflowStep"><div class="num">3</div><h3>商品與 CSV</h3><p>單筆新增商品，或匯出 CSV 批次補說明、尺寸、重量與運送方式。</p><button class="btn small primary" data-jump="products">商品批次管理</button></article>
+      <article class="workflowStep"><div class="num">4</div><h3>官網內容</h3><p>調整網站 Logo、標題與專業服務內容。</p><button class="btn small" data-jump="site">管理官網內容</button></article>
+      <article class="workflowStep"><div class="num">5</div><h3>同步與預覽</h3><p>檢查公開商品數，再預覽官網、商城與產品頁。</p><button class="btn small success" data-jump="sync">檢查與預覽</button></article>
+    </div></div></div>
+  </section>
+
+  <section class="tabPage" data-page="site" hidden>
+    <div class="adminGrid"><div class="panel"><div class="panelHead"><h3>網站 Logo 與標題</h3></div><div class="panelBody">
+      <div class="preview" id="siteLogoPreview">尚未上傳 Logo</div>
+      <label style="margin-top:11px"><span>公司 Logo</span><input id="siteLogoFile" class="formControl" type="file" accept="image/*"></label>
+      <label style="margin-top:11px"><span>網站名稱</span><input id="siteTitle" class="formControl" value="海洋夢商城"></label>
+      <label style="margin-top:11px"><span>副標題</span><input id="siteSubtitle" class="formControl" value="SEADREAM Aquarium Public Store"></label>
+      <button id="saveSiteBtn" class="btn success" style="width:100%;margin-top:13px">儲存網站設定</button>
+    </div></div><div class="panel"><div class="panelHead"><h3>說明</h3></div><div class="panelBody"><div class="notice">這裡修改的 Logo、網站名稱與副標題會套用到官網首頁。圖片會自動轉成適合網頁使用的 WebP。</div></div></div></div>
+  </section>
+
+  <section class="tabPage" data-page="services" hidden>
+    <div class="adminGrid"><div class="panel"><div class="panelHead"><h3 id="serviceFormTitle">新增專業服務</h3><button id="resetServiceBtn" class="btn small">新增模式</button></div><div class="panelBody">
+      <div class="formGrid"><label><span>服務名稱</span><input id="serviceTitle" class="formControl" placeholder="海水缸規劃"></label><label><span>圖示文字</span><input id="serviceIcon" class="formControl" placeholder="📐"></label><label class="full"><span>服務說明</span><textarea id="serviceDescription" class="formControl"></textarea></label><label><span>排序</span><input id="serviceSort" class="formControl" type="number" value="10"></label><label><span>狀態</span><select id="serviceStatus" class="formControl"><option value="active">顯示</option><option value="inactive">隱藏</option></select></label><label class="full"><span>代表圖片（選填）</span><input id="serviceImageFile" class="formControl" type="file" accept="image/*"></label></div>
+      <div class="preview" id="servicePreview">可使用圖示文字，或上傳代表圖片</div><button id="saveServiceBtn" class="btn success" style="width:100%;margin-top:13px">儲存服務內容</button>
+    </div></div><div class="panel"><div class="panelHead"><h3>目前專業服務</h3></div><div class="panelBody"><div id="serviceList" class="list"></div></div></div></div>
+  </section>
+
+  <section class="tabPage" data-page="brands" hidden>
+    <div class="notice" style="margin-bottom:14px">B2B 新增品牌並同步公開商品後，品牌會自動出現在下方清單與官網。未上傳 Logo 時會先顯示文字縮寫。</div>
+    <div class="adminGrid"><div class="panel"><div class="panelHead"><h3 id="brandFormTitle">品牌 Logo 設定</h3><button id="resetBrandBtn" class="btn small">新增模式</button></div><div class="panelBody">
+      <div class="formGrid"><label class="full"><span>品牌名稱</span><input id="brandName" class="formControl" placeholder="Aquaforest"></label><label><span>排序</span><input id="brandSort" class="formControl" type="number" value="100"></label><label><span>狀態</span><select id="brandStatus" class="formControl"><option value="active">顯示</option><option value="inactive">隱藏</option></select></label><label class="full"><span>副標文字</span><input id="brandSubtitle" class="formControl"></label><label class="full"><span>品牌 Logo</span><input id="brandImageFile" class="formControl" type="file" accept="image/*"></label></div>
+      <div class="preview" id="brandPreview">尚未選擇 Logo</div><button id="saveBrandBtn" class="btn success" style="width:100%;margin-top:13px">儲存品牌 Logo</button>
+    </div></div><div class="panel"><div class="panelHead"><h3>品牌清單</h3><span class="pill" id="brandCount">0</span></div><div class="panelBody"><div id="brandList" class="list"></div></div></div></div>
+  </section>
+
+  <section class="tabPage" data-page="categories" hidden>
+    <div class="notice" style="margin-bottom:14px">B2B 商品使用新的分類並同步公開後，分類會自動出現在下方。管理員可再補上代表圖片、圖示與首頁排序。</div>
+    <div class="adminGrid"><div class="panel"><div class="panelHead"><h3 id="categoryFormTitle">分類代表圖設定</h3><button id="resetCategoryBtn" class="btn small">新增模式</button></div><div class="panelBody">
+      <div class="formGrid"><label class="full"><span>分類名稱</span><input id="categoryName" class="formControl" placeholder="微量元素"></label><label><span>圖示文字</span><input id="categoryIcon" class="formControl" placeholder="🪸"></label><label><span>排序</span><input id="categorySort" class="formControl" type="number" value="100"></label><label><span>狀態</span><select id="categoryStatus" class="formControl"><option value="active">顯示</option><option value="inactive">隱藏</option></select></label><label class="full"><span>分類代表圖片</span><input id="categoryImageFile" class="formControl" type="file" accept="image/*"></label></div>
+      <div class="preview" id="categoryPreview">尚未選擇分類圖片</div><button id="saveCategoryBtn" class="btn success" style="width:100%;margin-top:13px">儲存分類設定</button>
+    </div></div><div class="panel"><div class="panelHead"><h3>自動偵測到的分類</h3><span class="pill" id="categoryCount">0</span></div><div class="panelBody"><div id="categoryList" class="list"></div></div></div></div>
+  </section>
+
+  <section class="tabPage" data-page="products" hidden>
+    <div class="panel"><div class="panelHead"><h3>商品與 CSV 批次管理</h3><span class="pill">管理員功能</span></div><div class="panelBody">
+      <div class="quickGrid">
+        <article class="quickCard"><h3>新增單一商品</h3><p>進入目前的設備商品管理視窗，填寫品牌、分類、價格、說明、尺寸、重量與運送方式。</p><button id="goAddProductBtn" class="btn primary">新增商品</button></article>
+        <article class="quickCard"><h3>匯出完整 CSV</h3><p>下載目前全部商品。請以這份檔案為底稿修改，避免遺失既有欄位。</p><button id="goCsvExportBtn" class="btn">匯出商品 CSV</button></article>
+        <article class="quickCard"><h3>匯入 CSV 預覽</h3><p>選擇 CSV 後先顯示新增、更新與錯誤預覽，確認後才寫入 Firebase 並同步公開商品。</p><button id="goCsvImportBtn" class="btn success">匯入商品 CSV</button></article>
+      </div>
+      <div class="notice" style="margin-top:15px"><strong>這一版新增的 CSV 欄位：</strong><div class="csvColumns"><code>officialShortDescription</code><code>description</code><code>packageLengthCm</code><code>packageWidthCm</code><code>packageHeightCm</code><code>packageWeightKg</code><code>shippingMethod</code><code>shippingNote</code></div><p style="margin-bottom:0">shippingMethod 可填：standard、freight、pickup_only、contact。</p></div>
+      <div class="stepFooter"><button class="btn" data-jump="categories">← 上一步：分類管理</button><button class="btn primary" data-jump="site">下一步：官網設定 →</button></div>
+    </div></div>
+  </section>
+
+  <section class="tabPage" data-page="sync" hidden>
+    <div class="adminGrid"><div class="panel"><div class="panelHead"><h3>同步狀態</h3><button id="refreshSyncBtn" class="btn small">重新檢查</button></div><div class="panelBody"><div class="dashboardGrid" style="grid-template-columns:1fr 1fr"><div class="metric"><strong id="syncB2BCount">－</strong><span>B2B 商品</span></div><div class="metric"><strong id="syncPublicCount">－</strong><span>公開商品</span></div></div><div id="syncMessage" class="progressHint" style="margin-top:12px">尚未檢查。</div></div></div><div class="panel"><div class="panelHead"><h3>前台預覽</h3></div><div class="panelBody"><div class="quickGrid" style="grid-template-columns:1fr 1fr"><a class="btn" href="https://www.seadream.com.tw/" target="_blank" rel="noopener">預覽官網首頁</a><a class="btn" href="https://www.seadream.com.tw/shop.html" target="_blank" rel="noopener">預覽商品商城</a><a class="btn" href="https://www.seadream.com.tw/official-products.html" target="_blank" rel="noopener">預覽產品總覽</a><a class="btn danger" href="https://www.seadream.com.tw/sync-public-products.html" target="_blank" rel="noopener">進階：整批同步工具</a></div></div></div></div>
+    <div class="stepFooter"><button class="btn" data-jump="services">← 上一步：專業服務</button><button class="btn primary" data-jump="dashboard">回管理首頁</button></div>
+  </section>
+</div>
+</main>
+<div id="toast" class="toast"></div>
+<script src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+<script src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+<script src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+<script src="/__/firebase/10.12.2/firebase-storage-compat.js"></script>
+<script src="/__/firebase/init.js?useEmulator=false"></script>
+<script>
+const VERSION='admin_center_v3_0_step1';
+const C={users:'users',settings:'shopSettings',brands:'shopBrandShowcase',products:'publicProducts'};
+let user=null,profile=null,editing={service:'',brand:'',category:''},files={site:null,service:null,brand:null,category:null};
+function $(id){return document.getElementById(id)}function safe(v){return String(v??'').trim()}function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function norm(v){return safe(v).replace(/\s*\/\s*/g,' / ').toLowerCase()}function display(v){return safe(v).replace(/\s*\/\s*/g,' / ')}
+function slug(v){return safe(v).toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g,'-').replace(/^-+|-+$/g,'')||String(Date.now())}
+function toast(msg){const x=document.createElement('div');x.className='toastMsg';x.textContent=msg;$('toast').appendChild(x);setTimeout(()=>x.remove(),4200)}
+function isAdmin(p){return p&&p.status!=='inactive'&&(p.isAdmin===true||safe(p.role).toLowerCase()==='admin')}
+function db(){return firebase.firestore()}function auth(){return firebase.auth()}function storage(){return firebase.storage()}
+async function profileOf(uid){const s=await db().collection(C.users).doc(uid).get();return s.exists?s.data():null}
+async function imageFromFile(file,maxW=900,maxH=600,quality=.84){
+ const img=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=r.result};r.onerror=reject;r.readAsDataURL(file)});
+ const ratio=Math.min(1,maxW/img.width,maxH/img.height);const w=Math.max(1,Math.round(img.width*ratio)),h=Math.max(1,Math.round(img.height*ratio));const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
+ return await new Promise(resolve=>c.toBlob(b=>resolve(b||file),'image/webp',quality));
+}
+async function upload(file,path,maxW=900,maxH=600){const blob=await imageFromFile(file,maxW,maxH);const r=storage().ref(path);await r.put(blob,{contentType:'image/webp'});return await r.getDownloadURL()}
+function preview(file,boxId){if(!file){$(boxId).innerHTML='尚未選擇圖片';return}$(boxId).innerHTML=`<img src="${URL.createObjectURL(file)}" alt="preview">`}
+function switchTab(name){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===name));document.querySelectorAll('.tabPage').forEach(x=>x.hidden=x.dataset.page!==name)}
+async function loadSite(){const s=await db().collection(C.settings).doc('site').get();if(!s.exists)return;const d=s.data()||{};$('siteTitle').value=d.title||'海洋夢商城';$('siteSubtitle').value=d.subtitle||'SEADREAM Aquarium Public Store';if(d.logoUrl)$('siteLogoPreview').innerHTML=`<img src="${esc(d.logoUrl)}">`}
+async function saveSite(){if(!isAdmin(profile))return;const data={title:safe($('siteTitle').value),subtitle:safe($('siteSubtitle').value),updatedAt:firebase.firestore.FieldValue.serverTimestamp()};if(files.site){data.logoPath=`public/site/logo-${Date.now()}.webp`;data.logoUrl=await upload(files.site,data.logoPath,700,700)}await db().collection(C.settings).doc('site').set(data,{merge:true});toast('網站設定已儲存');files.site=null}
+
+function resetService(){editing.service='';files.service=null;$('serviceTitle').value='';$('serviceIcon').value='';$('serviceDescription').value='';$('serviceSort').value='10';$('serviceStatus').value='active';$('serviceImageFile').value='';$('servicePreview').textContent='可使用圖示文字，或上傳代表圖片';$('serviceFormTitle').textContent='新增專業服務'}
+async function loadServices(){const s=await db().collection(C.settings).get();const items=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.type==='homeService').sort((a,b)=>Number(a.sortOrder||999)-Number(b.sortOrder||999));$('serviceList').innerHTML=items.length?items.map(x=>rowHtml(x.imageUrl,x.title,`${x.description||''}｜排序 ${x.sortOrder||0}｜${x.status||'active'}`,`data-service="${esc(x.id)}"`)).join(''):'<div class="empty">尚未建立服務資料，官網會先使用預設四項。</div>'}
+async function editService(id){const s=await db().collection(C.settings).doc(id).get();if(!s.exists)return;const x=s.data();editing.service=id;$('serviceTitle').value=x.title||'';$('serviceIcon').value=x.icon||'';$('serviceDescription').value=x.description||'';$('serviceSort').value=x.sortOrder||10;$('serviceStatus').value=x.status||'active';$('servicePreview').innerHTML=x.imageUrl?`<img src="${esc(x.imageUrl)}">`:'使用圖示文字';$('serviceFormTitle').textContent='修改專業服務';switchTab('services');scrollTo({top:0,behavior:'smooth'})}
+async function saveService(){const title=safe($('serviceTitle').value);if(!title)return toast('請輸入服務名稱');const id=editing.service||`homeService-${slug(title)}`;const data={type:'homeService',title,icon:safe($('serviceIcon').value),description:safe($('serviceDescription').value),sortOrder:Number($('serviceSort').value||100),status:$('serviceStatus').value,updatedAt:firebase.firestore.FieldValue.serverTimestamp()};if(files.service){data.imagePath=`public/homeServices/${slug(title)}-${Date.now()}.webp`;data.imageUrl=await upload(files.service,data.imagePath,700,500)}if(!editing.service)data.createdAt=firebase.firestore.FieldValue.serverTimestamp();await db().collection(C.settings).doc(id).set(data,{merge:true});toast('服務內容已儲存');resetService();loadServices()}
+async function toggleSetting(id,status){await db().collection(C.settings).doc(id).set({status,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});await Promise.all([loadServices(),loadCategories()]);toast('狀態已更新')}
+
+function rowHtml(image,title,meta,attr,status='active'){return `<div class="row"><div class="rowImage">${image?`<img src="${esc(image)}">`:'尚無圖片'}</div><div><div class="rowTitle">${esc(title)}</div><div class="rowMeta">${esc(meta)}</div></div><div class="rowActions"><button class="btn small" ${attr}>編輯</button>${status?`<button class="btn small" data-toggle-id="${esc(attr.match(/="([^"]+)"/)?.[1]||'')}" data-toggle-status="${status==='active'?'inactive':'active'}">${status==='active'?'隱藏':'顯示'}</button>`:''}</div></div>`}
+
+function resetBrand(){editing.brand='';files.brand=null;$('brandName').value='';$('brandSubtitle').value='';$('brandSort').value='100';$('brandStatus').value='active';$('brandImageFile').value='';$('brandPreview').textContent='尚未選擇 Logo';$('brandFormTitle').textContent='品牌 Logo 設定'}
+async function taxonomy(){
+ const [p,b,s]=await Promise.all([db().collection(C.products).get(),db().collection(C.brands).get(),db().collection(C.settings).get()]);
+ const products=p.docs.map(d=>d.data()||{}),brandDocs=b.docs.map(d=>({id:d.id,...d.data()})),settingDocs=s.docs.map(d=>({id:d.id,...d.data()}));
+ const bc={},bn={},cc={},cn={};products.forEach(x=>{const bname=safe(x.brandName||x.brand||x.brandId||'其他'),bk=norm(bname);bc[bk]=(bc[bk]||0)+1;bn[bk]=bname;const cname=display(x.categoryName||x.category||x.categoryId||'未分類'),ck=norm(cname);cc[ck]=(cc[ck]||0)+1;cn[ck]=cname});
+ return {bc,bn,cc,cn,brandDocs,categoryDocs:settingDocs.filter(x=>x.type==='categoryDisplay')};
+}
+async function loadBrands(){
+ const t=await taxonomy(),map=new Map(t.brandDocs.map(x=>[norm(x.name),x])),keys=new Set([...Object.keys(t.bc),...map.keys()]);
+ const items=[...keys].map(k=>({
+   key:k,
+   name:map.get(k)?.name||t.bn[k]||k,
+   count:t.bc[k]||0,
+   cfg:map.get(k)||{}
+ })).filter(x=>x.name!=='其他')
+   .sort((a,b)=>Number(a.cfg.sortOrder??9999)-Number(b.cfg.sortOrder??9999)||b.count-a.count||a.name.localeCompare(b.name,'zh-Hant'));
+
+ $('brandCount').textContent=items.length;
+ $('brandList').innerHTML=items.length?items.map(x=>{
+   const id=x.cfg.id||'';
+   const status=x.cfg.status||'active';
+   const canDelete=Boolean(id)&&x.count===0;
+   return `<div class="row">
+     <div class="rowImage">${x.cfg.imageUrl?`<img src="${esc(x.cfg.imageUrl)}">`:'尚無圖片'}</div>
+     <div>
+       <div class="rowTitle">${esc(x.name)}</div>
+       <div class="rowMeta">${x.count} 項商品｜排序 ${x.cfg.sortOrder??'未設定'}｜${esc(status)}${x.count>0?'｜仍有商品，不可直接刪除':''}</div>
+     </div>
+     <div class="rowActions">
+       <button class="btn small" data-brand-edit="1" data-brand-name="${esc(x.name)}" data-brand-id="${esc(id)}">編輯</button>
+       <button class="btn small" data-brand-toggle="1" data-brand-name="${esc(x.name)}" data-brand-id="${esc(id)}" data-brand-status="${status==='active'?'inactive':'active'}">${status==='active'?'隱藏':'顯示'}</button>
+       ${canDelete?`<button class="btn small danger" data-brand-delete="1" data-brand-name="${esc(x.name)}" data-brand-id="${esc(id)}">永久刪除</button>`:''}
+     </div>
+   </div>`;
+ }).join(''):'<div class="empty">尚無品牌資料。</div>';
+}
+async function editBrand(name,id){editing.brand=id||'';$('brandName').value=name;files.brand=null;if(id){const s=await db().collection(C.brands).doc(id).get();const x=s.data()||{};$('brandSubtitle').value=x.subtitle||'';$('brandSort').value=x.sortOrder||100;$('brandStatus').value=x.status||'active';$('brandPreview').innerHTML=x.imageUrl?`<img src="${esc(x.imageUrl)}">`:'尚無 Logo'}else{$('brandSubtitle').value='';$('brandSort').value='100';$('brandStatus').value='active';$('brandPreview').textContent='尚無 Logo'}$('brandFormTitle').textContent='修改品牌 Logo';switchTab('brands');scrollTo({top:0,behavior:'smooth'})}
+async function saveBrand(){const name=safe($('brandName').value);if(!name)return toast('請輸入品牌名稱');const id=editing.brand||slug(name);const data={name,subtitle:safe($('brandSubtitle').value),sortOrder:Number($('brandSort').value||100),status:$('brandStatus').value,updatedAt:firebase.firestore.FieldValue.serverTimestamp()};if(files.brand){data.imagePath=`public/brandShowcase/${slug(name)}-${Date.now()}.webp`;data.imageUrl=await upload(files.brand,data.imagePath,1000,500)}if(!editing.brand)data.createdAt=firebase.firestore.FieldValue.serverTimestamp();await db().collection(C.brands).doc(id).set(data,{merge:true});toast('品牌 Logo 已儲存');resetBrand();loadBrands()}
+async function toggleBrand(id,name,status){
+ const docId=id||slug(name);
+ await db().collection(C.brands).doc(docId).set({
+   name,
+   status,
+   updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+ },{merge:true});
+ loadBrands();
+ toast(status==='inactive'?'品牌已隱藏':'品牌已恢復顯示');
+}
+async function deleteBrand(id,name){
+ if(!id)return toast('這是由商品自動產生的品牌，請使用「隱藏」。');
+ const current=await taxonomy();
+ const count=current.bc[norm(name)]||0;
+ if(count>0)return toast(`「${name}」仍有 ${count} 項商品，不能永久刪除；請先修改這些商品的品牌，或使用「隱藏」。`);
+ if(!confirm(`確定永久刪除品牌「${name}」？\n\n品牌 Logo 與排序設定會一併刪除，此動作無法復原。`))return;
+ const ref=db().collection(C.brands).doc(id);
+ const snap=await ref.get();
+ const data=snap.exists?(snap.data()||{}):{};
+ if(data.imagePath){
+   try{await storage().ref(data.imagePath).delete()}catch(e){console.warn('品牌圖片刪除略過：',e)}
+ }
+ await ref.delete();
+ if(editing.brand===id)resetBrand();
+ await loadBrands();
+ toast(`品牌「${name}」已永久刪除`);
+}
+
+function resetCategory(){editing.category='';files.category=null;$('categoryName').value='';$('categoryIcon').value='';$('categorySort').value='100';$('categoryStatus').value='active';$('categoryImageFile').value='';$('categoryPreview').textContent='尚未選擇分類圖片';$('categoryFormTitle').textContent='分類代表圖設定'}
+async function loadCategories(){const t=await taxonomy(),map=new Map(t.categoryDocs.map(x=>[norm(x.name),x])),keys=new Set([...Object.keys(t.cc),...map.keys()]);const items=[...keys].map(k=>({key:k,name:map.get(k)?.name||t.cn[k]||k,count:t.cc[k]||0,cfg:map.get(k)||{}})).sort((a,b)=>Number(a.cfg.sortOrder??9999)-Number(b.cfg.sortOrder??9999)||b.count-a.count||a.name.localeCompare(b.name,'zh-Hant'));$('categoryCount').textContent=items.length;$('categoryList').innerHTML=items.length?items.map(x=>rowHtml(x.cfg.imageUrl,x.name,`${x.count} 項商品｜圖示 ${x.cfg.icon||'未設定'}｜排序 ${x.cfg.sortOrder??'未設定'}｜${x.cfg.status||'active'}`,`data-category-name="${esc(x.name)}" data-category-id="${esc(x.cfg.id||'')}"`,x.cfg.status||'active')).join(''):'<div class="empty">尚無分類資料。</div>'}
+async function editCategory(name,id){editing.category=id||'';$('categoryName').value=name;files.category=null;if(id){const s=await db().collection(C.settings).doc(id).get();const x=s.data()||{};$('categoryIcon').value=x.icon||'';$('categorySort').value=x.sortOrder||100;$('categoryStatus').value=x.status||'active';$('categoryPreview').innerHTML=x.imageUrl?`<img src="${esc(x.imageUrl)}">`:'尚無分類圖片'}else{$('categoryIcon').value='';$('categorySort').value='100';$('categoryStatus').value='active';$('categoryPreview').textContent='尚無分類圖片'}$('categoryFormTitle').textContent='修改分類代表圖';switchTab('categories');scrollTo({top:0,behavior:'smooth'})}
+async function saveCategory(){const name=display($('categoryName').value);if(!name)return toast('請輸入分類名稱');const id=editing.category||`categoryDisplay-${slug(name)}`;const data={type:'categoryDisplay',name,icon:safe($('categoryIcon').value),sortOrder:Number($('categorySort').value||100),status:$('categoryStatus').value,updatedAt:firebase.firestore.FieldValue.serverTimestamp()};if(files.category){data.imagePath=`public/categoryDisplay/${slug(name)}-${Date.now()}.webp`;data.imageUrl=await upload(files.category,data.imagePath,700,700)}if(!editing.category)data.createdAt=firebase.firestore.FieldValue.serverTimestamp();await db().collection(C.settings).doc(id).set(data,{merge:true});toast('分類圖片已儲存');resetCategory();loadCategories()}
+
+async function login(){try{await auth().signInWithEmailAndPassword(safe($('adminEmail').value),$('adminPassword').value);toast('登入成功')}catch(e){toast('登入失敗：'+e.message)}}
+async function getAdminCounts(){
+ const [p,pp,b,c]=await Promise.all([
+   db().collection('equipmentProducts').get(),db().collection('publicProducts').get(),db().collection('equipmentBrands').get(),db().collection('equipmentCategories').get()
+ ]);
+ const activePublic=pp.docs.filter(d=>{const x=d.data()||{};return x.publicVisible!==false&&x.b2bOnly!==true&&x.status!=='inactive'&&x.status!=='deleted'}).length;
+ return {products:p.size,publicProducts:activePublic,brands:b.size,categories:c.size};
+}
+async function loadDashboard(){
+ try{
+  const x=await getAdminCounts();
+  $('metricProducts').textContent=x.products;$('metricPublic').textContent=x.publicProducts;$('metricBrands').textContent=x.brands;$('metricCategories').textContent=x.categories;
+  $('syncB2BCount').textContent=x.products;$('syncPublicCount').textContent=x.publicProducts;
+  const diff=x.products-x.publicProducts;
+  $('dashboardStatus').innerHTML=diff===0?'<span class="statusOk">✓ B2B 與公開商品數量一致。</span>':'<span class="statusWarn">目前 B2B 比公開商品多 '+diff+' 筆。這可能包含 B2B 專用、未公開或尚未同步商品。</span>';
+  $('syncMessage').innerHTML=diff===0?'<span class="statusOk">✓ 商品數量一致，可進行前台預覽。</span>':'<span class="statusWarn">公開商品少 '+diff+' 筆。先確認商品是否設定為 B2B 專用或取消公開，再決定是否使用進階同步。</span>';
+ }catch(e){$('dashboardStatus').textContent='檢查失敗：'+e.message;$('syncMessage').textContent='檢查失敗：'+e.message}
+}
+function openOrderAction(action){const u=new URL('/order.html',location.origin);u.searchParams.set('adminAction',action);location.href=u.pathname+u.search}
+async function initData(){await Promise.all([loadSite(),loadServices(),loadBrands(),loadCategories(),loadDashboard()])}
+function bind(){
+ document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+ document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>switchTab(b.dataset.jump));
+ $('refreshDashboardBtn').onclick=loadDashboard;$('refreshSyncBtn').onclick=loadDashboard;
+ $('goAddProductBtn').onclick=()=>openOrderAction('new');$('goCsvExportBtn').onclick=()=>openOrderAction('csv-export');$('goCsvImportBtn').onclick=()=>openOrderAction('csv-import');
+ $('loginBtn').onclick=login;$('logoutBtn').onclick=async()=>{await auth().signOut();location.reload()};
+ $('siteLogoFile').onchange=()=>{files.site=$('siteLogoFile').files[0]||null;preview(files.site,'siteLogoPreview')};$('saveSiteBtn').onclick=saveSite;
+ $('resetServiceBtn').onclick=resetService;$('serviceImageFile').onchange=()=>{files.service=$('serviceImageFile').files[0]||null;preview(files.service,'servicePreview')};$('saveServiceBtn').onclick=saveService;
+ $('resetBrandBtn').onclick=resetBrand;$('brandImageFile').onchange=()=>{files.brand=$('brandImageFile').files[0]||null;preview(files.brand,'brandPreview')};$('saveBrandBtn').onclick=saveBrand;
+ $('resetCategoryBtn').onclick=resetCategory;$('categoryImageFile').onchange=()=>{files.category=$('categoryImageFile').files[0]||null;preview(files.category,'categoryPreview')};$('saveCategoryBtn').onclick=saveCategory;
+ $('serviceList').onclick=e=>{const id=e.target.closest('[data-service]')?.dataset.service;if(id)editService(id);const tid=e.target.closest('[data-toggle-id]')?.dataset.toggleId,st=e.target.closest('[data-toggle-status]')?.dataset.toggleStatus;if(tid)toggleSetting(tid,st)};
+ $('brandList').onclick=e=>{
+   const editBtn=e.target.closest('[data-brand-edit]');
+   if(editBtn){
+     editBrand(editBtn.dataset.brandName,editBtn.dataset.brandId);
+     return;
+   }
+   const toggleBtn=e.target.closest('[data-brand-toggle]');
+   if(toggleBtn){
+     toggleBrand(toggleBtn.dataset.brandId,toggleBtn.dataset.brandName,toggleBtn.dataset.brandStatus);
+     return;
+   }
+   const deleteBtn=e.target.closest('[data-brand-delete]');
+   if(deleteBtn){
+     deleteBrand(deleteBtn.dataset.brandId,deleteBtn.dataset.brandName);
+   }
+ };
+ $('categoryList').onclick=e=>{const c=e.target.closest('[data-category-name]');if(c)editCategory(c.dataset.categoryName,c.dataset.categoryId);const tid=e.target.closest('[data-toggle-id]')?.dataset.toggleId,st=e.target.closest('[data-toggle-status]')?.dataset.toggleStatus;if(tid)toggleSetting(tid,st)};
+}
+bind();
+auth().onAuthStateChanged(async u=>{user=u;profile=u?await profileOf(u.uid).catch(()=>null):null;$('adminState').textContent=u?(isAdmin(profile)?'admin 已登入':'此帳號沒有 admin 權限'):'尚未登入';$('tools').hidden=!isAdmin(profile);if(isAdmin(profile))initData()});
+</script>
+</body>
+</html>
