@@ -3728,13 +3728,13 @@
       <div class="modal-head">
         <h3>匯入商品 CSV 預覽</h3>
         <div class="modal-actions">
-          <button id="confirmCsvImportBtn" class="btn success" type="button">確認寫入 Firebase</button>
+          <button id="confirmCsvImportBtn" class="btn success" type="button">使用 SeaDreamAI 匯入</button>
           <button id="cancelCsvImportBtn" class="btn ghost" type="button">取消</button>
         </div>
       </div>
       <div class="modal-body">
-        <div class="notice" style="margin-bottom:14px;">先預覽、不會立刻寫入。已有相同 SKU 會更新；新 SKU 會新增。確認後會同步 B2B 商品與 publicProducts。</div>
-        <div class="form-grid" style="margin-bottom:14px"><label><span>更新模式</span><select id="csvImportMode" class="form-control"><option value="nonempty" selected>只更新 CSV 有內容的欄位（建議）</option><option value="full">完整覆蓋：CSV 空白也會清空原資料</option></select></label><div class="notice"><strong>建議：</strong>只補產品說明、尺寸或運送方式時，選「只更新有內容欄位」。</div></div>
+        <div class="notice" style="margin-bottom:14px;">此處僅供唯讀預覽，不是正式放行差異。請保留同一份完整 39 欄 CSV，交由 SeaDreamAI 審核與匯入。</div>
+        <div class="form-grid" style="margin-bottom:14px"><label><span>更新模式</span><select id="csvImportMode" class="form-control"><option value="nonempty" selected>只更新 CSV 有內容的欄位（建議）</option></select></label><div class="notice"><strong>建議：</strong>只補產品說明、尺寸或運送方式時，選「只更新有內容欄位」。</div></div>
         <div class="csv-preview-summary">
           <div class="csv-preview-box"><strong id="csvPreviewTotal">0</strong><span>CSV 有效資料</span></div>
           <div class="csv-preview-box"><strong id="csvPreviewCreate">0</strong><span>即將新增商品</span></div>
@@ -4602,7 +4602,32 @@
       renderProducts();
     }
 
-    function buildPublicProductPayload(product) {
+    function approvedPublicSpecLeaves(specs, approvedPaths) {
+      const result = {};
+      const privateRoots = new Set(['originalRow', 'priceSource', 'discount']);
+      for (const path of approvedPaths) {
+        if (!Array.isArray(path) || !path.length || privateRoots.has(path[0]) ||
+            path.some(key => typeof key !== 'string' || !key || ['*', '__proto__', 'constructor', 'prototype'].includes(key))) {
+          throw new Error('PUBLIC_SPEC_PATH_NOT_ALLOWED');
+        }
+        let value = specs;
+        for (const key of path) {
+          if (!value || typeof value !== 'object' || !Object.prototype.hasOwnProperty.call(value, key)) {
+            throw new Error('PUBLIC_SPEC_LEAF_MISSING');
+          }
+          value = value[key];
+        }
+        if (value === null || value === '' || (typeof value === 'object' && !Array.isArray(value))) {
+          throw new Error('PUBLIC_SPEC_LEAF_REQUIRED');
+        }
+        let cursor = result;
+        path.slice(0, -1).forEach(key => { cursor = cursor[key] ||= {}; });
+        cursor[path[path.length - 1]] = value;
+      }
+      return result;
+    }
+
+    function buildPublicProductPayload(product, approvedSpecPaths = []) {
       const p = product || {};
       const brandName = p.brand || findOptionName(state.brands, p.brandId) || p.brandId || '';
       const categoryName = p.category || findOptionName(state.categories, p.categoryId) || p.categoryId || '';
@@ -4634,7 +4659,9 @@
         img3StoragePath: String(p.img3StoragePath || p.img3Path || '').trim(),
         youtubeUrl: String(p.youtubeUrl || '').trim(),
         youtubeId: String(p.youtubeId || '').trim(),
-        specs: p.specs && typeof p.specs === 'object' ? p.specs : {},
+        // No approval means omit specs entirely. An empty map would erase existing
+        // public specs under Firestore merge semantics; cleanup is a separate repair.
+        ...(approvedSpecPaths.length ? {specs: approvedPublicSpecLeaves(p.specs, approvedSpecPaths)} : {}),
         sortOrder: p.sortOrder === '' || p.sortOrder === undefined ? '' : toNumber(p.sortOrder, ''),
         syncToShop: p.syncToShop !== false,
         syncToOfficialSite: p.syncToOfficialSite !== false,
@@ -6995,7 +7022,8 @@
       return value;
     }
     function mergeCsvPayload(existing, incoming, mode) {
-      if (mode === 'full' || !existing) return stripUndefined({ ...incoming });
+      if (mode !== 'nonempty') throw new Error('IMPORT_MODE_FORBIDDEN');
+      if (!existing) return stripUndefined({ ...incoming });
       const result = { ...existing };
       Object.entries(incoming || {}).forEach(([key,value]) => {
         if (value === undefined) return;
@@ -7008,65 +7036,8 @@
     }
 
     async function confirmImportProductsCSV() {
-      if (!canManageEquipment()) return toast('沒有設備批發管理權限，無法匯入商品。', 'err');
-      const data = state.pendingImport;
-      if (!data || !data.payloads.length) return toast('沒有可寫入的商品資料。', 'err');
-      if (data.summary.errorCount > 0) return toast('CSV 仍有錯誤資料，請修正後重新匯入。', 'err');
-
-      $('confirmCsvImportBtn').disabled = true;
-      $('confirmCsvImportBtn').textContent = '寫入中...';
-      try {
-        const optionWritten = await commitOptionCreates(data.optionCreates);
-        if ((optionWritten.brands || 0) || (optionWritten.categories || 0) || (optionWritten.tags || 0)) {
-          await loadOptions();
-        }
-        let committed = 0, publicCommitted = 0;
-        const mode = $('csvImportMode')?.value || 'nonempty';
-        const existingMap = new Map(state.products.map(p=>[String(p.sku||p.id||'').trim(),p]));
-        const finalPayloads = data.payloads.map(incoming => {
-          const existed = existingMap.get(incoming.sku);
-          const merged = mergeCsvPayload(existed, incoming, mode);
-          merged.sku = incoming.sku;
-          merged.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
-          merged.updatedBy = state.currentUser?.email || '';
-          if(!existed){
-            merged.createdAt=incoming.createdAt||firebase.firestore.FieldValue.serverTimestamp();merged.createdBy=incoming.createdBy||state.currentUser?.email||'';
-            if(merged.syncToShop===undefined)merged.syncToShop=true;
-            if(merged.syncToOfficialSite===undefined)merged.syncToOfficialSite=true;
-            if(merged.publicVisible===undefined)merged.publicVisible=true;
-            if(merged.showOnOfficialNew===undefined)merged.showOnOfficialNew=false;
-            if(merged.showOnOfficialFeatured===undefined)merged.showOnOfficialFeatured=false;
-            if(merged.b2bOnly===undefined)merged.b2bOnly=false;
-            if(!merged.shippingMethod)merged.shippingMethod='standard';
-          }
-          return stripUndefined(merged);
-        });
-        for (let i = 0; i < finalPayloads.length; i += 220) {
-          const batch = state.db.batch();
-          finalPayloads.slice(i, i + 220).forEach(payload => {
-            const productRef=state.db.collection(COLLECTIONS.products).doc(payload.sku);
-            batch.set(productRef,payload,{merge:true});
-            const allowPublic=payload.publicVisible!==false&&payload.b2bOnly!==true&&(payload.syncToShop!==false||payload.syncToOfficialSite!==false);
-            const publicRef=state.db.collection(COLLECTIONS.publicProducts).doc(makeDocId(payload.sku));
-            if(allowPublic){batch.set(publicRef,buildPublicProductPayload({...payload,id:payload.sku}),{merge:true});publicCommitted++;}
-            else{batch.set(publicRef,{sku:payload.sku,name:payload.name||payload.sku,syncToShop:false,syncToOfficialSite:false,publicVisible:false,showOnOfficialNew:false,showOnOfficialFeatured:false,b2bOnly:payload.b2bOnly===true,status:'inactive',sourceProductId:payload.sku,sourceCollection:COLLECTIONS.products,autoSyncedByCsv:true,syncedAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});}
-            committed++;
-          });
-          await batch.commit();
-        }
-        closeCsvPreviewModal();
-        await loadProducts();
-        const optText = ((optionWritten.brands || 0) || (optionWritten.categories || 0) || (optionWritten.tags || 0))
-          ? `，並建立選項：品牌 ${optionWritten.brands || 0}、分類 ${optionWritten.categories || 0}、標籤 ${optionWritten.tags || 0}`
-          : '';
-        toast(`商品 CSV 匯入完成：B2B ${committed} 筆、公開同步 ${publicCommitted} 筆${optText}`);
-      } catch (err) {
-        console.error(err);
-        toast('CSV 匯入失敗：' + err.message, 'err');
-      } finally {
-        $('confirmCsvImportBtn').textContent = '確認寫入 Firebase';
-        $('confirmCsvImportBtn').disabled = false;
-      }
+      // Function-level boundary: no options or product writes can happen here.
+      return toast('請將同一份完整 CSV 載入 SeaDreamAI「CSV 審核與匯入」，檢視差異並批准後提交。此處僅供唯讀預覽。', 'err');
     }
 
 
